@@ -1460,18 +1460,21 @@ async function fetchBlynkData() {
       blynkGet('V0'), blynkGet('V1'), blynkGet('V2'), blynkGet('V3'), blynkGet('V4')
     ]);
 
+    const rawMoist = parseFloat(moist);
+    const correctedMoist = 100 - rawMoist; // Balikkan nilai: 0% di sensor (Basah) -> 100% di UI
+
     pumpOn = parseInt(pump) === 1;
     updatePumpUI();
     const newMode = parseInt(mod) === 1 ? 'auto' : 'manual';
     if (newMode !== mode) setMode(newMode);
-    setMoisture(parseFloat(moist));
+    setMoisture(correctedMoist);
     setTemp(parseFloat(temp));
     setHumidity(parseFloat(hum));
 
     badge.className = 'blynk-status-text ok';
     badge.textContent = '✓ Terhubung';
     document.getElementById('connStatusText').textContent = 'Terhubung';
-    addLog('green', `Data diperbarui dari Blynk — Kelembaban: ${parseFloat(moist).toFixed(0)}%, Suhu: ${parseFloat(temp).toFixed(1)}°C`);
+    addLog('green', `Data diperbarui dari Blynk — Kelembaban: ${correctedMoist.toFixed(0)}%, Suhu: ${parseFloat(temp).toFixed(1)}°C`);
     showToast('Data berhasil diperbarui dari Blynk');
   } catch(e) {
     badge.className = 'blynk-status-text err';
