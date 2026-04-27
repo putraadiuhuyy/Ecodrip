@@ -868,6 +868,9 @@
         <div class="status-dot"></div>
         <span id="connStatusText">Terhubung</span>
       </div>
+      <button class="btn-blynk" onclick="openLoginHistoryModal()" style="border-color: var(--teal); color: var(--teal); background: rgba(45,212,196,0.05);">
+        🕒 Riwayat Login
+      </button>
       <button class="btn-blynk" onclick="openBlynkModal()">
         ⚡ Blynk Config
       </button>
@@ -1026,6 +1029,26 @@
   </div>
 </div>
 
+<!-- LOGIN HISTORY MODAL -->
+<div class="modal-overlay hidden" id="loginHistoryModal">
+  <div class="modal" style="max-width: 550px;">
+    <h3>🕒 Riwayat Login Perangkat</h3>
+    <p>Daftar aktivitas akses terakhir pada sistem di browser ini.</p>
+    <div style="max-height: 250px; overflow-y: auto; margin: 15px 0; border: 1px solid var(--border); border-radius: 12px; background: var(--surface2);">
+      <table class="pin-table">
+        <thead style="position: sticky; top: 0; background: var(--surface2); z-index: 1;">
+          <tr><th>Pengguna</th><th>Waktu</th><th>Akses Via</th></tr>
+        </thead>
+        <tbody id="loginHistoryBody"></tbody>
+      </table>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeLoginHistoryModal()" style="flex:1">Tutup</button>
+      <button class="btn-logout" onclick="clearLoginHistory()" style="background:transparent; border-color:rgba(224,84,84,0.4);">Hapus Riwayat</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ═══════════════════════════════════
    BACKGROUND ANIMATION
@@ -1113,6 +1136,46 @@ function getAllUsers() {
   return [...DEFAULT_USERS, ...registered];
 }
 
+function recordLogin(u) {
+  const logs = JSON.parse(localStorage.getItem('hs_login_logs') || '[]');
+  const deviceType = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop';
+  const newEntry = {
+    name: u.name,
+    time: new Date().toLocaleString('id-ID', { 
+      day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' 
+    }),
+    device: `${deviceType} (${navigator.platform})`
+  };
+  logs.unshift(newEntry);
+  if (logs.length > 20) logs.pop(); // Simpan 20 login terakhir
+  localStorage.setItem('hs_login_logs', JSON.stringify(logs));
+}
+
+function openLoginHistoryModal() {
+  const body = document.getElementById('loginHistoryBody');
+  const logs = JSON.parse(localStorage.getItem('hs_login_logs') || '[]');
+  
+  body.innerHTML = logs.length ? '' : '<tr><td colspan="3" style="text-align:center; padding: 20px; color: var(--text-muted);">Belum ada riwayat.</td></tr>';
+  
+  logs.forEach(log => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><strong>${log.name}</strong></td><td>${log.time}</td><td><code style="font-size:10px">${log.device}</code></td>`;
+    body.appendChild(tr);
+  });
+  document.getElementById('loginHistoryModal').classList.remove('hidden');
+}
+
+function closeLoginHistoryModal() {
+  document.getElementById('loginHistoryModal').classList.add('hidden');
+}
+
+function clearLoginHistory() {
+  if (confirm('Hapus semua riwayat login di perangkat ini?')) {
+    localStorage.removeItem('hs_login_logs');
+    openLoginHistoryModal();
+  }
+}
+
 function handleSignUp() {
   const name = document.getElementById('signupName').value.trim();
   const user = document.getElementById('signupUser').value.trim().toLowerCase();
@@ -1152,6 +1215,7 @@ function handleLogin() {
   
   err.style.display = 'none';
   sessionStorage.setItem('hs_user', JSON.stringify(u));
+  recordLogin(u);
   showDashboard(u);
 }
 
