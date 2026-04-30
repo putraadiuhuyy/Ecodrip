@@ -793,45 +793,6 @@
     animation: spin 0.8s linear infinite;
     vertical-align: middle;
   }
-
-  /* ── CLICKABLE CARDS & SENSOR MODAL ── */
-  .card.clickable { cursor: pointer; }
-  .card.clickable:hover { border-color: rgba(74, 180, 89, 0.5); box-shadow: 0 8px 32px rgba(74, 180, 89, 0.12); }
-  .card.clickable:active { transform: scale(0.99); }
-
-  .tap-hint {
-    position: absolute;
-    top: 14px; right: 14px;
-    font-size: 10px;
-    font-family: 'DM Mono', monospace;
-    color: var(--text-muted);
-    background: var(--green-dim);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 3px 8px;
-    display: flex; align-items: center; gap: 4px;
-    z-index: 2; transition: all 0.2s;
-  }
-  .card.clickable:hover .tap-hint { color: var(--green); border-color: rgba(74, 180, 89, 0.4); }
-
-  .modal-header { padding: 24px 28px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(74, 180, 89, 0.06), transparent); }
-  .modal-header-left { display: flex; align-items: center; gap: 14px; }
-  .modal-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-  .modal-close { width: 32px; height: 32px; border-radius: 8px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .modal-body { padding: 24px 28px 28px; }
-  .detail-current { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding: 18px 20px; background: var(--surface2); border-radius: 14px; border: 1px solid var(--border); }
-  .detail-value { font-family: 'DM Mono', monospace; font-size: 52px; font-weight: 500; }
-  .dv-unit { font-size: 22px; color: var(--text-dim); }
-  .detail-stats { display: flex; flex-direction: column; gap: 8px; text-align: right; }
-  .detail-stat { font-size: 12px; color: var(--text-dim); }
-  .detail-stat strong { font-family: 'DM Mono', monospace; color: var(--text); margin-left: 6px; }
-  .detail-chart { height: 110px; position: relative; margin-bottom: 15px; }
-  .detail-table-wrap { max-height: 180px; overflow-y: auto; }
-  .hist-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(74, 180, 89, 0.06); font-size: 12px; }
-  .hist-bar-wrap { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
-  .hist-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
-  .hist-time { font-family: 'DM Mono', monospace; color: var(--text-muted); width: 70px; }
-  .hist-val { font-family: 'DM Mono', monospace; font-weight: 500; width: 52px; text-align: right; }
 </style>
 </head>
 <body>
@@ -967,8 +928,7 @@
       </div>
 
       <!-- SOIL MOISTURE -->
-      <div class="card moisture-card clickable" onclick="openSensorDetail('moisture')">
-        <div class="tap-hint"><span class="tap-hint-icon">👆</span> Lihat riwayat</div>
+      <div class="card moisture-card">
         <div class="card-label"><div class="dot" style="background:var(--amber)"></div>Kelembaban Tanah</div>
         <div class="gauge-wrap">
           <svg class="gauge-svg" viewBox="0 0 140 90">
@@ -995,8 +955,7 @@
       </div>
 
       <!-- TEMPERATURE -->
-      <div class="card temp-card clickable" onclick="openSensorDetail('temp')">
-        <div class="tap-hint"><span class="tap-hint-icon">👆</span> Lihat riwayat</div>
+      <div class="card temp-card">
         <div class="card-label"><div class="dot" style="background:var(--amber)"></div>Suhu</div>
         <div class="metric-val" id="tempVal"><span class="unit">°C</span></div>
         <div style="font-size:12px;color:var(--text-muted);">DHT11 Sensor</div>
@@ -1004,8 +963,7 @@
       </div>
 
       <!-- HUMIDITY AIR -->
-      <div class="card hum-card clickable" onclick="openSensorDetail('hum')">
-        <div class="tap-hint"><span class="tap-hint-icon">👆</span> Lihat riwayat</div>
+      <div class="card hum-card">
         <div class="card-label"><div class="dot" style="background:var(--teal)"></div>Humidity Udara</div>
         <div class="metric-val" id="humVal"><span class="unit">%</span></div>
         <div style="font-size:12px;color:var(--text-muted);">DHT11 Sensor</div>
@@ -1064,35 +1022,6 @@
     <div class="modal-actions">
       <button class="btn-save" onclick="saveBlynkFromModal()">💾 Simpan & Hubungkan</button>
       <button class="btn-cancel" onclick="closeBlynkModal()">Batal</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ SENSOR DETAIL MODAL ══ -->
-<div class="modal-overlay hidden" id="sensorModal" onclick="closeSensorModal(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-header-left">
-        <div class="modal-icon" id="sensorModalIcon"></div>
-        <div>
-          <h3 id="sensorModalTitle">—</h3>
-          <p id="sensorModalSub">—</p>
-        </div>
-      </div>
-      <button class="modal-close" onclick="document.getElementById('sensorModal').classList.add('hidden')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="detail-current">
-        <div class="detail-value" id="detailCurrent">—<span class="dv-unit" id="detailUnit"></span></div>
-        <div class="detail-stats">
-          <div class="detail-stat">Maks <strong id="detailMax">—</strong></div>
-          <div class="detail-stat">Min <strong id="detailMin">—</strong></div>
-          <div class="detail-stat">Rata-rata <strong id="detailAvg">—</strong></div>
-          <div class="detail-stat">Update <strong id="detailCount">—</strong>×</div>
-        </div>
-      </div>
-      <div class="detail-chart" style="height:110px; position:relative;"><canvas id="detailChart"></canvas></div>
-      <div class="detail-table-wrap" id="detailTable"></div>
     </div>
   </div>
 </div>
@@ -1281,13 +1210,6 @@ let pumpOn = false;
 let mode = 'manual'; // 'manual' | 'auto'
 let blynkToken = '';
 let moistureHistory = [];
-let histMoisture = [], histTemp = [], histHum = [];
-const MAX_HIST = 30;
-
-function pushHistory(arr, val) {
-  arr.push({ val: parseFloat(parseFloat(val).toFixed(1)), time: new Date() });
-  if (arr.length > MAX_HIST) arr.shift();
-}
 
 /* ═══════════════════════════════════
    PUMP
@@ -1334,7 +1256,6 @@ function setMode(m) {
 ═══════════════════════════════════ */
 function setMoisture(val) {
   val = Math.max(0, Math.min(100, val));
-  pushHistory(histMoisture, val);
   const arc = 157;
   const offset = arc - (arc * val / 100);
   const fill = document.getElementById('gaugeFill');
@@ -1360,7 +1281,6 @@ function setMoisture(val) {
 
 function setTemp(val) {
   val = parseFloat(val) || 0;
-  pushHistory(histTemp, val);
   const el = document.getElementById('tempVal');
   el.innerHTML = `${val.toFixed(1)}<span class="unit">°C</span>`;
   document.getElementById('tempBar').style.width = Math.min(val / 50 * 100, 100) + '%';
@@ -1368,7 +1288,6 @@ function setTemp(val) {
 
 function setHumidity(val) {
   val = parseFloat(val) || 0;
-  pushHistory(histHum, val);
   const el = document.getElementById('humVal');
   el.innerHTML = `${val.toFixed(0)}<span class="unit">%</span>`;
   document.getElementById('humBar').style.width = val + '%';
