@@ -26,631 +26,165 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+  #bgCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.4; }
 
-  /* ── BACKGROUND CANVAS ── */
-  #bgCanvas {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.4;
-  }
-
-  /* ── UTILS ── */
   .hidden { display: none !important; }
   .fade-in { animation: fadeIn 0.5s ease forwards; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes ripple { 0%{transform:scale(0);opacity:0.5;} 100%{transform:scale(4);opacity:0;} }
-  @keyframes dropFall {
-    0%{transform:translateY(-10px);opacity:0;}
-    50%{opacity:1;}
-    100%{transform:translateY(40px);opacity:0;}
-  }
+  @keyframes dropFall { 0%{transform:translateY(-10px);opacity:0;} 50%{opacity:1;} 100%{transform:translateY(40px);opacity:0;} }
+  @keyframes slideUp { from { opacity:0; transform:translateY(30px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
 
-  /* ═══════════════════════════════
-     LOGIN PAGE
-  ═══════════════════════════════ */
-  #loginPage {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: var(--bg);
-  }
-
-  .login-card {
-    position: relative;
-    width: 100%;
-    max-width: 420px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 48px 40px;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.6), var(--glow);
-    overflow: hidden;
-    animation: fadeIn 0.7s ease;
-  }
-
-  .login-card::before {
-    content: '';
-    position: absolute;
-    top: -60px; left: 50%;
-    transform: translateX(-50%);
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(74,180,89,0.15) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .login-logo {
-    text-align: center;
-    margin-bottom: 32px;
-  }
-  .login-logo .logo-icon {
-    width: 64px; height: 64px;
-    background: linear-gradient(135deg, #2d6e35, #4ab459);
-    border-radius: 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    margin-bottom: 12px;
-    box-shadow: 0 8px 24px rgba(74,180,89,0.35);
-  }
-  .login-logo h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px;
-    color: var(--text);
-    letter-spacing: -0.5px;
-  }
-  .login-logo p {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-top: 4px;
-    font-weight: 300;
-  }
-
+  /* LOGIN */
+  #loginPage { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; background: var(--bg); }
+  .login-card { position: relative; width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 48px 40px; box-shadow: 0 40px 80px rgba(0,0,0,0.6), var(--glow); overflow: hidden; animation: fadeIn 0.7s ease; }
+  .login-card::before { content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%); width: 200px; height: 200px; background: radial-gradient(circle, rgba(74,180,89,0.15) 0%, transparent 70%); pointer-events: none; }
+  .login-logo { text-align: center; margin-bottom: 32px; }
+  .login-logo .logo-icon { width: 64px; height: 64px; background: linear-gradient(135deg, #2d6e35, #4ab459); border-radius: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(74,180,89,0.35); }
+  .login-logo h1 { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--text); letter-spacing: -0.5px; }
+  .login-logo p { font-size: 13px; color: var(--text-dim); margin-top: 4px; font-weight: 300; }
   .form-group { margin-bottom: 18px; }
-  .form-group label {
-    display: block;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin-bottom: 8px;
-  }
-  .form-group input {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .form-group input:focus {
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px rgba(74,180,89,0.12);
-  }
+  .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .form-group input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+  .form-group input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(74,180,89,0.12); }
   .form-group input::placeholder { color: var(--text-muted); }
-
-  .btn-login {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, #2d6e35, #4ab459);
-    border: none;
-    border-radius: var(--radius-sm);
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-    margin-top: 8px;
-  }
+  .btn-login { width: 100%; padding: 16px; background: linear-gradient(135deg, #2d6e35, #4ab459); border: none; border-radius: var(--radius-sm); color: #fff; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; margin-top: 8px; }
   .btn-login:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(74,180,89,0.4); }
-  .btn-login:active { transform: scale(0.99); }
-  .btn-login .ripple-el {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.3);
-    animation: ripple 0.6s ease-out forwards;
-    pointer-events: none;
-  }
+  .btn-login .ripple-el { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.3); animation: ripple 0.6s ease-out forwards; pointer-events: none; }
+  .login-error { background: rgba(224,84,84,0.1); border: 1px solid rgba(224,84,84,0.3); color: #e08080; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 16px; display: none; }
+  .auth-switch { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-dim); }
+  .auth-switch a { color: var(--green); text-decoration: none; font-weight: 600; }
 
-  .login-hint {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 12px;
-    color: var(--text-muted);
-    padding: 12px;
-    background: var(--green-dim);
-    border-radius: 8px;
-    border: 1px solid var(--border);
-  }
-  .login-hint strong { color: var(--green); }
-
-  .login-error {
-    background: rgba(224,84,84,0.1);
-    border: 1px solid rgba(224,84,84,0.3);
-    color: #e08080;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 13px;
-    margin-bottom: 16px;
-    display: none;
-  }
-
-  .auth-switch {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  .auth-switch a {
-    color: var(--green);
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  /* ═══════════════════════════════
-     DASHBOARD
-  ═══════════════════════════════ */
-  #dashboard {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* ── HEADER ── */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 28px;
-    background: rgba(10,26,14,0.8);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .header-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .header-brand .icon {
-    width: 40px; height: 40px;
-    background: linear-gradient(135deg, #2d6e35, #4ab459);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    box-shadow: 0 4px 14px rgba(74,180,89,0.3);
-  }
-  .header-brand h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
-    letter-spacing: -0.3px;
-  }
-  .header-brand span {
-    display: block;
-    font-size: 11px;
-    color: var(--text-dim);
-    font-weight: 400;
-  }
-
+  /* DASHBOARD */
+  #dashboard { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; background: rgba(10,26,14,0.8); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+  .header-brand { display: flex; align-items: center; gap: 12px; }
+  .header-brand .icon { width: 40px; height: 40px; background: linear-gradient(135deg, #2d6e35, #4ab459); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 14px rgba(74,180,89,0.3); }
+  .header-brand h2 { font-family: 'Playfair Display', serif; font-size: 20px; letter-spacing: -0.3px; }
+  .header-brand span { display: block; font-size: 11px; color: var(--text-dim); font-weight: 400; }
   .header-right { display: flex; align-items: center; gap: 16px; }
-
-  .status-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(45,212,196,0.1);
-    border: 1px solid rgba(45,212,196,0.25);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--teal);
-  }
-  .status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--teal);
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  .btn-logout {
-    background: rgba(224,84,84,0.1);
-    border: 1px solid rgba(224,84,84,0.25);
-    color: #e08080;
-    border-radius: 8px;
-    padding: 7px 14px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+  .status-pill { display: flex; align-items: center; gap: 6px; background: rgba(45,212,196,0.1); border: 1px solid rgba(45,212,196,0.25); border-radius: 20px; padding: 6px 14px; font-size: 12px; font-weight: 500; color: var(--teal); }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); animation: pulse 2s ease-in-out infinite; }
+  .btn-logout { background: rgba(224,84,84,0.1); border: 1px solid rgba(224,84,84,0.25); color: #e08080; border-radius: 8px; padding: 7px 14px; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; }
   .btn-logout:hover { background: rgba(224,84,84,0.2); }
-
-  .btn-blynk {
-    background: rgba(74,180,89,0.1);
-    border: 1px solid var(--border);
-    color: var(--green);
-    border-radius: 8px;
-    padding: 7px 14px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+  .btn-blynk { background: rgba(74,180,89,0.1); border: 1px solid var(--border); color: var(--green); border-radius: 8px; padding: 7px 14px; font-family: 'DM Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
   .btn-blynk:hover { background: rgba(74,180,89,0.18); }
 
-  /* ── MAIN GRID ── */
-  .main {
-    flex: 1;
-    padding: 28px;
-    max-width: 1280px;
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  .welcome-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .welcome-bar h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 24px;
-    font-weight: 700;
-  }
+  .main { flex: 1; padding: 28px; max-width: 1280px; margin: 0 auto; width: 100%; }
+  .welcome-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+  .welcome-bar h3 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; }
   .welcome-bar p { font-size: 14px; color: var(--text-dim); margin-top: 2px; }
-  #currentTime {
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    color: var(--green);
-    background: var(--green-dim);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 14px;
-  }
+  #currentTime { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--green); background: var(--green-dim); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; }
 
-  /* ── BLYNK CONFIG BANNER ── */
-  .blynk-banner {
-    background: linear-gradient(135deg, rgba(74,180,89,0.08), rgba(45,212,196,0.05));
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .blynk-banner .blynk-label {
-    font-size: 12px;
-    color: var(--text-dim);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    white-space: nowrap;
-  }
-  .blynk-banner input {
-    flex: 1;
-    min-width: 200px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 9px 14px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    outline: none;
-  }
+  .blynk-banner { background: linear-gradient(135deg, rgba(74,180,89,0.08), rgba(45,212,196,0.05)); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .blynk-banner .blynk-label { font-size: 12px; color: var(--text-dim); font-weight: 500; text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap; }
+  .blynk-banner input { flex: 1; min-width: 200px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 14px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; outline: none; }
   .blynk-banner input:focus { border-color: var(--green); }
-  .blynk-banner button {
-    background: var(--green);
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    padding: 9px 18px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: opacity 0.2s;
-  }
+  .blynk-banner button { background: var(--green); border: none; border-radius: 8px; color: #fff; padding: 9px 18px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; }
   .blynk-banner button:hover { opacity: 0.85; }
-  .blynk-status-text {
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-weight: 500;
-    white-space: nowrap;
-  }
+  .blynk-status-text { font-size: 12px; padding: 4px 10px; border-radius: 6px; font-weight: 500; white-space: nowrap; }
   .blynk-status-text.ok { background: rgba(74,180,89,0.15); color: var(--green); }
   .blynk-status-text.err { background: rgba(224,84,84,0.12); color: #e08080; }
 
-  /* ── CARDS GRID ── */
-  .grid {
-    display: grid;
-    gap: 20px;
-    grid-template-columns: repeat(12, 1fr);
-  }
+  .grid { display: grid; gap: 20px; grid-template-columns: repeat(12, 1fr); }
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.2s, transform 0.2s;
-  }
+  /* ── CLICKABLE CARDS ── */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
   .card:hover { border-color: rgba(74,180,89,0.35); transform: translateY(-2px); }
-  .card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(74,180,89,0.03) 0%, transparent 60%);
-    pointer-events: none;
-  }
+  .card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(74,180,89,0.03) 0%, transparent 60%); pointer-events: none; }
 
-  .card-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-dim);
-    margin-bottom: 16px;
+  .card.clickable { cursor: pointer; }
+  .card.clickable:hover { border-color: rgba(74,180,89,0.5); box-shadow: 0 8px 32px rgba(74,180,89,0.12); }
+  .card.clickable:active { transform: scale(0.99); }
+
+  /* Tap hint badge */
+  .tap-hint {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    color: var(--text-muted);
+    background: var(--green-dim);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 8px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
+    z-index: 2;
+    transition: color 0.2s, border-color 0.2s;
   }
+  .card.clickable:hover .tap-hint { color: var(--green); border-color: rgba(74,180,89,0.4); }
+  .tap-hint-icon { font-size: 9px; }
+
+  .card-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
   .card-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
 
-  /* PUMP CARD */
   .pump-card { grid-column: span 4; }
   @media(max-width:900px) { .pump-card { grid-column: span 6; } }
   @media(max-width:600px) { .pump-card { grid-column: span 12; } }
 
-  .pump-toggle-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    padding: 8px 0;
-  }
-
-  .pump-btn {
-    width: 110px; height: 110px;
-    border-radius: 50%;
-    border: 3px solid rgba(74,180,89,0.25);
-    background: var(--surface2);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 6px;
-    transition: all 0.3s;
-    position: relative;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .pump-btn::before {
-    content: '';
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    transition: all 0.3s;
-  }
-  .pump-btn.on {
-    background: rgba(74,180,89,0.15);
-    border-color: var(--green);
-    box-shadow: 0 0 40px rgba(74,180,89,0.35), inset 0 0 20px rgba(74,180,89,0.1);
-  }
-  .pump-btn.on::before {
-    border-color: rgba(74,180,89,0.2);
-    animation: pumpPulse 2s ease-in-out infinite;
-  }
-  @keyframes pumpPulse {
-    0%,100%{transform:scale(1);opacity:0.6;}
-    50%{transform:scale(1.1);opacity:0.2;}
-  }
+  .pump-toggle-wrapper { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 8px 0; }
+  .pump-btn { width: 110px; height: 110px; border-radius: 50%; border: 3px solid rgba(74,180,89,0.25); background: var(--surface2); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 6px; transition: all 0.3s; position: relative; font-family: 'DM Sans', sans-serif; }
+  .pump-btn::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid transparent; transition: all 0.3s; }
+  .pump-btn.on { background: rgba(74,180,89,0.15); border-color: var(--green); box-shadow: 0 0 40px rgba(74,180,89,0.35), inset 0 0 20px rgba(74,180,89,0.1); }
+  .pump-btn.on::before { border-color: rgba(74,180,89,0.2); animation: pumpPulse 2s ease-in-out infinite; }
+  @keyframes pumpPulse { 0%,100%{transform:scale(1);opacity:0.6;} 50%{transform:scale(1.1);opacity:0.2;} }
   .pump-btn .pump-emoji { font-size: 32px; }
-  .pump-btn .pump-status {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-dim);
-  }
+  .pump-btn .pump-status { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
   .pump-btn.on .pump-status { color: var(--green); }
-
-  /* Water drops animation */
-  .water-drops {
-    position: absolute;
-    top: 60px; left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 6px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
+  .water-drops { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
   .pump-btn.on ~ .water-drops { opacity: 1; }
-  .drop {
-    width: 4px;
-    height: 8px;
-    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-    background: var(--teal);
-    animation: dropFall 1.2s ease-in-out infinite;
-  }
+  .drop { width: 4px; height: 8px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; background: var(--teal); animation: dropFall 1.2s ease-in-out infinite; }
   .drop:nth-child(2) { animation-delay: 0.4s; }
   .drop:nth-child(3) { animation-delay: 0.8s; }
 
-  /* MODE CARD */
   .mode-card { grid-column: span 4; }
   @media(max-width:900px) { .mode-card { grid-column: span 6; } }
   @media(max-width:600px) { .mode-card { grid-column: span 12; } }
-
-  .mode-toggle {
-    display: flex;
-    background: var(--surface2);
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    padding: 4px;
-    margin-top: 8px;
-  }
-  .mode-btn {
-    flex: 1;
-    padding: 14px;
-    border: none;
-    border-radius: 9px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.25s;
-    color: var(--text-dim);
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-  .mode-btn.active {
-    background: linear-gradient(135deg, #2d6e35, #4ab459);
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(74,180,89,0.3);
-  }
-
-  .mode-info {
-    margin-top: 16px;
-    padding: 12px;
-    background: var(--green-dim);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 12px;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
+  .mode-toggle { display: flex; background: var(--surface2); border-radius: 12px; border: 1px solid var(--border); padding: 4px; margin-top: 8px; }
+  .mode-btn { flex: 1; padding: 14px; border: none; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.25s; color: var(--text-dim); background: transparent; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .mode-btn.active { background: linear-gradient(135deg, #2d6e35, #4ab459); color: #fff; box-shadow: 0 4px 16px rgba(74,180,89,0.3); }
+  .mode-info { margin-top: 16px; padding: 12px; background: var(--green-dim); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; color: var(--text-dim); line-height: 1.6; }
   .mode-info strong { color: var(--green); }
 
-  /* SOIL MOISTURE */
   .moisture-card { grid-column: span 4; }
   @media(max-width:900px) { .moisture-card { grid-column: span 12; } }
   @media(max-width:600px) { .moisture-card { grid-column: span 12; } }
 
-  .gauge-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
+  .gauge-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
   .gauge-svg { width: 140px; height: 90px; overflow: visible; }
   .gauge-track { fill: none; stroke: var(--surface2); stroke-width: 12; stroke-linecap: round; }
   .gauge-fill { fill: none; stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s ease, stroke 0.5s; }
-  .gauge-val {
-    font-family: 'DM Mono', monospace;
-    font-size: 36px;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1;
-  }
-  .gauge-val span { font-size: 16px; color: var(--text-dim); }
-  .gauge-label { font-size: 12px; color: var(--text-dim); }
 
-  /* TEMP & HUMIDITY */
   .temp-card { grid-column: span 3; }
   .hum-card  { grid-column: span 3; }
   @media(max-width:1024px) { .temp-card,.hum-card { grid-column: span 6; } }
   @media(max-width:600px)  { .temp-card,.hum-card { grid-column: span 6; } }
   @media(max-width:400px)  { .temp-card,.hum-card { grid-column: span 12; } }
 
-  .metric-val {
-    font-family: 'DM Mono', monospace;
-    font-size: 48px;
-    font-weight: 500;
-    line-height: 1;
-    margin: 16px 0 8px;
-  }
+  .metric-val { font-family: 'DM Mono', monospace; font-size: 48px; font-weight: 500; line-height: 1; margin: 16px 0 8px; }
   .metric-val .unit { font-size: 20px; color: var(--text-dim); }
-  .metric-bar {
-    height: 4px;
-    background: var(--surface2);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-top: 12px;
-  }
-  .metric-bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 1s ease;
-  }
+  .metric-bar { height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; margin-top: 12px; }
+  .metric-bar-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
   .temp-color { background: linear-gradient(90deg, #4ab459, #f0a500, #e05454); }
   .hum-color  { background: linear-gradient(90deg, #2dd4c4, #4ab459); }
 
-  /* HISTORY CARD */
   .history-card { grid-column: span 6; }
   @media(max-width:768px) { .history-card { grid-column: span 12; } }
-
-  .chart-area {
-    height: 140px;
-    position: relative;
-    margin-top: 8px;
-  }
+  .chart-area { height: 140px; position: relative; margin-top: 8px; }
   .chart-area canvas { width: 100% !important; height: 100% !important; }
 
-  /* STATUS LOG */
   .log-card { grid-column: span 6; }
   @media(max-width:768px) { .log-card { grid-column: span 12; } }
-
   .log-list { max-height: 140px; overflow-y: auto; }
   .log-list::-webkit-scrollbar { width: 4px; }
   .log-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-  .log-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(74,180,89,0.07);
-    font-size: 12px;
-    animation: fadeIn 0.3s ease;
-  }
+  .log-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(74,180,89,0.07); font-size: 12px; animation: fadeIn 0.3s ease; }
   .log-item:last-child { border-bottom: none; }
   .log-time { color: var(--text-muted); font-family: 'DM Mono', monospace; white-space: nowrap; }
   .log-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 3px; flex-shrink: 0; }
@@ -660,146 +194,108 @@
   .log-dot.red    { background: var(--red); }
   .log-text { color: var(--text-dim); line-height: 1.5; }
 
-  /* REFRESH BTN */
-  .refresh-btn {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #2d6e35, #4ab459);
-    border: none;
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 8px 24px rgba(74,180,89,0.45);
-    transition: transform 0.2s, box-shadow 0.2s;
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .refresh-btn { position: fixed; bottom: 24px; right: 24px; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #2d6e35, #4ab459); border: none; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 8px 24px rgba(74,180,89,0.45); transition: transform 0.2s, box-shadow 0.2s; z-index: 200; display: flex; align-items: center; justify-content: center; }
   .refresh-btn:hover { transform: scale(1.1); box-shadow: 0 12px 32px rgba(74,180,89,0.55); }
   .refresh-btn.spinning svg { animation: spin 1s linear infinite; }
 
-  /* TOAST */
-  .toast {
-    position: fixed;
-    bottom: 90px;
-    right: 24px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 18px;
-    font-size: 13px;
-    color: var(--text);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    z-index: 300;
-    transform: translateX(120%);
-    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
-    max-width: 260px;
-  }
+  .toast { position: fixed; bottom: 90px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 18px; font-size: 13px; color: var(--text); box-shadow: 0 8px 32px rgba(0,0,0,0.4); z-index: 300; transform: translateX(120%); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); max-width: 260px; }
   .toast.show { transform: translateX(0); }
   .toast-icon { margin-right: 6px; }
 
-  /* BLYNK MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 500;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(6px);
+  /* ══════════════════════════════════
+     SENSOR DETAIL MODAL
+  ══════════════════════════════════ */
+  .modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 0; max-width: 540px; width: 100%; box-shadow: 0 40px 80px rgba(0,0,0,0.6); animation: slideUp 0.35s cubic-bezier(0.34,1.3,0.64,1); overflow: hidden; }
+
+  .modal-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(74,180,89,0.06), transparent);
   }
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 32px;
-    max-width: 480px;
-    width: 100%;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
-    animation: fadeIn 0.3s ease;
-  }
-  .modal h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    margin-bottom: 8px;
-  }
-  .modal p { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin-bottom: 20px; }
-  .modal-grid { display: grid; gap: 12px; margin-bottom: 20px; }
-  .modal-field label {
-    display: block;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-dim);
-    margin-bottom: 6px;
-  }
-  .modal-field input {
-    width: 100%;
+  .modal-header-left { display: flex; align-items: center; gap: 14px; }
+  .modal-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .modal-header h3 { font-family: 'Playfair Display', serif; font-size: 19px; margin-bottom: 2px; }
+  .modal-header p { font-size: 12px; color: var(--text-dim); }
+  .modal-close { width: 32px; height: 32px; border-radius: 8px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .modal-close:hover { background: rgba(224,84,84,0.15); border-color: rgba(224,84,84,0.3); color: #e08080; }
+
+  .modal-body { padding: 24px 28px 28px; }
+
+  /* Current value big display */
+  .detail-current {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 18px 20px;
     background: var(--surface2);
+    border-radius: 14px;
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 11px 14px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    outline: none;
   }
+  .detail-value { font-family: 'DM Mono', monospace; font-size: 52px; font-weight: 500; line-height: 1; }
+  .detail-value .dv-unit { font-size: 22px; color: var(--text-dim); }
+  .detail-stats { display: flex; flex-direction: column; gap: 8px; text-align: right; }
+  .detail-stat { font-size: 12px; color: var(--text-dim); }
+  .detail-stat strong { font-family: 'DM Mono', monospace; color: var(--text); margin-left: 6px; }
+
+  /* Mini chart */
+  .detail-chart-wrap { margin-bottom: 20px; }
+  .detail-chart-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 10px; }
+  .detail-chart { height: 110px; position: relative; }
+  .detail-chart canvas { width: 100% !important; height: 100% !important; }
+
+  /* History table */
+  .detail-table-wrap { max-height: 180px; overflow-y: auto; }
+  .detail-table-wrap::-webkit-scrollbar { width: 4px; }
+  .detail-table-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .detail-table-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 10px; }
+
+  .hist-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(74,180,89,0.06);
+    font-size: 12px;
+  }
+  .hist-row:last-child { border-bottom: none; }
+  .hist-index { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted); width: 20px; text-align: right; flex-shrink: 0; }
+  .hist-time { font-family: 'DM Mono', monospace; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; min-width: 70px; }
+  .hist-bar-wrap { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .hist-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+  .hist-val { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--text); white-space: nowrap; flex-shrink: 0; min-width: 52px; text-align: right; }
+
+  /* Blynk modal */
+  .blynk-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px; max-width: 480px; width: 100%; box-shadow: 0 40px 80px rgba(0,0,0,0.6); animation: fadeIn 0.3s ease; }
+  .blynk-modal h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 8px; }
+  .blynk-modal p { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin-bottom: 20px; }
+  .modal-grid { display: grid; gap: 12px; margin-bottom: 20px; }
+  .modal-field label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-dim); margin-bottom: 6px; }
+  .modal-field input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 11px 14px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; outline: none; }
   .modal-field input:focus { border-color: var(--green); }
   .modal-actions { display: flex; gap: 10px; }
-  .modal-actions .btn-save {
-    flex: 1;
-    padding: 13px;
-    background: linear-gradient(135deg, #2d6e35, #4ab459);
-    border: none;
-    border-radius: 10px;
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
+  .modal-actions .btn-save { flex: 1; padding: 13px; background: linear-gradient(135deg, #2d6e35, #4ab459); border: none; border-radius: 10px; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
   .modal-actions .btn-save:hover { opacity: 0.85; }
-  .modal-actions .btn-cancel {
-    padding: 13px 20px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text-dim);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+  .modal-actions .btn-cancel { padding: 13px 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; color: var(--text-dim); font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; transition: all 0.2s; }
   .modal-actions .btn-cancel:hover { border-color: rgba(74,180,89,0.35); }
-
   .pin-table { width: 100%; border-collapse: collapse; font-size: 12px; }
   .pin-table th { text-align: left; padding: 6px 10px; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--border); }
   .pin-table td { padding: 8px 10px; color: var(--text-dim); border-bottom: 1px solid rgba(74,180,89,0.05); }
   .pin-table code { font-family: 'DM Mono', monospace; color: var(--green); background: var(--green-dim); padding: 2px 6px; border-radius: 4px; }
+  .blynk-loading { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(74,180,89,0.3); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; }
 
-  /* LOADING overlay for Blynk */
-  .blynk-loading {
-    display: inline-block;
-    width: 12px; height: 12px;
-    border: 2px solid rgba(74,180,89,0.3);
-    border-top-color: var(--green);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    vertical-align: middle;
-  }
+  /* Empty state */
+  .empty-hist { text-align: center; padding: 24px; color: var(--text-muted); font-size: 13px; }
 </style>
 </head>
 <body>
-
 <canvas id="bgCanvas"></canvas>
 
-<!-- ═══ LOGIN PAGE ═══ -->
+<!-- LOGIN -->
 <div id="loginPage">
   <div class="login-card">
     <div class="login-logo">
@@ -807,70 +303,34 @@
       <h1>Ecodrip</h1>
       <p>Smart Watering Management System</p>
     </div>
-    
-    <!-- Form Login -->
     <div id="loginForm">
       <div class="login-error" id="loginError">Email/Username atau password salah.</div>
-      <div class="form-group">
-        <label>Email / Username</label>
-        <input type="text" id="loginEmail" placeholder="admin atau admin@hydro.id" autocomplete="username">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
-      </div>
+      <div class="form-group"><label>Email / Username</label><input type="text" id="loginEmail" placeholder="admin atau admin@hydro.id" autocomplete="username"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"></div>
       <button class="btn-login" id="btnLogin" onclick="handleLogin()">Masuk ke Dashboard</button>
-      <div class="auth-switch">
-        Belum punya akun? <a href="#" onclick="toggleAuth('signup')">Daftar Sekarang</a>
-      </div>
+      <div class="auth-switch">Belum punya akun? <a href="#" onclick="toggleAuth('signup')">Daftar Sekarang</a></div>
     </div>
-
-    <!-- Form Sign Up -->
     <div id="signupForm" class="hidden">
-      <div class="form-group">
-        <label>Nama Lengkap</label>
-        <input type="text" id="signupName" placeholder="Masukkan nama Anda">
-      </div>
-      <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="signupUser" placeholder="pilih username">
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="signupEmail" placeholder="contoh@mail.com">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="signupPass" placeholder="buat password">
-      </div>
+      <div class="form-group"><label>Nama Lengkap</label><input type="text" id="signupName" placeholder="Masukkan nama Anda"></div>
+      <div class="form-group"><label>Username</label><input type="text" id="signupUser" placeholder="pilih username"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="signupEmail" placeholder="contoh@mail.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="signupPass" placeholder="buat password"></div>
       <button class="btn-login" onclick="handleSignUp()">Buat Akun Baru</button>
-      <div class="auth-switch">
-        Sudah punya akun? <a href="#" onclick="toggleAuth('login')">Masuk di sini</a>
-      </div>
+      <div class="auth-switch">Sudah punya akun? <a href="#" onclick="toggleAuth('login')">Masuk di sini</a></div>
     </div>
-
   </div>
 </div>
 
-<!-- ═══ DASHBOARD ═══ -->
+<!-- DASHBOARD -->
 <div id="dashboard" class="hidden">
-
   <header class="header">
     <div class="header-brand">
       <div class="icon">🌿</div>
-      <div>
-        <h2>Ecodrip</h2>
-        <span>Smart Watering System</span>
-      </div>
+      <div><h2>Ecodrip</h2><span>Smart Watering System</span></div>
     </div>
     <div class="header-right">
-      <div class="status-pill">
-        <div class="status-dot"></div>
-        <span id="connStatusText">Terhubung</span>
-      </div>
-      <button class="btn-blynk" onclick="openBlynkModal()">
-        ⚡ Blynk Config
-      </button>
+      <div class="status-pill"><div class="status-dot"></div><span id="connStatusText">Terhubung</span></div>
+      <button class="btn-blynk" onclick="openBlynkModal()">⚡ Blynk Config</button>
       <button class="btn-logout" onclick="handleLogout()">Keluar</button>
     </div>
   </header>
@@ -884,7 +344,6 @@
       <div id="currentTime"></div>
     </div>
 
-    <!-- BLYNK TOKEN BANNER -->
     <div class="blynk-banner fade-in">
       <span class="blynk-label">⚡ Blynk Token</span>
       <input type="text" id="blynkTokenInput" placeholder="Masukkan Blynk Auth Token Anda...">
@@ -894,7 +353,7 @@
 
     <div class="grid fade-in">
 
-      <!-- PUMP CONTROL -->
+      <!-- PUMP -->
       <div class="card pump-card">
         <div class="card-label"><div class="dot"></div>Kontrol Pompa</div>
         <div class="pump-toggle-wrapper">
@@ -904,14 +363,10 @@
               <span class="pump-status" id="pumpStatus">OFF</span>
             </button>
             <div class="water-drops" id="waterDrops">
-              <div class="drop"></div>
-              <div class="drop"></div>
-              <div class="drop"></div>
+              <div class="drop"></div><div class="drop"></div><div class="drop"></div>
             </div>
           </div>
-          <div style="font-size:12px;color:var(--text-muted);text-align:center;">
-            Klik untuk <span id="pumpHint">menghidupkan</span> pompa
-          </div>
+          <div style="font-size:12px;color:var(--text-muted);text-align:center;">Klik untuk <span id="pumpHint">menghidupkan</span> pompa</div>
         </div>
       </div>
 
@@ -922,48 +377,38 @@
           <button class="mode-btn active" id="btnManual" onclick="setMode('manual')">🕹️ Manual</button>
           <button class="mode-btn" id="btnAuto" onclick="setMode('auto')">🤖 Auto</button>
         </div>
-        <div class="mode-info" id="modeInfo">
-          <strong>Mode Manual:</strong> Anda mengontrol pompa secara langsung menggunakan tombol di atas.
-        </div>
+        <div class="mode-info" id="modeInfo"><strong>Mode Manual:</strong> Anda mengontrol pompa secara langsung menggunakan tombol di atas.</div>
       </div>
 
-      <!-- SOIL MOISTURE -->
-      <div class="card moisture-card">
+      <!-- SOIL MOISTURE — CLICKABLE -->
+      <div class="card moisture-card clickable" onclick="openSensorDetail('moisture')">
+        <div class="tap-hint"><span class="tap-hint-icon">👆</span> Lihat riwayat</div>
         <div class="card-label"><div class="dot" style="background:var(--amber)"></div>Kelembaban Tanah</div>
         <div class="gauge-wrap">
           <svg class="gauge-svg" viewBox="0 0 140 90">
             <path class="gauge-track" d="M 20 80 A 50 50 0 0 1 120 80" stroke-linecap="round"/>
-            <path class="gauge-fill" id="gaugeFill"
-              d="M 20 80 A 50 50 0 0 1 120 80"
-              stroke="#4ab459"
-              stroke-dasharray="157"
-              stroke-dashoffset="157"/>
-            <text x="70" y="72" text-anchor="middle"
-              font-family="DM Mono" font-size="22" fill="#d4f0d8" id="moistureSvgText">--%</text>
+            <path class="gauge-fill" id="gaugeFill" d="M 20 80 A 50 50 0 0 1 120 80" stroke="#4ab459" stroke-dasharray="157" stroke-dashoffset="157"/>
+            <text x="70" y="72" text-anchor="middle" font-family="DM Mono" font-size="22" fill="#d4f0d8" id="moistureSvgText">--%</text>
           </svg>
           <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;">
-            <div style="text-align:center;">
-              <div style="font-size:11px;color:var(--text-muted)">Status</div>
-              <div id="moistureStatus" style="font-size:13px;font-weight:600;color:var(--green);margin-top:2px;">--</div>
-            </div>
-            <div style="text-align:center;">
-              <div style="font-size:11px;color:var(--text-muted)">Threshold</div>
-              <div style="font-size:13px;font-weight:600;color:var(--amber);margin-top:2px;">40%</div>
-            </div>
+            <div style="text-align:center;"><div style="font-size:11px;color:var(--text-muted)">Status</div><div id="moistureStatus" style="font-size:13px;font-weight:600;color:var(--green);margin-top:2px;">--</div></div>
+            <div style="text-align:center;"><div style="font-size:11px;color:var(--text-muted)">Threshold</div><div style="font-size:13px;font-weight:600;color:var(--amber);margin-top:2px;">40%</div></div>
           </div>
         </div>
       </div>
 
-      <!-- TEMPERATURE -->
-      <div class="card temp-card">
+      <!-- TEMP — CLICKABLE -->
+      <div class="card temp-card clickable" onclick="openSensorDetail('temp')">
+        <div class="tap-hint"><span class="tap-hint-icon">👆</span> Lihat riwayat</div>
         <div class="card-label"><div class="dot" style="background:var(--amber)"></div>Suhu</div>
         <div class="metric-val" id="tempVal"><span class="unit">°C</span></div>
         <div style="font-size:12px;color:var(--text-muted);">DHT11 Sensor</div>
         <div class="metric-bar"><div class="metric-bar-fill temp-color" id="tempBar" style="width:0%"></div></div>
       </div>
 
-      <!-- HUMIDITY AIR -->
-      <div class="card hum-card">
+      <!-- HUMIDITY — CLICKABLE -->
+      <div class="card hum-card clickable" onclick="openSensorDetail('hum')">
+        <div class="tap-hint"><span class="tap-hint-icon">👆</span> Lihat riwayat</div>
         <div class="card-label"><div class="dot" style="background:var(--teal)"></div>Humidity Udara</div>
         <div class="metric-val" id="humVal"><span class="unit">%</span></div>
         <div style="font-size:12px;color:var(--text-muted);">DHT11 Sensor</div>
@@ -972,10 +417,8 @@
 
       <!-- HISTORY CHART -->
       <div class="card history-card">
-        <div class="card-label"><div class="dot"></div>Riwayat Kelembaban (10 menit terakhir)</div>
-        <div class="chart-area">
-          <canvas id="historyChart"></canvas>
-        </div>
+        <div class="card-label"><div class="dot"></div>Riwayat Kelembaban (10 update terakhir)</div>
+        <div class="chart-area"><canvas id="historyChart"></canvas></div>
       </div>
 
       <!-- LOG -->
@@ -988,7 +431,7 @@
   </main>
 </div>
 
-<!-- REFRESH FAB -->
+<!-- FAB REFRESH -->
 <button class="refresh-btn hidden" id="refreshBtn" onclick="fetchBlynkData()" title="Refresh data">
   <svg id="refreshIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
@@ -996,538 +439,413 @@
   </svg>
 </button>
 
-<!-- TOAST -->
 <div class="toast" id="toast"><span class="toast-icon">✅</span><span id="toastMsg"></span></div>
 
-<!-- BLYNK MODAL -->
-<div class="modal-overlay hidden" id="blynkModal">
-  <div class="modal">
+<!-- ══ SENSOR DETAIL MODAL ══ -->
+<div class="modal-overlay hidden" id="sensorModal" onclick="closeSensorModal(event)">
+  <div class="modal" id="sensorModalInner">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-icon" id="sensorModalIcon"></div>
+        <div>
+          <h3 id="sensorModalTitle">—</h3>
+          <p id="sensorModalSub">—</p>
+        </div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('sensorModal').classList.add('hidden')">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Big current value -->
+      <div class="detail-current">
+        <div class="detail-value" id="detailCurrent">—<span class="dv-unit" id="detailUnit"></span></div>
+        <div class="detail-stats">
+          <div class="detail-stat">Maks <strong id="detailMax">—</strong></div>
+          <div class="detail-stat">Min <strong id="detailMin">—</strong></div>
+          <div class="detail-stat">Rata-rata <strong id="detailAvg">—</strong></div>
+          <div class="detail-stat">Update <strong id="detailCount">—</strong>×</div>
+        </div>
+      </div>
+      <!-- Mini trend chart -->
+      <div class="detail-chart-wrap">
+        <div class="detail-chart-label">Grafik Tren</div>
+        <div class="detail-chart"><canvas id="detailChart"></canvas></div>
+      </div>
+      <!-- History rows -->
+      <div class="detail-table-label" style="margin-top:18px;">Riwayat Pembacaan</div>
+      <div class="detail-table-wrap" id="detailTable"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BLYNK CONFIG MODAL ══ -->
+<div class="modal-overlay hidden" id="blynkModal" onclick="closeBlynkModal(event)">
+  <div class="blynk-modal">
     <h3>⚡ Konfigurasi Blynk</h3>
     <p>Masukkan Auth Token dari app Blynk Anda dan mapping virtual pin yang sesuai dengan kode ESP8266.</p>
     <div class="modal-grid">
-      <div class="modal-field">
-        <label>Auth Token</label>
-        <input type="text" id="modalToken" placeholder="YourBlynkAuthToken">
-      </div>
+      <div class="modal-field"><label>Auth Token</label><input type="text" id="modalToken" placeholder="YourBlynkAuthToken"></div>
     </div>
-    <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">Mapping Virtual Pin (sesuaikan dengan kode ESP8266 Anda):</p>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">Mapping Virtual Pin:</p>
     <table class="pin-table" style="margin-bottom:20px;">
       <tr><th>Fungsi</th><th>V-Pin</th><th>Value</th></tr>
-      <tr><td>Pompa ON/OFF</td><td><code>V0</code></td><td>0 = OFF, 1 = ON</td></tr>
-      <tr><td>Mode Auto/Manual</td><td><code>V1</code></td><td>0 = Manual, 1 = Auto</td></tr>
+      <tr><td>Pompa ON/OFF</td><td><code>V0</code></td><td>0=OFF, 1=ON</td></tr>
+      <tr><td>Mode Auto/Manual</td><td><code>V1</code></td><td>0=Manual, 1=Auto</td></tr>
       <tr><td>Kelembaban Tanah</td><td><code>V2</code></td><td>0–100 %</td></tr>
       <tr><td>Suhu (DHT11)</td><td><code>V3</code></td><td>°C</td></tr>
       <tr><td>Humidity Udara</td><td><code>V4</code></td><td>0–100 %</td></tr>
     </table>
     <div class="modal-actions">
       <button class="btn-save" onclick="saveBlynkFromModal()">💾 Simpan & Hubungkan</button>
-      <button class="btn-cancel" onclick="closeBlynkModal()">Batal</button>
+      <button class="btn-cancel" onclick="document.getElementById('blynkModal').classList.add('hidden')">Batal</button>
     </div>
   </div>
 </div>
 
 <script>
-/* ═══════════════════════════════════
-   BACKGROUND ANIMATION
-═══════════════════════════════════ */
+/* ══ BACKGROUND ══ */
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
-
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
-
-class Particle {
-  constructor() { this.reset(); }
-  reset() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.r = Math.random() * 1.5 + 0.3;
-    this.vx = (Math.random() - 0.5) * 0.2;
-    this.vy = (Math.random() - 0.5) * 0.2;
-    this.alpha = Math.random() * 0.5 + 0.1;
-  }
-  update() {
-    this.x += this.vx; this.y += this.vy;
-    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-  }
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(74,180,89,${this.alpha})`;
-    ctx.fill();
-  }
-}
-
-for (let i = 0; i < 80; i++) particles.push(new Particle());
-
-function animBg() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => { p.update(); p.draw(); });
-  // draw connections
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i+1; j < particles.length; j++) {
-      const dx = particles[i].x - particles[j].x;
-      const dy = particles[i].y - particles[j].y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 100) {
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = `rgba(74,180,89,${0.08 * (1 - dist/100)})`;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-      }
-    }
-  }
-  requestAnimationFrame(animBg);
-}
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
+resize(); window.addEventListener('resize',resize);
+class Particle{constructor(){this.reset();}reset(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.r=Math.random()*1.5+0.3;this.vx=(Math.random()-.5)*.2;this.vy=(Math.random()-.5)*.2;this.alpha=Math.random()*.5+.1;}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>canvas.width||this.y<0||this.y>canvas.height)this.reset();}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(74,180,89,${this.alpha})`;ctx.fill();}}
+for(let i=0;i<80;i++)particles.push(new Particle());
+function animBg(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw();});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(74,180,89,${.08*(1-d/100)})`;ctx.lineWidth=.5;ctx.stroke();}}requestAnimationFrame(animBg);}
 animBg();
 
-/* ═══════════════════════════════════
-   AUTH
-═══════════════════════════════════ */
-const DEFAULT_USERS = [
-  { username: 'admin', email: 'admin@hydro.id', pass: 'ecodrip72829', name: 'Admin Ecodrip' },
-  { username: 'mirza', email: 'kebunpace@gmail.com', pass: 'pace123', name: 'Pace Mirza' },
-];
+/* ══ AUTH ══ */
+const DEFAULT_USERS=[{username:'admin',email:'admin@hydro.id',pass:'ecodrip72829',name:'Admin Ecodrip'},{username:'mirza',email:'kebunpace@gmail.com',pass:'pace123',name:'Pace Mirza'}];
+function toggleAuth(m){document.getElementById('loginForm').classList.toggle('hidden',m==='signup');document.getElementById('signupForm').classList.toggle('hidden',m!=='signup');}
+function getAllUsers(){return[...DEFAULT_USERS,...JSON.parse(localStorage.getItem('hs_registered_users')||'[]')];}
+function handleSignUp(){const name=document.getElementById('signupName').value.trim(),user=document.getElementById('signupUser').value.trim().toLowerCase(),email=document.getElementById('signupEmail').value.trim().toLowerCase(),pass=document.getElementById('signupPass').value;if(!name||!user||!email||!pass){alert('Harap isi semua kolom.');return;}if(getAllUsers().find(u=>u.username===user||u.email===email)){alert('Username/Email sudah terdaftar.');return;}const reg=JSON.parse(localStorage.getItem('hs_registered_users')||'[]');reg.push({name,username:user,email,pass});localStorage.setItem('hs_registered_users',JSON.stringify(reg));alert('Akun dibuat! Silakan login.');toggleAuth('login');document.getElementById('loginEmail').value=user;}
+function handleLogin(){const input=document.getElementById('loginEmail').value.trim().toLowerCase(),pw=document.getElementById('loginPass').value,err=document.getElementById('loginError');const u=getAllUsers().find(u=>(u.username===input||u.email===input)&&u.pass===pw);if(!u){err.style.display='block';return;}err.style.display='none';sessionStorage.setItem('hs_user',JSON.stringify(u));showDashboard(u);}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('loginPage').classList.contains('hidden'))handleLogin();});
+function handleLogout(){sessionStorage.removeItem('hs_user');document.getElementById('dashboard').classList.add('hidden');document.getElementById('loginPage').classList.remove('hidden');document.getElementById('refreshBtn').classList.add('hidden');}
+function showDashboard(u){document.getElementById('loginPage').classList.add('hidden');document.getElementById('dashboard').classList.remove('hidden');document.getElementById('refreshBtn').classList.remove('hidden');document.getElementById('userName').textContent=u.name;addLog('green',`Login berhasil: ${u.name}`);startClock();initChart();const tok=localStorage.getItem('hs_blynk_token')||'';if(tok){document.getElementById('blynkTokenInput').value=tok;blynkToken=tok;fetchBlynkData();}else simulateData();}
+window.addEventListener('DOMContentLoaded',()=>{const s=sessionStorage.getItem('hs_user');if(s)showDashboard(JSON.parse(s));});
 
-function toggleAuth(mode) {
-  const loginF = document.getElementById('loginForm');
-  const signupF = document.getElementById('signupForm');
-  if (mode === 'signup') {
-    loginF.classList.add('hidden');
-    signupF.classList.remove('hidden');
-  } else {
-    loginF.classList.remove('hidden');
-    signupF.classList.add('hidden');
-  }
+/* ══ CLOCK ══ */
+function startClock(){function tick(){const n=new Date();document.getElementById('currentTime').textContent=n.toLocaleDateString('id-ID',{weekday:'short',day:'numeric',month:'short'})+'  '+n.toLocaleTimeString('id-ID');}tick();setInterval(tick,1000);}
+
+/* ══ STATE ══ */
+let pumpOn=false, mode='manual', blynkToken='';
+
+/* History arrays — max 30 entries each, storing {val, time} */
+const MAX_HIST = 30;
+let histMoisture = [], histTemp = [], histHum = [];
+
+function pushHistory(arr, val) {
+  arr.push({ val: parseFloat(val.toFixed(1)), time: new Date() });
+  if (arr.length > MAX_HIST) arr.shift();
 }
 
-function getAllUsers() {
-  const registered = JSON.parse(localStorage.getItem('hs_registered_users') || '[]');
-  return [...DEFAULT_USERS, ...registered];
-}
+/* ══ PUMP ══ */
+function togglePump(){if(mode==='auto'){showToast('⚠️ Pompa dikendalikan otomatis di mode Auto');return;}pumpOn=!pumpOn;updatePumpUI();if(blynkToken)blynkWrite('V0',pumpOn?1:0);addLog(pumpOn?'green':'red',`Pompa ${pumpOn?'dihidupkan':'dimatikan'} (Manual)`);}
+function updatePumpUI(){const btn=document.getElementById('pumpBtn');btn.className='pump-btn'+(pumpOn?' on':'');document.getElementById('waterDrops').style.opacity=pumpOn?'1':'0';document.getElementById('pumpStatus').textContent=pumpOn?'ON':'OFF';document.getElementById('pumpHint').textContent=pumpOn?'mematikan':'menghidupkan';}
 
-function handleSignUp() {
-  const name = document.getElementById('signupName').value.trim();
-  const user = document.getElementById('signupUser').value.trim().toLowerCase();
-  const email = document.getElementById('signupEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('signupPass').value;
+/* ══ MODE ══ */
+function setMode(m){mode=m;document.getElementById('btnManual').className='mode-btn'+(m==='manual'?' active':'');document.getElementById('btnAuto').className='mode-btn'+(m==='auto'?' active':'');document.getElementById('modeInfo').innerHTML=m==='auto'?'<strong>Mode Auto:</strong> Sistem otomatis mengaktifkan pompa jika kelembaban < 40%. ESP8266 mengontrol langsung.':'<strong>Mode Manual:</strong> Anda mengontrol pompa secara langsung menggunakan tombol di atas.';if(blynkToken)blynkWrite('V1',m==='auto'?1:0);addLog('teal',`Mode diganti ke: ${m==='auto'?'Auto 🤖':'Manual 🕹️'}`);showToast(`Mode ${m==='auto'?'Otomatis':'Manual'} aktif`);}
 
-  if (!name || !user || !email || !pass) {
-    alert('Harap isi semua kolom pendaftaran.');
-    return;
-  }
-
-  const allUsers = getAllUsers();
-  if (allUsers.find(u => u.username === user || u.email === email)) {
-    alert('Username atau Email sudah terdaftar.');
-    return;
-  }
-
-  const newUser = { name, username: user, email, pass };
-  const registered = JSON.parse(localStorage.getItem('hs_registered_users') || '[]');
-  registered.push(newUser);
-  localStorage.setItem('hs_registered_users', JSON.stringify(registered));
-
-  alert('Akun berhasil dibuat! Silakan login.');
-  toggleAuth('login');
-  document.getElementById('loginEmail').value = user;
-}
-
-function handleLogin() {
-  const input = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pw = document.getElementById('loginPass').value;
-  const err = document.getElementById('loginError');
-  
-  const allUsers = getAllUsers();
-  const u = allUsers.find(u => (u.username === input || u.email === input) && u.pass === pw);
-
-  if (!u) { err.style.display = 'block'; return; }
-  
-  err.style.display = 'none';
-  sessionStorage.setItem('hs_user', JSON.stringify(u));
-  showDashboard(u);
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !document.getElementById('loginPage').classList.contains('hidden')) handleLogin();
-});
-
-function handleLogout() {
-  sessionStorage.removeItem('hs_user');
-  document.getElementById('dashboard').classList.add('hidden');
-  document.getElementById('loginPage').classList.remove('hidden');
-  document.getElementById('refreshBtn').classList.add('hidden');
-}
-
-function showDashboard(u) {
-  document.getElementById('loginPage').classList.add('hidden');
-  document.getElementById('dashboard').classList.remove('hidden');
-  document.getElementById('refreshBtn').classList.remove('hidden');
-  document.getElementById('userName').textContent = u.name;
-  addLog('green', `Login berhasil: ${u.name}`);
-  startClock();
-  initChart();
-  const tok = localStorage.getItem('hs_blynk_token') || '';
-  if (tok) {
-    document.getElementById('blynkTokenInput').value = tok;
-    blynkToken = tok;
-    fetchBlynkData();
-  } else {
-    simulateData();
-  }
-}
-
-/* Check existing session */
-window.addEventListener('DOMContentLoaded', () => {
-  const stored = sessionStorage.getItem('hs_user');
-  if (stored) { showDashboard(JSON.parse(stored)); }
-});
-
-/* ═══════════════════════════════════
-   CLOCK
-═══════════════════════════════════ */
-function startClock() {
-  function tick() {
-    const now = new Date();
-    document.getElementById('currentTime').textContent =
-      now.toLocaleDateString('id-ID', {weekday:'short',day:'numeric',month:'short'}) + '  ' +
-      now.toLocaleTimeString('id-ID');
-  }
-  tick(); setInterval(tick, 1000);
-}
-
-/* ═══════════════════════════════════
-   STATE
-═══════════════════════════════════ */
-let pumpOn = false;
-let mode = 'manual'; // 'manual' | 'auto'
-let blynkToken = '';
-let moistureHistory = [];
-
-/* ═══════════════════════════════════
-   PUMP
-═══════════════════════════════════ */
-function togglePump() {
-  if (mode === 'auto') { showToast('⚠️ Pompa dikendalikan otomatis di mode Auto'); return; }
-  pumpOn = !pumpOn;
-  updatePumpUI();
-  if (blynkToken) blynkWrite('V0', pumpOn ? 1 : 0);
-  addLog(pumpOn ? 'green' : 'red', `Pompa ${pumpOn ? 'dihidupkan' : 'dimatikan'} (Manual)`);
-}
-
-function updatePumpUI() {
-  const btn = document.getElementById('pumpBtn');
-  const drops = document.getElementById('waterDrops');
-  const status = document.getElementById('pumpStatus');
-  const hint = document.getElementById('pumpHint');
-  btn.className = 'pump-btn' + (pumpOn ? ' on' : '');
-  drops.style.opacity = pumpOn ? '1' : '0';
-  status.textContent = pumpOn ? 'ON' : 'OFF';
-  hint.textContent = pumpOn ? 'mematikan' : 'menghidupkan';
-}
-
-/* ═══════════════════════════════════
-   MODE
-═══════════════════════════════════ */
-function setMode(m) {
-  mode = m;
-  document.getElementById('btnManual').className = 'mode-btn' + (m==='manual'?' active':'');
-  document.getElementById('btnAuto').className = 'mode-btn' + (m==='auto'?' active':'');
-  const info = document.getElementById('modeInfo');
-  if (m === 'auto') {
-    info.innerHTML = '<strong>Mode Auto:</strong> Sistem otomatis mengaktifkan pompa jika kelembaban < 40%. ESP8266 mengontrol langsung.';
-  } else {
-    info.innerHTML = '<strong>Mode Manual:</strong> Anda mengontrol pompa secara langsung menggunakan tombol di atas.';
-  }
-  if (blynkToken) blynkWrite('V1', m==='auto' ? 1 : 0);
-  addLog('teal', `Mode diganti ke: ${m === 'auto' ? 'Auto 🤖' : 'Manual 🕹️'}`);
-  showToast(`Mode ${m === 'auto' ? 'Otomatis' : 'Manual'} aktif`);
-}
-
-/* ═══════════════════════════════════
-   GAUGE
-═══════════════════════════════════ */
-function setMoisture(val) {
-  val = Math.max(0, Math.min(100, val));
-  const arc = 157;
-  const offset = arc - (arc * val / 100);
-  const fill = document.getElementById('gaugeFill');
-  fill.style.strokeDashoffset = offset;
-
-  let color = '#4ab459';
-  if (val < 30) color = '#e05454';
-  else if (val < 50) color = '#f0a500';
-  fill.style.stroke = color;
-
-  document.getElementById('moistureSvgText').textContent = val + '%';
-  const statusEl = document.getElementById('moistureStatus');
-  if (val < 30) { statusEl.textContent = 'Sangat Kering'; statusEl.style.color = '#e08080'; }
-  else if (val < 50) { statusEl.textContent = 'Perlu Siram'; statusEl.style.color = '#f0a500'; }
-  else if (val < 75) { statusEl.textContent = 'Cukup Lembab'; statusEl.style.color = '#4ab459'; }
-  else { statusEl.textContent = 'Sangat Lembab'; statusEl.style.color = '#2dd4c4'; }
-
-  // push to history
-  moistureHistory.push(val);
-  if (moistureHistory.length > 10) moistureHistory.shift();
+/* ══ SENSOR UPDATE ══ */
+function setMoisture(val){
+  val=Math.max(0,Math.min(100,Math.round(val)));
+  pushHistory(histMoisture, val);
+  const arc=157,offset=arc-(arc*val/100);
+  const fill=document.getElementById('gaugeFill');
+  fill.style.strokeDashoffset=offset;
+  let color='#4ab459';
+  if(val<30)color='#e05454';
+  else if(val<50)color='#f0a500';
+  fill.style.stroke=color;
+  document.getElementById('moistureSvgText').textContent=val+'%';
+  const s=document.getElementById('moistureStatus');
+  if(val<30){s.textContent='Sangat Kering';s.style.color='#e08080';}
+  else if(val<50){s.textContent='Perlu Siram';s.style.color='#f0a500';}
+  else if(val<75){s.textContent='Cukup Lembab';s.style.color='#4ab459';}
+  else{s.textContent='Sangat Lembab';s.style.color='#2dd4c4';}
+  // push to main chart history (using raw array of values)
+  mainMoistureHistory.push(val);
+  if(mainMoistureHistory.length>10)mainMoistureHistory.shift();
   updateChart();
 }
 
-function setTemp(val) {
-  val = parseFloat(val) || 0;
-  const el = document.getElementById('tempVal');
-  el.innerHTML = `${val.toFixed(1)}<span class="unit">°C</span>`;
-  document.getElementById('tempBar').style.width = Math.min(val / 50 * 100, 100) + '%';
+function setTemp(val){
+  val=parseFloat(val)||0;
+  pushHistory(histTemp, val);
+  document.getElementById('tempVal').innerHTML=`${val.toFixed(1)}<span class="unit">°C</span>`;
+  document.getElementById('tempBar').style.width=Math.min(val/50*100,100)+'%';
 }
 
-function setHumidity(val) {
-  val = parseFloat(val) || 0;
-  const el = document.getElementById('humVal');
-  el.innerHTML = `${val.toFixed(0)}<span class="unit">%</span>`;
-  document.getElementById('humBar').style.width = val + '%';
+function setHumidity(val){
+  val=parseFloat(val)||0;
+  pushHistory(histHum, val);
+  document.getElementById('humVal').innerHTML=`${val.toFixed(0)}<span class="unit">%</span>`;
+  document.getElementById('humBar').style.width=val+'%';
 }
 
-/* ═══════════════════════════════════
-   CHART (vanilla canvas)
-═══════════════════════════════════ */
-let chartCanvas, chartCtx;
-function initChart() {
-  chartCanvas = document.getElementById('historyChart');
-  chartCtx = chartCanvas.getContext('2d');
-  // set actual pixel size
-  const parent = chartCanvas.parentElement;
-  chartCanvas.width = parent.offsetWidth;
-  chartCanvas.height = parent.offsetHeight;
+/* ══ MAIN CHART ══ */
+let chartCanvas, chartCtx, mainMoistureHistory = [];
+function initChart(){chartCanvas=document.getElementById('historyChart');chartCtx=chartCanvas.getContext('2d');const p=chartCanvas.parentElement;chartCanvas.width=p.offsetWidth;chartCanvas.height=p.offsetHeight;}
+function updateChart(){
+  if(!chartCtx||mainMoistureHistory.length<2)return;
+  const W=chartCanvas.width,H=chartCanvas.height,pad={t:10,r:10,b:24,l:32},cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  chartCtx.clearRect(0,0,W,H);
+  [0,25,50,75,100].forEach(v=>{const y=pad.t+cH-(v/100*cH);chartCtx.beginPath();chartCtx.moveTo(pad.l,y);chartCtx.lineTo(pad.l+cW,y);chartCtx.strokeStyle='rgba(74,180,89,0.08)';chartCtx.lineWidth=1;chartCtx.stroke();chartCtx.fillStyle='rgba(212,240,216,0.3)';chartCtx.font='10px DM Mono,monospace';chartCtx.fillText(v+'%',0,y+4);});
+  const grad=chartCtx.createLinearGradient(0,pad.t,0,pad.t+cH);grad.addColorStop(0,'rgba(74,180,89,0.3)');grad.addColorStop(1,'rgba(74,180,89,0)');
+  const pts=mainMoistureHistory.map((v,i)=>({x:pad.l+(i/(mainMoistureHistory.length-1))*cW,y:pad.t+cH-(v/100*cH)}));
+  chartCtx.beginPath();chartCtx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++){const cp=(pts[i-1].x+pts[i].x)/2;chartCtx.bezierCurveTo(cp,pts[i-1].y,cp,pts[i].y,pts[i].x,pts[i].y);}
+  chartCtx.lineTo(pts[pts.length-1].x,pad.t+cH);chartCtx.lineTo(pts[0].x,pad.t+cH);chartCtx.closePath();chartCtx.fillStyle=grad;chartCtx.fill();
+  chartCtx.beginPath();chartCtx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++){const cp=(pts[i-1].x+pts[i].x)/2;chartCtx.bezierCurveTo(cp,pts[i-1].y,cp,pts[i].y,pts[i].x,pts[i].y);}
+  chartCtx.strokeStyle='#4ab459';chartCtx.lineWidth=2.5;chartCtx.stroke();
+  pts.forEach(p=>{chartCtx.beginPath();chartCtx.arc(p.x,p.y,3.5,0,Math.PI*2);chartCtx.fillStyle='#4ab459';chartCtx.fill();chartCtx.beginPath();chartCtx.arc(p.x,p.y,1.5,0,Math.PI*2);chartCtx.fillStyle='#0a1a0e';chartCtx.fill();});
 }
 
-function updateChart() {
-  if (!chartCtx || moistureHistory.length < 2) return;
-  const W = chartCanvas.width, H = chartCanvas.height;
-  chartCtx.clearRect(0, 0, W, H);
+/* ══ SENSOR DETAIL MODAL ══ */
+const SENSOR_CONFIG = {
+  moisture: {
+    title: 'Kelembaban Tanah',
+    sub: 'Soil Moisture Sensor • V2',
+    icon: '🌱',
+    iconBg: 'rgba(240,165,0,0.15)',
+    unit: '%',
+    color: '#f0a500',
+    gradStart: 'rgba(240,165,0,0.3)',
+    gradEnd: 'rgba(240,165,0,0)',
+    max: 100,
+    barColor: 'linear-gradient(90deg,#e05454,#f0a500,#4ab459)',
+  },
+  temp: {
+    title: 'Suhu Udara',
+    sub: 'DHT11 Sensor • V3',
+    icon: '🌡️',
+    iconBg: 'rgba(240,165,0,0.12)',
+    unit: '°C',
+    color: '#f0a500',
+    gradStart: 'rgba(240,165,0,0.25)',
+    gradEnd: 'rgba(240,165,0,0)',
+    max: 60,
+    barColor: 'linear-gradient(90deg,#4ab459,#f0a500,#e05454)',
+  },
+  hum: {
+    title: 'Humidity Udara',
+    sub: 'DHT11 Sensor • V4',
+    icon: '💨',
+    iconBg: 'rgba(45,212,196,0.12)',
+    unit: '%',
+    color: '#2dd4c4',
+    gradStart: 'rgba(45,212,196,0.25)',
+    gradEnd: 'rgba(45,212,196,0)',
+    max: 100,
+    barColor: 'linear-gradient(90deg,#2dd4c4,#4ab459)',
+  }
+};
 
-  const pad = { t: 10, r: 10, b: 24, l: 32 };
-  const cW = W - pad.l - pad.r;
-  const cH = H - pad.t - pad.b;
+let detailChartCanvas, detailChartCtx;
 
-  // grid lines
-  [0, 25, 50, 75, 100].forEach(v => {
-    const y = pad.t + cH - (v / 100 * cH);
-    chartCtx.beginPath();
-    chartCtx.moveTo(pad.l, y); chartCtx.lineTo(pad.l + cW, y);
-    chartCtx.strokeStyle = 'rgba(74,180,89,0.08)';
-    chartCtx.lineWidth = 1; chartCtx.stroke();
-    chartCtx.fillStyle = 'rgba(212,240,216,0.3)';
-    chartCtx.font = '10px DM Mono,monospace';
-    chartCtx.fillText(v + '%', 0, y + 4);
+function openSensorDetail(type) {
+  const cfg = SENSOR_CONFIG[type];
+  const data = type === 'moisture' ? histMoisture : type === 'temp' ? histTemp : histHum;
+
+  // Header
+  document.getElementById('sensorModalIcon').textContent = cfg.icon;
+  document.getElementById('sensorModalIcon').style.background = cfg.iconBg;
+  document.getElementById('sensorModalTitle').textContent = cfg.title;
+  document.getElementById('sensorModalSub').textContent = cfg.sub;
+  document.getElementById('detailUnit').textContent = cfg.unit;
+
+  if (data.length === 0) {
+    document.getElementById('detailCurrent').style.display = 'none';
+    document.getElementById('detailTable').innerHTML = '<div class="empty-hist">Belum ada data yang terekam.<br>Hubungkan Blynk atau tunggu simulasi berjalan.</div>';
+  } else {
+    document.getElementById('detailCurrent').style.display = 'flex';
+    const vals = data.map(d => d.val);
+    const cur = vals[vals.length - 1];
+    const mx = Math.max(...vals), mn = Math.min(...vals), avg = (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
+
+    document.getElementById('detailCurrent').style.color = cfg.color;
+    document.getElementById('detailCurrent').style.borderColor = `${cfg.color}30`;
+    document.getElementById('detailCurrent').querySelector('.detail-value').childNodes[0].textContent = type === 'temp' ? cur.toFixed(1) : cur;
+    document.getElementById('detailMax').textContent = (type==='temp'?mx.toFixed(1):mx) + cfg.unit;
+    document.getElementById('detailMin').textContent = (type==='temp'?mn.toFixed(1):mn) + cfg.unit;
+    document.getElementById('detailAvg').textContent = avg + cfg.unit;
+    document.getElementById('detailCount').textContent = data.length;
+
+    // Build history rows
+    const rows = [...data].reverse();
+    document.getElementById('detailTable').innerHTML = rows.map((d, i) => {
+      const pct = Math.min(100, (d.val / cfg.max) * 100);
+      const timeStr = d.time.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      return `
+        <div class="hist-row">
+          <span class="hist-index">${data.length - i}</span>
+          <span class="hist-time">${timeStr}</span>
+          <div class="hist-bar-wrap"><div class="hist-bar-fill" style="width:${pct}%;background:${cfg.barColor}"></div></div>
+          <span class="hist-val" style="color:${cfg.color}">${type==='temp'?d.val.toFixed(1):d.val}${cfg.unit}</span>
+        </div>`;
+    }).join('');
+  }
+
+  // Show modal first so canvas has size
+  document.getElementById('sensorModal').classList.remove('hidden');
+
+  // Draw detail chart
+  setTimeout(() => {
+    const wrap = document.querySelector('.detail-chart');
+    detailChartCanvas = document.getElementById('detailChart');
+    detailChartCtx = detailChartCanvas.getContext('2d');
+    detailChartCanvas.width = wrap.offsetWidth;
+    detailChartCanvas.height = wrap.offsetHeight;
+    drawDetailChart(data, cfg);
+  }, 30);
+}
+
+function drawDetailChart(data, cfg) {
+  if (!detailChartCtx) return;
+  const W = detailChartCanvas.width, H = detailChartCanvas.height;
+  detailChartCtx.clearRect(0, 0, W, H);
+
+  if (data.length < 2) {
+    detailChartCtx.fillStyle = 'rgba(212,240,216,0.2)';
+    detailChartCtx.font = '12px DM Sans,sans-serif';
+    detailChartCtx.textAlign = 'center';
+    detailChartCtx.fillText('Butuh minimal 2 data untuk grafik', W/2, H/2);
+    return;
+  }
+
+  const pad = { t: 8, r: 8, b: 20, l: 36 };
+  const cW = W - pad.l - pad.r, cH = H - pad.t - pad.b;
+  const vals = data.map(d => d.val);
+  const mn = Math.min(...vals), mx = Math.max(...vals);
+  const range = mx - mn || 1;
+
+  // grid
+  [0, 0.25, 0.5, 0.75, 1].forEach(f => {
+    const y = pad.t + cH - f * cH;
+    const v = (mn + f * range).toFixed(f === 0 || f === 1 ? 0 : 1);
+    detailChartCtx.beginPath();
+    detailChartCtx.moveTo(pad.l, y); detailChartCtx.lineTo(pad.l + cW, y);
+    detailChartCtx.strokeStyle = 'rgba(212,240,216,0.06)';
+    detailChartCtx.lineWidth = 1; detailChartCtx.stroke();
+    detailChartCtx.fillStyle = 'rgba(212,240,216,0.3)';
+    detailChartCtx.font = '9px DM Mono,monospace';
+    detailChartCtx.textAlign = 'right';
+    detailChartCtx.fillText(v, pad.l - 4, y + 3);
   });
 
-  // gradient area
-  const grad = chartCtx.createLinearGradient(0, pad.t, 0, pad.t + cH);
-  grad.addColorStop(0, 'rgba(74,180,89,0.3)');
-  grad.addColorStop(1, 'rgba(74,180,89,0)');
-
-  const pts = moistureHistory.map((v, i) => ({
-    x: pad.l + (i / (moistureHistory.length - 1)) * cW,
-    y: pad.t + cH - (v / 100 * cH)
+  const pts = data.map((d, i) => ({
+    x: pad.l + (i / (data.length - 1)) * cW,
+    y: pad.t + cH - ((d.val - mn) / range) * cH
   }));
 
-  chartCtx.beginPath();
-  chartCtx.moveTo(pts[0].x, pts[0].y);
+  // gradient area
+  const grad = detailChartCtx.createLinearGradient(0, pad.t, 0, pad.t + cH);
+  grad.addColorStop(0, cfg.gradStart);
+  grad.addColorStop(1, cfg.gradEnd);
+  detailChartCtx.beginPath();
+  detailChartCtx.moveTo(pts[0].x, pts[0].y);
   for (let i = 1; i < pts.length; i++) {
-    const cp1x = (pts[i-1].x + pts[i].x) / 2;
-    chartCtx.bezierCurveTo(cp1x, pts[i-1].y, cp1x, pts[i].y, pts[i].x, pts[i].y);
+    const cp = (pts[i-1].x + pts[i].x) / 2;
+    detailChartCtx.bezierCurveTo(cp, pts[i-1].y, cp, pts[i].y, pts[i].x, pts[i].y);
   }
-  chartCtx.lineTo(pts[pts.length-1].x, pad.t + cH);
-  chartCtx.lineTo(pts[0].x, pad.t + cH);
-  chartCtx.closePath();
-  chartCtx.fillStyle = grad;
-  chartCtx.fill();
+  detailChartCtx.lineTo(pts[pts.length-1].x, pad.t + cH);
+  detailChartCtx.lineTo(pts[0].x, pad.t + cH);
+  detailChartCtx.closePath();
+  detailChartCtx.fillStyle = grad;
+  detailChartCtx.fill();
 
   // line
-  chartCtx.beginPath();
-  chartCtx.moveTo(pts[0].x, pts[0].y);
+  detailChartCtx.beginPath();
+  detailChartCtx.moveTo(pts[0].x, pts[0].y);
   for (let i = 1; i < pts.length; i++) {
-    const cp1x = (pts[i-1].x + pts[i].x) / 2;
-    chartCtx.bezierCurveTo(cp1x, pts[i-1].y, cp1x, pts[i].y, pts[i].x, pts[i].y);
+    const cp = (pts[i-1].x + pts[i].x) / 2;
+    detailChartCtx.bezierCurveTo(cp, pts[i-1].y, cp, pts[i].y, pts[i].x, pts[i].y);
   }
-  chartCtx.strokeStyle = '#4ab459';
-  chartCtx.lineWidth = 2.5;
-  chartCtx.stroke();
+  detailChartCtx.strokeStyle = cfg.color;
+  detailChartCtx.lineWidth = 2;
+  detailChartCtx.stroke();
 
   // dots
   pts.forEach(p => {
-    chartCtx.beginPath();
-    chartCtx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
-    chartCtx.fillStyle = '#4ab459';
-    chartCtx.fill();
-    chartCtx.beginPath();
-    chartCtx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
-    chartCtx.fillStyle = '#0a1a0e';
-    chartCtx.fill();
+    detailChartCtx.beginPath();
+    detailChartCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+    detailChartCtx.fillStyle = cfg.color;
+    detailChartCtx.fill();
+    detailChartCtx.beginPath();
+    detailChartCtx.arc(p.x, p.y, 1.2, 0, Math.PI * 2);
+    detailChartCtx.fillStyle = '#0a1a0e';
+    detailChartCtx.fill();
   });
+
+  // highlight latest
+  const last = pts[pts.length - 1];
+  detailChartCtx.beginPath();
+  detailChartCtx.arc(last.x, last.y, 5, 0, Math.PI * 2);
+  detailChartCtx.fillStyle = cfg.color;
+  detailChartCtx.fill();
+  detailChartCtx.beginPath();
+  detailChartCtx.arc(last.x, last.y, 2.5, 0, Math.PI * 2);
+  detailChartCtx.fillStyle = '#0a1a0e';
+  detailChartCtx.fill();
 }
 
-/* ═══════════════════════════════════
-   LOG
-═══════════════════════════════════ */
-const LOG_COLORS = { green:'green', teal:'teal', amber:'amber', red:'red' };
-function addLog(color, text) {
-  const list = document.getElementById('logList');
-  const time = new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  const item = document.createElement('div');
-  item.className = 'log-item';
-  item.innerHTML = `
-    <span class="log-time">${time}</span>
-    <div class="log-dot ${LOG_COLORS[color] || 'green'}"></div>
-    <span class="log-text">${text}</span>`;
-  list.prepend(item);
-  while (list.children.length > 20) list.removeChild(list.lastChild);
+function closeSensorModal(e) {
+  if (e.target === document.getElementById('sensorModal'))
+    document.getElementById('sensorModal').classList.add('hidden');
 }
 
-/* ═══════════════════════════════════
-   TOAST
-═══════════════════════════════════ */
+/* ══ LOG ══ */
+function addLog(color,text){const list=document.getElementById('logList'),time=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'}),item=document.createElement('div');item.className='log-item';item.innerHTML=`<span class="log-time">${time}</span><div class="log-dot ${color}"></div><span class="log-text">${text}</span>`;list.prepend(item);while(list.children.length>20)list.removeChild(list.lastChild);}
+
+/* ══ TOAST ══ */
 let toastTimer;
-function showToast(msg, icon = '✅') {
-  const t = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  t.querySelector('.toast-icon').textContent = icon;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
-}
+function showToast(msg,icon='✅'){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.querySelector('.toast-icon').textContent=icon;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3000);}
 
-/* ═══════════════════════════════════
-   BLYNK API
-═══════════════════════════════════ */
-function saveBlynkToken() {
-  const tok = document.getElementById('blynkTokenInput').value.trim();
-  if (!tok) { showToast('Masukkan token terlebih dahulu', '⚠️'); return; }
-  blynkToken = tok;
-  localStorage.setItem('hs_blynk_token', tok);
-  fetchBlynkData();
-}
+/* ══ BLYNK ══ */
+function saveBlynkToken(){const tok=document.getElementById('blynkTokenInput').value.trim();if(!tok){showToast('Masukkan token terlebih dahulu','⚠️');return;}blynkToken=tok;localStorage.setItem('hs_blynk_token',tok);fetchBlynkData();}
+function saveBlynkFromModal(){const tok=document.getElementById('modalToken').value.trim();if(!tok){showToast('Token tidak boleh kosong','⚠️');return;}blynkToken=tok;document.getElementById('blynkTokenInput').value=tok;localStorage.setItem('hs_blynk_token',tok);document.getElementById('blynkModal').classList.add('hidden');fetchBlynkData();}
+function openBlynkModal(){document.getElementById('modalToken').value=blynkToken;document.getElementById('blynkModal').classList.remove('hidden');}
+function closeBlynkModal(e){if(e.target===document.getElementById('blynkModal'))document.getElementById('blynkModal').classList.add('hidden');}
 
-function saveBlynkFromModal() {
-  const tok = document.getElementById('modalToken').value.trim();
-  if (!tok) { showToast('Token tidak boleh kosong', '⚠️'); return; }
-  blynkToken = tok;
-  document.getElementById('blynkTokenInput').value = tok;
-  localStorage.setItem('hs_blynk_token', tok);
-  closeBlynkModal();
-  fetchBlynkData();
-}
+async function blynkGet(pin){const r=await fetch(`https://blynk.cloud/external/api/get?token=${blynkToken}&${pin}`);if(!r.ok)throw new Error('HTTP '+r.status);return await r.text();}
+async function blynkWrite(pin,val){try{await fetch(`https://blynk.cloud/external/api/update?token=${blynkToken}&${pin}=${val}`);}catch(e){console.warn('write fail',e);}}
 
-function openBlynkModal() {
-  document.getElementById('modalToken').value = blynkToken;
-  document.getElementById('blynkModal').classList.remove('hidden');
-}
-function closeBlynkModal() {
-  document.getElementById('blynkModal').classList.add('hidden');
-}
-document.getElementById('blynkModal').addEventListener('click', function(e) {
-  if (e.target === this) closeBlynkModal();
-});
-
-async function blynkGet(pin) {
-  const url = `https://blynk.cloud/external/api/get?token=${blynkToken}&${pin}`;
-  const r = await fetch(url);
-  if (!r.ok) throw new Error('HTTP ' + r.status);
-  return await r.text();
-}
-
-async function blynkWrite(pin, val) {
-  const url = `https://blynk.cloud/external/api/update?token=${blynkToken}&${pin}=${val}`;
-  try { await fetch(url); } catch(e) { console.warn('Blynk write failed', e); }
-}
-
-async function fetchBlynkData() {
-  if (!blynkToken) { simulateData(); return; }
-  const btn = document.getElementById('refreshBtn');
-  btn.classList.add('spinning');
-  const badge = document.getElementById('blynkStatusBadge');
-  badge.className = 'blynk-status-text';
-  badge.innerHTML = '<span class="blynk-loading"></span>';
-
-  try {
-    const [pump, mod, moist, temp, hum] = await Promise.all([
-      blynkGet('V0'), blynkGet('V1'), blynkGet('V2'), blynkGet('V3'), blynkGet('V4')
-    ]);
-
-    const rawMoist = parseFloat(moist);
-    const correctedMoist = rawMoist; // Gunakan nilai langsung karena Blynk sudah mengirimkan persentase yang benar
-
-    pumpOn = parseInt(pump) === 1;
-    updatePumpUI();
-    const newMode = parseInt(mod) === 1 ? 'auto' : 'manual';
-    if (newMode !== mode) setMode(newMode);
-    setMoisture(correctedMoist);
-    setTemp(parseFloat(temp));
-    setHumidity(parseFloat(hum));
-
-    badge.className = 'blynk-status-text ok';
-    badge.textContent = '✓ Terhubung';
-    document.getElementById('connStatusText').textContent = 'Terhubung';
-    addLog('green', `Data diperbarui dari Blynk — Kelembaban: ${correctedMoist.toFixed(0)}%, Suhu: ${parseFloat(temp).toFixed(1)}°C`);
+async function fetchBlynkData(){
+  if(!blynkToken){simulateData();return;}
+  const btn=document.getElementById('refreshBtn');btn.classList.add('spinning');
+  const badge=document.getElementById('blynkStatusBadge');badge.className='blynk-status-text';badge.innerHTML='<span class="blynk-loading"></span>';
+  try{
+    const[pump,mod,moist,temp,hum]=await Promise.all([blynkGet('V0'),blynkGet('V1'),blynkGet('V2'),blynkGet('V3'),blynkGet('V4')]);
+    // ✅ Nilai langsung dari Blynk tanpa inversi
+    const moistVal=parseFloat(moist);
+    pumpOn=parseInt(pump)===1;updatePumpUI();
+    const newMode=parseInt(mod)===1?'auto':'manual';if(newMode!==mode)setMode(newMode);
+    setMoisture(moistVal);setTemp(parseFloat(temp));setHumidity(parseFloat(hum));
+    badge.className='blynk-status-text ok';badge.textContent='✓ Terhubung';
+    document.getElementById('connStatusText').textContent='Terhubung';
+    addLog('green',`Data diperbarui — Kelembaban: ${moistVal.toFixed(0)}%, Suhu: ${parseFloat(temp).toFixed(1)}°C`);
     showToast('Data berhasil diperbarui dari Blynk');
-  } catch(e) {
-    badge.className = 'blynk-status-text err';
-    badge.textContent = '✗ Gagal terhubung';
-    document.getElementById('connStatusText').textContent = 'Offline';
-    addLog('red', 'Gagal mengambil data dari Blynk. Cek token & koneksi.');
-    showToast('Gagal terhubung ke Blynk', '❌');
+  }catch(e){
+    badge.className='blynk-status-text err';badge.textContent='✗ Gagal';
+    document.getElementById('connStatusText').textContent='Offline';
+    addLog('red','Gagal mengambil data dari Blynk.');
+    showToast('Gagal terhubung ke Blynk','❌');
     simulateData();
-  } finally {
-    btn.classList.remove('spinning');
-  }
+  }finally{btn.classList.remove('spinning');}
 }
 
-/* ═══════════════════════════════════
-   DEMO SIMULATION (no Blynk)
-═══════════════════════════════════ */
-function simulateData() {
-  const moisture = Math.round(30 + Math.random() * 55);
-  const temp = 25 + Math.random() * 10;
-  const hum = 50 + Math.random() * 35;
-  setMoisture(moisture);
-  setTemp(temp);
-  setHumidity(hum);
-  if (mode === 'auto' && moisture < 40 && !pumpOn) {
-    pumpOn = true; updatePumpUI();
-    addLog('green', 'Mode Auto: Pompa dihidupkan (kelembaban < 40%)');
-  } else if (mode === 'auto' && moisture >= 60 && pumpOn) {
-    pumpOn = false; updatePumpUI();
-    addLog('amber', 'Mode Auto: Pompa dimatikan (kelembaban >= 60%)');
-  }
-  addLog('teal', `[Simulasi] Tanah: ${moisture}%, Suhu: ${temp.toFixed(1)}°C, Hum: ${hum.toFixed(0)}%`);
+/* ══ SIMULASI ══ */
+function simulateData(){
+  const moisture=Math.round(30+Math.random()*55),temp=25+Math.random()*10,hum=50+Math.random()*35;
+  setMoisture(moisture);setTemp(temp);setHumidity(hum);
+  if(mode==='auto'&&moisture<40&&!pumpOn){pumpOn=true;updatePumpUI();addLog('green','Mode Auto: Pompa dihidupkan (kelembaban < 40%)');}
+  else if(mode==='auto'&&moisture>=60&&pumpOn){pumpOn=false;updatePumpUI();addLog('amber','Mode Auto: Pompa dimatikan (kelembaban >= 60%)');}
+  addLog('teal',`[Simulasi] Tanah: ${moisture}%, Suhu: ${temp.toFixed(1)}°C, Hum: ${hum.toFixed(0)}%`);
 }
 
-/* Auto-refresh every 15s when token set */
-setInterval(() => {
-  if (document.getElementById('dashboard') && !document.getElementById('dashboard').classList.contains('hidden')) {
-    if (blynkToken) fetchBlynkData();
-    else simulateData();
-  }
-}, 15000);
+setInterval(()=>{if(!document.getElementById('dashboard').classList.contains('hidden')){if(blynkToken)fetchBlynkData();else simulateData();}},15000);
 
-/* Ripple on login btn */
-document.getElementById('btnLogin').addEventListener('click', function(e) {
-  const rect = this.getBoundingClientRect();
-  const size = Math.max(rect.width, rect.height);
-  const x = e.clientX - rect.left - size / 2;
-  const y = e.clientY - rect.top - size / 2;
-  const ripple = document.createElement('span');
-  ripple.className = 'ripple-el';
-  ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;
-  this.appendChild(ripple);
-  setTimeout(() => ripple.remove(), 700);
-});
+/* Ripple */
+document.getElementById('btnLogin').addEventListener('click',function(e){const rect=this.getBoundingClientRect(),size=Math.max(rect.width,rect.height),x=e.clientX-rect.left-size/2,y=e.clientY-rect.top-size/2,r=document.createElement('span');r.className='ripple-el';r.style.cssText=`width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;this.appendChild(r);setTimeout(()=>r.remove(),700);});
 </script>
 </body>
 </html>
