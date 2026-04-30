@@ -1461,7 +1461,7 @@ async function fetchBlynkData() {
     ]);
 
     const rawMoist = parseFloat(moist);
-    const correctedMoist = 100 - rawMoist; // Balikkan nilai: 0% di sensor (Basah) -> 100% di UI
+    const correctedMoist = rawMoist; // Gunakan nilai langsung karena Blynk sudah mengirimkan persentase yang benar
 
     pumpOn = parseInt(pump) === 1;
     updatePumpUI();
