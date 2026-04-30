@@ -4,1303 +4,860 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ecodrip — Smart Watering System</title>
-
-<!-- Custom SVG Favicon matching the logo -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%232d6e35'/><rect width='64' height='64' rx='16' fill='url(%23g)'/><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%234ab459'/><stop offset='1' stop-color='%232d6e35'/></linearGradient></defs><text y='46' x='32' text-anchor='middle' font-size='36'>🌿</text></svg>">
-
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #060f08;
-  --bg2: #091209;
-  --surface: #0d1f10;
-  --surface2: #111f14;
-  --surface3: #162219;
-  --border: rgba(74,180,89,0.12);
-  --border2: rgba(74,180,89,0.22);
-  --green: #4ab459;
-  --green2: #3da34f;
-  --green-bright: #6dda80;
-  --green-dim: rgba(74,180,89,0.07);
-  --green-glow: rgba(74,180,89,0.25);
-  --teal: #2dd4c4;
-  --teal-dim: rgba(45,212,196,0.12);
-  --amber: #f0a500;
-  --amber-dim: rgba(240,165,0,0.12);
-  --red: #e05454;
-  --red-dim: rgba(224,84,84,0.1);
-  --violet: #8b7cf8;
-  --violet-dim: rgba(139,124,248,0.1);
-  --text: #c8e8cc;
-  --text2: rgba(200,232,204,0.65);
-  --text3: rgba(200,232,204,0.35);
-  --radius: 18px;
-  --radius-sm: 11px;
-  --radius-xs: 7px;
-  --font: 'Outfit', sans-serif;
-  --font-display: 'Syne', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --shadow: 0 20px 60px rgba(0,0,0,0.5);
-  --glow: 0 0 40px rgba(74,180,89,0.18);
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  line-height: 1.5;
-}
-
-/* ── NOISE TEXTURE OVERLAY ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 128px 128px;
-}
-
-/* ── AMBIENT LIGHT ORBS ── */
-.orb {
-  position: fixed;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-  filter: blur(80px);
-  opacity: 0.12;
-}
-.orb1 { width: 500px; height: 500px; background: radial-gradient(circle, #4ab459, transparent); top: -150px; left: -100px; animation: orbFloat1 20s ease-in-out infinite; }
-.orb2 { width: 350px; height: 350px; background: radial-gradient(circle, #2dd4c4, transparent); bottom: 100px; right: -80px; animation: orbFloat2 25s ease-in-out infinite; opacity: 0.08; }
-.orb3 { width: 280px; height: 280px; background: radial-gradient(circle, #8b7cf8, transparent); top: 40%; left: 50%; animation: orbFloat3 18s ease-in-out infinite; opacity: 0.06; }
-
-@keyframes orbFloat1 { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(60px,40px) scale(1.05);} 66%{transform:translate(-30px,70px) scale(0.95);} }
-@keyframes orbFloat2 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(-50px,-30px);} }
-@keyframes orbFloat3 { 0%,100%{transform:translate(-50%,-50%) scale(1);} 50%{transform:translate(-50%,-50%) scale(1.15);} }
-
-/* ── CANVAS BG ── */
-#bgCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.35; }
-
-/* ── UTILS ── */
-.hidden { display: none !important; }
-
-@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes ripple { 0%{transform:scale(0);opacity:0.6;} 100%{transform:scale(4);opacity:0;} }
-@keyframes dropFall { 0%{transform:translateY(-8px);opacity:0;} 40%{opacity:1;} 100%{transform:translateY(44px);opacity:0;} }
-@keyframes pumpPulse { 0%,100%{transform:scale(1);opacity:0.5;} 50%{transform:scale(1.12);opacity:0.1;} }
-@keyframes shimmer { 0%{background-position:-200% 0;} 100%{background-position:200% 0;} }
-@keyframes breathe { 0%,100%{box-shadow:0 0 20px rgba(74,180,89,0.2);} 50%{box-shadow:0 0 40px rgba(74,180,89,0.45);} }
-@keyframes slideRight { from{transform:translateX(-100%);} to{transform:translateX(0);} }
-@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
-@keyframes numberPop { 0%{transform:scale(0.8);opacity:0;} 70%{transform:scale(1.05);} 100%{transform:scale(1);opacity:1;} }
-@keyframes cardEntrance { from{opacity:0;transform:translateY(30px) scale(0.97);} to{opacity:1;transform:translateY(0) scale(1);} }
-
-/* ════════════════════════════════════
-   LOGIN PAGE
-════════════════════════════════════ */
-#loginPage {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: var(--bg);
-}
-
-.login-card {
-  position: relative;
-  width: 100%;
-  max-width: 430px;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 28px;
-  padding: 48px 40px;
-  box-shadow: var(--shadow), var(--glow);
-  overflow: hidden;
-  animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
-}
-
-/* decorative corner lines */
-.login-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent 0%, var(--green) 30%, var(--teal) 70%, transparent 100%);
-}
-
-.login-card::after {
-  content: '';
-  position: absolute;
-  top: -100px; right: -100px;
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(74,180,89,0.06) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-/* ── SVG Logo Icon ── */
-.login-logo { text-align: center; margin-bottom: 36px; }
-
-.logo-svg-wrap {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 72px; height: 72px;
-  background: linear-gradient(145deg, #1a4020, #2d6e35);
-  border-radius: 22px;
-  margin-bottom: 16px;
-  position: relative;
-  box-shadow: 0 12px 30px rgba(74,180,89,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-  animation: breathe 4s ease-in-out infinite;
-}
-
-.logo-svg-wrap svg { width: 40px; height: 40px; }
-
-.login-logo h1 {
-  font-family: var(--font-display);
-  font-size: 30px;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--text) 0%, var(--green-bright) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -0.5px;
-}
-
-.login-logo p {
-  font-size: 13px;
-  color: var(--text3);
-  margin-top: 4px;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-}
-
-/* version tag */
-.version-tag {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  background: var(--green-dim);
-  border: 1px solid var(--border);
-  color: var(--green);
-  border-radius: 4px;
-  padding: 2px 6px;
-  margin-top: 6px;
-  letter-spacing: 0.05em;
-}
-
-.form-group { margin-bottom: 16px; }
-.form-group label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 7px;
-}
-
-.input-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 14px;
-  font-size: 14px;
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-.form-group input {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 13px 16px 13px 40px;
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
-}
-
-.form-group input:focus {
-  border-color: var(--green);
-  background: rgba(74,180,89,0.04);
-  box-shadow: 0 0 0 3px rgba(74,180,89,0.1);
-}
-.form-group input::placeholder { color: var(--text3); }
-
-.btn-login {
-  width: 100%;
-  padding: 15px;
-  background: linear-gradient(135deg, #1f5c26 0%, #3da34f 50%, #4ab459 100%);
-  border: none;
-  border-radius: var(--radius-sm);
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-  margin-top: 10px;
-  letter-spacing: 0.03em;
-  box-shadow: 0 6px 24px rgba(74,180,89,0.3);
-}
-.btn-login::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
-  background-size: 200% 100%;
-  animation: shimmer 2.5s ease infinite;
-}
-.btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(74,180,89,0.45); }
-.btn-login:active { transform: scale(0.99); }
-
-.btn-login .ripple-el {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.25);
-  animation: ripple 0.6s ease-out forwards;
-  pointer-events: none;
-}
-
-.login-hint {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 12px;
-  color: var(--text3);
-  padding: 12px;
-  background: var(--green-dim);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  font-family: var(--font-mono);
-  line-height: 1.8;
-}
-.login-hint strong { color: var(--green); }
-
-.login-error {
-  background: rgba(224,84,84,0.08);
-  border: 1px solid rgba(224,84,84,0.25);
-  color: #e08080;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 13px;
-  margin-bottom: 14px;
-  display: none;
-  animation: fadeUp 0.3s ease;
-}
-
-.auth-switch {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 13px;
-  color: var(--text2);
-}
-.auth-switch a {
-  color: var(--green);
-  text-decoration: none;
-  font-weight: 600;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s;
-}
-.auth-switch a:hover { border-bottom-color: var(--green); }
-
-/* ════════════════════════════════════
-   DASHBOARD LAYOUT
-════════════════════════════════════ */
-#dashboard {
-  position: relative;
-  z-index: 1;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── HEADER ── */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 28px;
-  height: 68px;
-  background: rgba(6,15,8,0.75);
-  backdrop-filter: blur(20px) saturate(1.5);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-/* subtle moving gradient line on header */
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    var(--green) 30%,
-    var(--teal) 60%,
-    transparent 100%);
-  background-size: 200% 100%;
-  animation: shimmer 4s linear infinite;
-  opacity: 0.6;
-}
-
-.header-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.header-icon {
-  width: 42px; height: 42px;
-  background: linear-gradient(145deg, #1a4020, #3da34f);
-  border-radius: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 16px rgba(74,180,89,0.3);
-  flex-shrink: 0;
-}
-.header-icon svg { width: 22px; height: 22px; }
-
-.header-brand h2 {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  background: linear-gradient(135deg, var(--text) 0%, var(--green-bright) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.header-brand span {
-  display: block;
-  font-size: 10.5px;
-  color: var(--text3);
-  font-weight: 400;
-  -webkit-text-fill-color: var(--text3);
-  letter-spacing: 0.03em;
-}
-
-.header-right { display: flex; align-items: center; gap: 10px; }
-
-.status-pill {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: var(--teal-dim);
-  border: 1px solid rgba(45,212,196,0.22);
-  border-radius: 20px;
-  padding: 7px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--teal);
-  font-family: var(--font-mono);
-  letter-spacing: 0.02em;
-}
-.status-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--teal);
-  box-shadow: 0 0 8px var(--teal);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-.btn-logout {
-  background: rgba(224,84,84,0.08);
-  border: 1px solid rgba(224,84,84,0.2);
-  color: #d07070;
-  border-radius: var(--radius-xs);
-  padding: 7px 14px;
-  font-family: var(--font);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-logout:hover { background: rgba(224,84,84,0.15); color: #e08080; }
-
-.btn-blynk {
-  background: var(--green-dim);
-  border: 1px solid var(--border);
-  color: var(--green);
-  border-radius: var(--radius-xs);
-  padding: 7px 14px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  letter-spacing: 0.02em;
-}
-.btn-blynk:hover { background: rgba(74,180,89,0.14); border-color: var(--border2); }
-
-/* ── MAIN ── */
-.main {
-  flex: 1;
-  padding: 28px 28px 60px;
-  max-width: 1320px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-/* ── WELCOME BAR ── */
-.welcome-bar {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 12px;
-  animation: fadeUp 0.5s ease both;
-}
-
-.welcome-bar h3 {
-  font-family: var(--font-display);
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-}
-.welcome-bar p { font-size: 13px; color: var(--text3); margin-top: 3px; font-weight: 300; }
-
-.time-block {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-#currentTime {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--green);
-  background: var(--green-dim);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 14px;
-  letter-spacing: 0.05em;
-}
-.uptime-badge {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text3);
-  padding: 3px 10px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-}
-
-/* ── BLYNK TOKEN BANNER ── */
-.blynk-banner {
-  background: linear-gradient(135deg, rgba(74,180,89,0.06), rgba(45,212,196,0.04));
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 20px;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  animation: fadeUp 0.5s 0.1s ease both;
-  position: relative;
-  overflow: hidden;
-}
-.blynk-banner::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: linear-gradient(to bottom, var(--green), var(--teal));
-  border-radius: 0 2px 2px 0;
-}
-.blynk-label {
-  font-size: 11px;
-  color: var(--text3);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  white-space: nowrap;
-  font-family: var(--font-mono);
-}
-.blynk-banner input {
-  flex: 1;
-  min-width: 180px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 9px 14px;
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.blynk-banner input:focus { border-color: var(--green); }
-.blynk-banner button {
-  background: linear-gradient(135deg, var(--green2), var(--green));
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  padding: 9px 18px;
-  font-family: var(--font);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: opacity 0.2s, transform 0.2s;
-  box-shadow: 0 4px 12px rgba(74,180,89,0.25);
-}
-.blynk-banner button:hover { opacity: 0.88; transform: translateY(-1px); }
-
-.blynk-status-text {
-  font-size: 11px;
-  font-family: var(--font-mono);
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-.blynk-status-text.ok { background: rgba(74,180,89,0.12); color: var(--green); border: 1px solid rgba(74,180,89,0.2); }
-.blynk-status-text.err { background: rgba(224,84,84,0.1); color: #e08080; border: 1px solid rgba(224,84,84,0.2); }
-
-/* ══════════════════════════════
-   CARDS GRID
-══════════════════════════════ */
-.grid {
-  display: grid;
-  gap: 18px;
-  grid-template-columns: repeat(12, 1fr);
-}
-
-/* ── BASE CARD ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 22px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-}
-.card:hover {
-  border-color: var(--border2);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 30px rgba(74,180,89,0.07);
-}
-
-/* subtle inner glow per card */
-.card-inner-glow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 10% 10%, rgba(74,180,89,0.04) 0%, transparent 60%);
-}
-
-.card-label {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: var(--text3);
-  margin-bottom: 18px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-}
-.card-label .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-
-/* Stagger entrance for cards */
-.card:nth-child(1) { animation: cardEntrance 0.5s 0.15s ease both; }
-.card:nth-child(2) { animation: cardEntrance 0.5s 0.22s ease both; }
-.card:nth-child(3) { animation: cardEntrance 0.5s 0.29s ease both; }
-.card:nth-child(4) { animation: cardEntrance 0.5s 0.36s ease both; }
-.card:nth-child(5) { animation: cardEntrance 0.5s 0.43s ease both; }
-.card:nth-child(6) { animation: cardEntrance 0.5s 0.50s ease both; }
-.card:nth-child(7) { animation: cardEntrance 0.5s 0.57s ease both; }
-
-/* ━━━━━━━━━━━━━━━━━━━
-   PUMP CARD — full accent
-━━━━━━━━━━━━━━━━━━━ */
-.pump-card {
-  grid-column: span 4;
-  background: linear-gradient(145deg, #0d1f10, #111f14);
-  border-color: rgba(74,180,89,0.18);
-}
-.pump-card::before {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--green), transparent);
-  border-radius: 0 0 var(--radius) var(--radius);
-}
-
-@media(max-width:900px) { .pump-card { grid-column: span 6; } }
-@media(max-width:600px) { .pump-card { grid-column: span 12; } }
-
-.pump-toggle-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 22px;
-  padding: 6px 0;
-}
-
-.pump-outer-ring {
-  position: relative;
-  width: 132px; height: 132px;
-}
-.pump-ring-svg {
-  position: absolute;
-  inset: -10px;
-  width: calc(100% + 20px);
-  height: calc(100% + 20px);
-  animation: spin 12s linear infinite;
-}
-.pump-ring-svg circle {
-  fill: none;
-  stroke: rgba(74,180,89,0.15);
-  stroke-width: 1;
-  stroke-dasharray: 4 10;
-}
-.pump-ring-svg.off { opacity: 0; transition: opacity 0.5s; }
-.pump-ring-svg.on { opacity: 1; transition: opacity 0.5s; }
-
-.pump-btn {
-  width: 132px; height: 132px;
-  border-radius: 50%;
-  border: 2px solid rgba(74,180,89,0.2);
-  background: var(--surface2);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 4px;
-  transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
-  position: relative;
-  font-family: var(--font);
-}
-.pump-btn::before {
-  content: '';
-  position: absolute;
-  inset: -10px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  transition: all 0.5s;
-}
-.pump-btn.on {
-  background: rgba(74,180,89,0.12);
-  border-color: var(--green);
-  box-shadow: 0 0 0 0 rgba(74,180,89,0.3),
-              0 0 50px rgba(74,180,89,0.25),
-              inset 0 0 30px rgba(74,180,89,0.08);
-  animation: breathe 2.5s ease-in-out infinite;
-}
-.pump-btn.on::before {
-  border-color: rgba(74,180,89,0.15);
-  animation: pumpPulse 2.5s ease-in-out infinite;
-}
-
-.pump-icon-svg { width: 36px; height: 36px; }
-.pump-icon-svg path { transition: fill 0.3s, stroke 0.3s; }
-
-.pump-status-label {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--text3);
-  transition: color 0.3s;
-}
-.pump-btn.on .pump-status-label { color: var(--green); }
-
-/* water wave beneath pump */
-.pump-wave {
-  width: 80px;
-  height: 20px;
-  position: relative;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.5s;
-}
-.pump-wave.active { opacity: 1; }
-.pump-wave svg { position: absolute; top: 0; left: -100%; width: 300%; animation: slideRight 2s linear infinite; }
-
-/* drops */
-.water-drops {
-  position: absolute;
-  bottom: -28px; left: 50%;
-  transform: translateX(-50%);
-  display: flex; gap: 8px;
-  pointer-events: none;
-}
-.drop {
-  width: 5px; height: 10px;
-  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-  background: var(--teal);
-  opacity: 0;
-  animation: dropFall 1.4s ease-in-out infinite;
-}
-.pump-btn.on ~ .water-drops .drop { opacity: 1; }
-.drop:nth-child(2) { animation-delay: 0.47s; }
-.drop:nth-child(3) { animation-delay: 0.94s; }
-
-.pump-hint-text {
-  font-size: 11px;
-  color: var(--text3);
-  text-align: center;
-  font-weight: 300;
-}
-
-/* ━━━━━━━━━━━━━━━━━━━
-   MODE CARD
-━━━━━━━━━━━━━━━━━━━ */
-.mode-card { grid-column: span 4; }
-@media(max-width:900px) { .mode-card { grid-column: span 6; } }
-@media(max-width:600px) { .mode-card { grid-column: span 12; } }
-
-.mode-toggle {
-  display: flex;
-  background: var(--surface2);
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  padding: 4px;
-  gap: 4px;
-}
-.mode-btn {
-  flex: 1;
-  padding: 13px 10px;
-  border: none;
-  border-radius: 9px;
-  font-family: var(--font);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s;
-  color: var(--text3);
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  letter-spacing: 0.01em;
-}
-.mode-btn.active {
-  background: linear-gradient(135deg, #1f5c26, #3da34f);
-  color: #fff;
-  box-shadow: 0 4px 18px rgba(74,180,89,0.3);
-}
-
-.mode-info {
-  margin-top: 16px;
-  padding: 14px;
-  background: var(--green-dim);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  font-size: 12.5px;
-  color: var(--text2);
-  line-height: 1.7;
-}
-.mode-info strong { color: var(--green); font-weight: 700; }
-
-/* auto mode thresholds */
-.threshold-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-}
-.threshold-chip {
-  flex: 1;
-  padding: 10px 8px;
-  border-radius: 8px;
-  text-align: center;
-}
-.threshold-chip .tc-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); font-family: var(--font-mono); }
-.threshold-chip .tc-val { font-family: var(--font-mono); font-size: 20px; font-weight: 500; margin-top: 4px; }
-.tc-on { background: rgba(224,84,84,0.08); border: 1px solid rgba(224,84,84,0.2); }
-.tc-on .tc-val { color: var(--red); }
-.tc-off { background: rgba(45,212,196,0.08); border: 1px solid rgba(45,212,196,0.2); }
-.tc-off .tc-val { color: var(--teal); }
-
-/* ━━━━━━━━━━━━━━━━━━━
-   MOISTURE CARD — arc gauge
-━━━━━━━━━━━━━━━━━━━ */
-.moisture-card { grid-column: span 4; }
-@media(max-width:900px) { .moisture-card { grid-column: span 12; } }
-@media(max-width:600px) { .moisture-card { grid-column: span 12; } }
-
-.gauge-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-.gauge-svg { width: 160px; height: 100px; overflow: visible; }
-.gauge-track { fill: none; stroke: var(--surface3); stroke-width: 14; stroke-linecap: round; }
-.gauge-bg    { fill: none; stroke: var(--surface2); stroke-width: 14; stroke-linecap: round; }
-.gauge-fill  { fill: none; stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.22,1,0.36,1), stroke 0.5s; }
-
-.gauge-meta {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  width: 100%;
-}
-.gauge-meta-item {
-  text-align: center;
-  padding: 8px 6px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-.gauge-meta-item .gm-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; font-family: var(--font-mono); }
-.gauge-meta-item .gm-val { font-family: var(--font-mono); font-size: 16px; font-weight: 500; margin-top: 3px; }
-
-/* ━━━━━━━━━━━━━━━━━━━
-   TEMP & HUM
-━━━━━━━━━━━━━━━━━━━ */
-.temp-card { grid-column: span 3; }
-.hum-card  { grid-column: span 3; }
-@media(max-width:1024px) { .temp-card,.hum-card { grid-column: span 6; } }
-@media(max-width:600px)  { .temp-card,.hum-card { grid-column: span 6; } }
-@media(max-width:400px)  { .temp-card,.hum-card { grid-column: span 12; } }
-
-.metric-big {
-  font-family: var(--font-mono);
-  font-size: 52px;
-  font-weight: 500;
-  line-height: 1;
-  margin: 14px 0 6px;
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-.metric-big .unit {
-  font-size: 18px;
-  color: var(--text3);
-  font-weight: 400;
-}
-
-.sensor-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 10px;
-  font-family: var(--font-mono);
-  color: var(--text3);
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  padding: 3px 8px;
-  border-radius: 4px;
-  letter-spacing: 0.05em;
-  margin-bottom: 12px;
-}
-.sensor-dot { width: 5px; height: 5px; border-radius: 50%; }
-
-.spark-bar {
-  display: flex;
-  gap: 3px;
-  align-items: flex-end;
-  height: 36px;
-  margin-top: 14px;
-}
-.spark-segment {
-  flex: 1;
-  border-radius: 2px 2px 0 0;
-  background: var(--surface3);
-  transition: height 0.6s ease, background 0.4s;
-  min-height: 4px;
-}
-
-/* ━━━━━━━━━━━━━━━━━━━
-   CHART CARD
-━━━━━━━━━━━━━━━━━━━ */
-.history-card { grid-column: span 6; }
-@media(max-width:768px) { .history-card { grid-column: span 12; } }
-
-.chart-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-.chart-pill {
-  font-size: 10px;
-  font-family: var(--font-mono);
-  color: var(--green);
-  background: var(--green-dim);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 3px 8px;
-  letter-spacing: 0.04em;
-}
-
-.chart-area {
-  height: 140px;
-  position: relative;
-}
-.chart-area canvas { width: 100% !important; height: 100% !important; }
-
-/* ━━━━━━━━━━━━━━━━━━━
-   LOG CARD
-━━━━━━━━━━━━━━━━━━━ */
-.log-card { grid-column: span 6; }
-@media(max-width:768px) { .log-card { grid-column: span 12; } }
-
-.log-list {
-  max-height: 152px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-.log-list::-webkit-scrollbar { width: 3px; }
-.log-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-.log-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(74,180,89,0.05);
-  font-size: 11.5px;
-  animation: fadeUp 0.25s ease;
-}
-.log-item:last-child { border-bottom: none; }
-.log-time {
-  color: var(--text3);
-  font-family: var(--font-mono);
-  white-space: nowrap;
-  font-size: 10.5px;
-  flex-shrink: 0;
-}
-.log-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 3px; flex-shrink: 0; }
-.log-dot.green  { background: var(--green); box-shadow: 0 0 6px var(--green-glow); }
-.log-dot.teal   { background: var(--teal); }
-.log-dot.amber  { background: var(--amber); }
-.log-dot.red    { background: var(--red); }
-.log-text { color: var(--text2); line-height: 1.5; }
-
-/* ━━━━━━━━━━━━━━━━━━━
-   STATS ROW — extra bottom cards
-━━━━━━━━━━━━━━━━━━━ */
-.stat-mini { grid-column: span 3; }
-@media(max-width:900px) { .stat-mini { grid-column: span 6; } }
-@media(max-width:500px)  { .stat-mini { grid-column: span 12; } }
-
-.stat-mini-inner {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.stat-icon {
-  width: 44px; height: 44px;
-  border-radius: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-.stat-icon.g { background: rgba(74,180,89,0.12); border: 1px solid rgba(74,180,89,0.2); }
-.stat-icon.t { background: rgba(45,212,196,0.1); border: 1px solid rgba(45,212,196,0.18); }
-.stat-icon.a { background: rgba(240,165,0,0.1); border: 1px solid rgba(240,165,0,0.18); }
-.stat-icon.v { background: rgba(139,124,248,0.1); border: 1px solid rgba(139,124,248,0.18); }
-
-.stat-text { flex: 1; }
-.stat-val {
-  font-family: var(--font-mono);
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 1;
-}
-.stat-desc { font-size: 11px; color: var(--text3); margin-top: 3px; }
-.stat-trend {
-  font-size: 10px;
-  font-family: var(--font-mono);
-  padding: 2px 6px;
-  border-radius: 4px;
-  display: inline-block;
-  margin-top: 4px;
-}
-.stat-trend.up { color: var(--green); background: var(--green-dim); }
-.stat-trend.dn { color: var(--red); background: var(--red-dim); }
-.stat-trend.nt { color: var(--text3); background: var(--surface2); }
-
-/* ─ REFRESH FAB ── */
-.refresh-btn {
-  position: fixed;
-  bottom: 24px; right: 24px;
-  width: 54px; height: 54px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1f5c26, #4ab459);
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  box-shadow: 0 8px 28px rgba(74,180,89,0.5);
-  transition: transform 0.2s, box-shadow 0.2s;
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.refresh-btn:hover { transform: scale(1.1) rotate(15deg); box-shadow: 0 14px 36px rgba(74,180,89,0.6); }
-.refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
-
-/* ── TOAST ── */
-.toast {
-  position: fixed;
-  bottom: 90px; right: 24px;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 13px;
-  padding: 13px 18px;
-  font-size: 13px;
-  color: var(--text);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(74,180,89,0.08);
-  z-index: 300;
-  transform: translateX(120%);
-  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  max-width: 270px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.toast.show { transform: translateX(0); }
-.toast-icon { font-size: 16px; }
-
-/* ── BLYNK MODAL ── */
-.modal-overlay {
-  position: fixed; inset: 0; z-index: 500;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.modal {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 22px;
-  padding: 32px;
-  max-width: 500px;
-  width: 100%;
-  box-shadow: var(--shadow), var(--glow);
-  animation: fadeUp 0.3s ease;
-  position: relative;
-}
-.modal::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--green), var(--teal));
-  border-radius: var(--radius) var(--radius) 0 0;
-}
-.modal h3 {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 800;
-  margin-bottom: 6px;
-  letter-spacing: -0.3px;
-}
-.modal p { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 20px; }
-.modal-grid { display: grid; gap: 12px; margin-bottom: 18px; }
-.modal-field label {
-  display: block;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text3);
-  margin-bottom: 6px;
-  font-family: var(--font-mono);
-}
-.modal-field input {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 11px 14px;
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.modal-field input:focus { border-color: var(--green); }
-.modal-actions { display: flex; gap: 10px; }
-.modal-actions .btn-save {
-  flex: 1;
-  padding: 13px;
-  background: linear-gradient(135deg, #1f5c26, #4ab459);
-  border: none;
-  border-radius: 10px;
-  color: #fff;
-  font-family: var(--font);
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: opacity 0.2s;
-  box-shadow: 0 4px 16px rgba(74,180,89,0.25);
-}
-.modal-actions .btn-save:hover { opacity: 0.88; }
-.modal-actions .btn-cancel {
-  padding: 13px 20px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  color: var(--text2);
-  font-family: var(--font);
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.modal-actions .btn-cancel:hover { border-color: var(--border2); }
-
-.pin-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; }
-.pin-table th { text-align: left; padding: 7px 10px; color: var(--text3); font-weight: 600; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; }
-.pin-table td { padding: 9px 10px; color: var(--text2); border-bottom: 1px solid rgba(74,180,89,0.04); font-size: 12px; }
-.pin-table code { font-family: var(--font-mono); color: var(--green); background: var(--green-dim); padding: 2px 7px; border-radius: 4px; font-size: 11px; }
-
-.blynk-loading {
-  display: inline-block;
-  width: 12px; height: 12px;
-  border: 2px solid rgba(74,180,89,0.2);
-  border-top-color: var(--green);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  vertical-align: middle;
-}
+  :root {
+    --bg: #0a1a0e;
+    --surface: #111f14;
+    --surface2: #162219;
+    --border: rgba(74, 180, 89, 0.15);
+    --green: #4ab459;
+    --green-light: #6dcc7d;
+    --green-dim: rgba(74, 180, 89, 0.08);
+    --teal: #2dd4c4;
+    --amber: #f0a500;
+    --red: #e05454;
+    --text: #d4f0d8;
+    --text-dim: rgba(212, 240, 216, 0.5);
+    --text-muted: rgba(212, 240, 216, 0.3);
+    --glow: 0 0 30px rgba(74, 180, 89, 0.2);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND CANVAS ── */
+  #bgCanvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  /* ── UTILS ── */
+  .hidden { display: none !important; }
+  .fade-in { animation: fadeIn 0.5s ease forwards; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes ripple { 0%{transform:scale(0);opacity:0.5;} 100%{transform:scale(4);opacity:0;} }
+  @keyframes dropFall {
+    0%{transform:translateY(-10px);opacity:0;}
+    50%{opacity:1;}
+    100%{transform:translateY(40px);opacity:0;}
+  }
+
+  /* ═══════════════════════════════
+     LOGIN PAGE
+  ═══════════════════════════════ */
+  #loginPage {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: var(--bg);
+  }
+
+  .login-card {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px 40px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6), var(--glow);
+    overflow: hidden;
+    animation: fadeIn 0.7s ease;
+  }
+
+  .login-card::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(74,180,89,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .login-logo .logo-icon {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, #2d6e35, #4ab459);
+    border-radius: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 24px rgba(74,180,89,0.35);
+  }
+  .login-logo h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .login-logo p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    font-weight: 300;
+  }
+
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+  .form-group input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-group input:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(74,180,89,0.12);
+  }
+  .form-group input::placeholder { color: var(--text-muted); }
+
+  .btn-login {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #2d6e35, #4ab459);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 8px;
+  }
+  .btn-login:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(74,180,89,0.4); }
+  .btn-login:active { transform: scale(0.99); }
+  .btn-login .ripple-el {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    animation: ripple 0.6s ease-out forwards;
+    pointer-events: none;
+  }
+
+  .login-hint {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 12px;
+    background: var(--green-dim);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .login-hint strong { color: var(--green); }
+
+  .login-error {
+    background: rgba(224,84,84,0.1);
+    border: 1px solid rgba(224,84,84,0.3);
+    color: #e08080;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .auth-switch a {
+    color: var(--green);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* ═══════════════════════════════
+     DASHBOARD
+  ═══════════════════════════════ */
+  #dashboard {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 28px;
+    background: rgba(10,26,14,0.8);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-brand .icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, #2d6e35, #4ab459);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 14px rgba(74,180,89,0.3);
+  }
+  .header-brand h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    letter-spacing: -0.3px;
+  }
+  .header-brand span {
+    display: block;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 16px; }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(45,212,196,0.1);
+    border: 1px solid rgba(45,212,196,0.25);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--teal);
+  }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .btn-logout {
+    background: rgba(224,84,84,0.1);
+    border: 1px solid rgba(224,84,84,0.25);
+    color: #e08080;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover { background: rgba(224,84,84,0.2); }
+
+  .btn-blynk {
+    background: rgba(74,180,89,0.1);
+    border: 1px solid var(--border);
+    color: var(--green);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-blynk:hover { background: rgba(74,180,89,0.18); }
+
+  /* ── MAIN GRID ── */
+  .main {
+    flex: 1;
+    padding: 28px;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .welcome-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .welcome-bar h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .welcome-bar p { font-size: 14px; color: var(--text-dim); margin-top: 2px; }
+  #currentTime {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--green);
+    background: var(--green-dim);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+  }
+
+  /* ── BLYNK CONFIG BANNER ── */
+  .blynk-banner {
+    background: linear-gradient(135deg, rgba(74,180,89,0.08), rgba(45,212,196,0.05));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .blynk-banner .blynk-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+  }
+  .blynk-banner input {
+    flex: 1;
+    min-width: 200px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+  }
+  .blynk-banner input:focus { border-color: var(--green); }
+  .blynk-banner button {
+    background: var(--green);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    padding: 9px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+  .blynk-banner button:hover { opacity: 0.85; }
+  .blynk-status-text {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .blynk-status-text.ok { background: rgba(74,180,89,0.15); color: var(--green); }
+  .blynk-status-text.err { background: rgba(224,84,84,0.12); color: #e08080; }
+
+  /* ── CARDS GRID ── */
+  .grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: rgba(74,180,89,0.35); transform: translateY(-2px); }
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(74,180,89,0.03) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .card-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+  /* PUMP CARD */
+  .pump-card { grid-column: span 4; }
+  @media(max-width:900px) { .pump-card { grid-column: span 6; } }
+  @media(max-width:600px) { .pump-card { grid-column: span 12; } }
+
+  .pump-toggle-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 8px 0;
+  }
+
+  .pump-btn {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    border: 3px solid rgba(74,180,89,0.25);
+    background: var(--surface2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    transition: all 0.3s;
+    position: relative;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .pump-btn::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+  }
+  .pump-btn.on {
+    background: rgba(74,180,89,0.15);
+    border-color: var(--green);
+    box-shadow: 0 0 40px rgba(74,180,89,0.35), inset 0 0 20px rgba(74,180,89,0.1);
+  }
+  .pump-btn.on::before {
+    border-color: rgba(74,180,89,0.2);
+    animation: pumpPulse 2s ease-in-out infinite;
+  }
+  @keyframes pumpPulse {
+    0%,100%{transform:scale(1);opacity:0.6;}
+    50%{transform:scale(1.1);opacity:0.2;}
+  }
+  .pump-btn .pump-emoji { font-size: 32px; }
+  .pump-btn .pump-status {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+  }
+  .pump-btn.on .pump-status { color: var(--green); }
+
+  /* Water drops animation */
+  .water-drops {
+    position: absolute;
+    top: 60px; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .pump-btn.on ~ .water-drops { opacity: 1; }
+  .drop {
+    width: 4px;
+    height: 8px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    background: var(--teal);
+    animation: dropFall 1.2s ease-in-out infinite;
+  }
+  .drop:nth-child(2) { animation-delay: 0.4s; }
+  .drop:nth-child(3) { animation-delay: 0.8s; }
+
+  /* MODE CARD */
+  .mode-card { grid-column: span 4; }
+  @media(max-width:900px) { .mode-card { grid-column: span 6; } }
+  @media(max-width:600px) { .mode-card { grid-column: span 12; } }
+
+  .mode-toggle {
+    display: flex;
+    background: var(--surface2);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 4px;
+    margin-top: 8px;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s;
+    color: var(--text-dim);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .mode-btn.active {
+    background: linear-gradient(135deg, #2d6e35, #4ab459);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(74,180,89,0.3);
+  }
+
+  .mode-info {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--green-dim);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .mode-info strong { color: var(--green); }
+
+  /* SOIL MOISTURE */
+  .moisture-card { grid-column: span 4; }
+  @media(max-width:900px) { .moisture-card { grid-column: span 12; } }
+  @media(max-width:600px) { .moisture-card { grid-column: span 12; } }
+
+  .gauge-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .gauge-svg { width: 140px; height: 90px; overflow: visible; }
+  .gauge-track { fill: none; stroke: var(--surface2); stroke-width: 12; stroke-linecap: round; }
+  .gauge-fill { fill: none; stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s ease, stroke 0.5s; }
+  .gauge-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1;
+  }
+  .gauge-val span { font-size: 16px; color: var(--text-dim); }
+  .gauge-label { font-size: 12px; color: var(--text-dim); }
+
+  /* TEMP & HUMIDITY */
+  .temp-card { grid-column: span 3; }
+  .hum-card  { grid-column: span 3; }
+  @media(max-width:1024px) { .temp-card,.hum-card { grid-column: span 6; } }
+  @media(max-width:600px)  { .temp-card,.hum-card { grid-column: span 6; } }
+  @media(max-width:400px)  { .temp-card,.hum-card { grid-column: span 12; } }
+
+  .metric-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 1;
+    margin: 16px 0 8px;
+  }
+  .metric-val .unit { font-size: 20px; color: var(--text-dim); }
+  .metric-bar {
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 12px;
+  }
+  .metric-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+  .temp-color { background: linear-gradient(90deg, #4ab459, #f0a500, #e05454); }
+  .hum-color  { background: linear-gradient(90deg, #2dd4c4, #4ab459); }
+
+  /* HISTORY CARD */
+  .history-card { grid-column: span 6; }
+  @media(max-width:768px) { .history-card { grid-column: span 12; } }
+
+  .chart-area {
+    height: 140px;
+    position: relative;
+    margin-top: 8px;
+  }
+  .chart-area canvas { width: 100% !important; height: 100% !important; }
+
+  /* STATUS LOG */
+  .log-card { grid-column: span 6; }
+  @media(max-width:768px) { .log-card { grid-column: span 12; } }
+
+  .log-list { max-height: 140px; overflow-y: auto; }
+  .log-list::-webkit-scrollbar { width: 4px; }
+  .log-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .log-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(74,180,89,0.07);
+    font-size: 12px;
+    animation: fadeIn 0.3s ease;
+  }
+  .log-item:last-child { border-bottom: none; }
+  .log-time { color: var(--text-muted); font-family: 'DM Mono', monospace; white-space: nowrap; }
+  .log-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 3px; flex-shrink: 0; }
+  .log-dot.green  { background: var(--green); }
+  .log-dot.teal   { background: var(--teal); }
+  .log-dot.amber  { background: var(--amber); }
+  .log-dot.red    { background: var(--red); }
+  .log-text { color: var(--text-dim); line-height: 1.5; }
+
+  /* REFRESH BTN */
+  .refresh-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2d6e35, #4ab459);
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(74,180,89,0.45);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .refresh-btn:hover { transform: scale(1.1); box-shadow: 0 12px 32px rgba(74,180,89,0.55); }
+  .refresh-btn.spinning svg { animation: spin 1s linear infinite; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 13px;
+    color: var(--text);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    z-index: 300;
+    transform: translateX(120%);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    max-width: 260px;
+  }
+  .toast.show { transform: translateX(0); }
+  .toast-icon { margin-right: 6px; }
+
+  /* BLYNK MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    animation: fadeIn 0.3s ease;
+  }
+  .modal h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+  .modal p { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin-bottom: 20px; }
+  .modal-grid { display: grid; gap: 12px; margin-bottom: 20px; }
+  .modal-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .modal-field input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+  }
+  .modal-field input:focus { border-color: var(--green); }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-actions .btn-save {
+    flex: 1;
+    padding: 13px;
+    background: linear-gradient(135deg, #2d6e35, #4ab459);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .modal-actions .btn-save:hover { opacity: 0.85; }
+  .modal-actions .btn-cancel {
+    padding: 13px 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-dim);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .modal-actions .btn-cancel:hover { border-color: rgba(74,180,89,0.35); }
+
+  .pin-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .pin-table th { text-align: left; padding: 6px 10px; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--border); }
+  .pin-table td { padding: 8px 10px; color: var(--text-dim); border-bottom: 1px solid rgba(74,180,89,0.05); }
+  .pin-table code { font-family: 'DM Mono', monospace; color: var(--green); background: var(--green-dim); padding: 2px 6px; border-radius: 4px; }
+
+  /* LOADING overlay for Blynk */
+  .blynk-loading {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border: 2px solid rgba(74,180,89,0.3);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+  }
 </style>
 </head>
 <body>
 
-<!-- ambient orbs -->
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
 <canvas id="bgCanvas"></canvas>
 
-<!-- ══════════════════ LOGIN ══════════════════ -->
+<!-- ═══ LOGIN PAGE ═══ -->
 <div id="loginPage">
   <div class="login-card">
     <div class="login-logo">
-      <div class="logo-svg-wrap">
-        <!-- Ecodrip leaf/drop SVG -->
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 4C20 4 8 12 8 22C8 28.627 13.373 34 20 34C26.627 34 32 28.627 32 22C32 12 20 4 20 4Z" fill="url(#leafGrad)" opacity="0.9"/>
-          <path d="M20 12C20 12 14 18 14 24C14 25.5 14.5 27 15.5 28" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
-          <path d="M20 34V38" stroke="url(#stemGrad)" stroke-width="2" stroke-linecap="round"/>
-          <defs>
-            <linearGradient id="leafGrad" x1="20" y1="4" x2="20" y2="34" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#6dda80"/>
-              <stop offset="100%" stop-color="#2d6e35"/>
-            </linearGradient>
-            <linearGradient id="stemGrad" x1="20" y1="34" x2="20" y2="38" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#4ab459"/>
-              <stop offset="100%" stop-color="#2d6e35"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
+      <div class="logo-icon">🌿</div>
       <h1>Ecodrip</h1>
       <p>Smart Watering Management System</p>
-      <div class="version-tag">v2.0.0 · ESP8266 + Blynk</div>
     </div>
-
-    <!-- Login Form -->
+    
+    <!-- Form Login -->
     <div id="loginForm">
       <div class="login-error" id="loginError">Email/Username atau password salah.</div>
       <div class="form-group">
         <label>Email / Username</label>
-        <div class="input-wrap">
-          <span class="input-icon">👤</span>
-          <input type="text" id="loginEmail" placeholder="admin atau admin@hydro.id" autocomplete="username">
-        </div>
+        <input type="text" id="loginEmail" placeholder="admin atau admin@hydro.id" autocomplete="username">
       </div>
       <div class="form-group">
         <label>Password</label>
-        <div class="input-wrap">
-          <span class="input-icon">🔑</span>
-          <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
-        </div>
+        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
       </div>
       <button class="btn-login" id="btnLogin" onclick="handleLogin()">Masuk ke Dashboard</button>
-      <div class="login-hint">
-        Demo → user: <strong>admin</strong> · pass: <strong>ecodrip72829</strong>
+      <div class="auth-switch">
+        Belum punya akun? <a href="#" onclick="toggleAuth('signup')">Daftar Sekarang</a>
       </div>
-      <div class="auth-switch">Belum punya akun? <a href="#" onclick="toggleAuth('signup')">Daftar Sekarang</a></div>
     </div>
 
-    <!-- Signup Form -->
+    <!-- Form Sign Up -->
     <div id="signupForm" class="hidden">
       <div class="form-group">
         <label>Nama Lengkap</label>
-        <div class="input-wrap"><span class="input-icon">✏️</span><input type="text" id="signupName" placeholder="Masukkan nama Anda"></div>
+        <input type="text" id="signupName" placeholder="Masukkan nama Anda">
       </div>
       <div class="form-group">
         <label>Username</label>
-        <div class="input-wrap"><span class="input-icon">@</span><input type="text" id="signupUser" placeholder="pilih username"></div>
+        <input type="text" id="signupUser" placeholder="pilih username">
       </div>
       <div class="form-group">
         <label>Email</label>
-        <div class="input-wrap"><span class="input-icon">📧</span><input type="email" id="signupEmail" placeholder="contoh@mail.com"></div>
+        <input type="email" id="signupEmail" placeholder="contoh@mail.com">
       </div>
       <div class="form-group">
         <label>Password</label>
-        <div class="input-wrap"><span class="input-icon">🔒</span><input type="password" id="signupPass" placeholder="buat password"></div>
+        <input type="password" id="signupPass" placeholder="buat password">
       </div>
       <button class="btn-login" onclick="handleSignUp()">Buat Akun Baru</button>
-      <div class="auth-switch">Sudah punya akun? <a href="#" onclick="toggleAuth('login')">Masuk di sini</a></div>
+      <div class="auth-switch">
+        Sudah punya akun? <a href="#" onclick="toggleAuth('login')">Masuk di sini</a>
+      </div>
     </div>
+
   </div>
 </div>
 
-<!-- ══════════════════ DASHBOARD ══════════════════ -->
+<!-- ═══ DASHBOARD ═══ -->
 <div id="dashboard" class="hidden">
 
   <header class="header">
     <div class="header-brand">
-      <div class="header-icon">
-        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 4C20 4 8 12 8 22C8 28.627 13.373 34 20 34C26.627 34 32 28.627 32 22C32 12 20 4 20 4Z" fill="url(#hLeafGrad)" opacity="0.95"/>
-          <path d="M20 12C20 12 14 18 14 24C14 25.5 14.5 27 15.5 28" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"/>
-          <defs>
-            <linearGradient id="hLeafGrad" x1="20" y1="4" x2="20" y2="34" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#6dda80"/>
-              <stop offset="100%" stop-color="#2d6e35"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
+      <div class="icon">🌿</div>
       <div>
         <h2>Ecodrip</h2>
         <span>Smart Watering System</span>
@@ -1309,253 +866,152 @@ body::before {
     <div class="header-right">
       <div class="status-pill">
         <div class="status-dot"></div>
-        <span id="connStatusText">Online</span>
+        <span id="connStatusText">Terhubung</span>
       </div>
-      <button class="btn-blynk" onclick="openBlynkModal()">⚡ Blynk</button>
-      <button class="btn-logout" onclick="handleLogout()">↩ Keluar</button>
+      <button class="btn-blynk" onclick="openBlynkModal()">
+        ⚡ Blynk Config
+      </button>
+      <button class="btn-logout" onclick="handleLogout()">Keluar</button>
     </div>
   </header>
 
   <main class="main">
-    <div class="welcome-bar">
+    <div class="welcome-bar fade-in">
       <div>
-        <h3>Halo, <span id="userName" style="color:var(--green-bright)">Admin</span> 🌿</h3>
-        <p>Monitor &amp; kendalikan sistem irigasi cerdas Anda secara real-time</p>
+        <h3>Selamat datang, <span id="userName" style="color:var(--green)">Admin</span> 👋</h3>
+        <p>Monitor dan kendalikan sistem irigasi Anda secara real-time</p>
       </div>
-      <div class="time-block">
-        <div id="currentTime"></div>
-        <div class="uptime-badge" id="uptimeBadge">UPTIME: 00:00:00</div>
-      </div>
+      <div id="currentTime"></div>
     </div>
 
-    <!-- Blynk Banner -->
-    <div class="blynk-banner">
-      <span class="blynk-label">⚡ BLYNK TOKEN</span>
+    <!-- BLYNK TOKEN BANNER -->
+    <div class="blynk-banner fade-in">
+      <span class="blynk-label">⚡ Blynk Token</span>
       <input type="text" id="blynkTokenInput" placeholder="Masukkan Blynk Auth Token Anda...">
       <span id="blynkStatusBadge" class="blynk-status-text"></span>
       <button onclick="saveBlynkToken()">Hubungkan</button>
     </div>
 
-    <div class="grid">
+    <div class="grid fade-in">
 
-      <!-- ── PUMP CARD ── -->
+      <!-- PUMP CONTROL -->
       <div class="card pump-card">
-        <div class="card-inner-glow"></div>
-        <div class="card-label"><div class="dot" style="background:var(--green);box-shadow:0 0 6px var(--green)"></div>KONTROL POMPA</div>
+        <div class="card-label"><div class="dot"></div>Kontrol Pompa</div>
         <div class="pump-toggle-wrapper">
           <div style="position:relative;">
-            <div class="pump-outer-ring">
-              <svg class="pump-ring-svg off" id="pumpRingSvg" viewBox="0 0 152 152">
-                <circle cx="76" cy="76" r="70"/>
-              </svg>
-              <button class="pump-btn" id="pumpBtn" onclick="togglePump()">
-                <!-- Custom water pump SVG icon -->
-                <svg class="pump-icon-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M18 4C18 4 10 11 10 18C10 22.418 13.582 26 18 26C22.418 26 26 22.418 26 18C26 11 18 4 18 4Z" id="pumpIconLeaf" fill="#4ab459" opacity="0.9"/>
-                  <circle cx="18" cy="18" r="4" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
-                  <path d="M18 26V32" stroke="#4ab459" stroke-width="2" stroke-linecap="round"/>
-                  <path d="M12 31H24" stroke="#2d6e35" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                <span class="pump-status-label" id="pumpStatus">OFF</span>
-              </button>
-            </div>
-            <div class="water-drops">
+            <button class="pump-btn" id="pumpBtn" onclick="togglePump()">
+              <span class="pump-emoji">💧</span>
+              <span class="pump-status" id="pumpStatus">OFF</span>
+            </button>
+            <div class="water-drops" id="waterDrops">
               <div class="drop"></div>
               <div class="drop"></div>
               <div class="drop"></div>
             </div>
           </div>
-
-          <!-- wave indicator -->
-          <div class="pump-wave" id="pumpWave">
-            <svg viewBox="0 0 300 20" preserveAspectRatio="none" height="20">
-              <path d="M0 10 Q37.5 0 75 10 Q112.5 20 150 10 Q187.5 0 225 10 Q262.5 20 300 10 L300 20 L0 20Z" fill="rgba(45,212,196,0.3)"/>
-            </svg>
-          </div>
-
-          <div class="pump-hint-text">
+          <div style="font-size:12px;color:var(--text-muted);text-align:center;">
             Klik untuk <span id="pumpHint">menghidupkan</span> pompa
           </div>
         </div>
       </div>
 
-      <!-- ── MODE CARD ── -->
+      <!-- MODE -->
       <div class="card mode-card">
-        <div class="card-inner-glow"></div>
-        <div class="card-label"><div class="dot" style="background:var(--teal)"></div>MODE OPERASI</div>
+        <div class="card-label"><div class="dot" style="background:var(--teal)"></div>Mode Operasi</div>
         <div class="mode-toggle">
           <button class="mode-btn active" id="btnManual" onclick="setMode('manual')">🕹️ Manual</button>
           <button class="mode-btn" id="btnAuto" onclick="setMode('auto')">🤖 Auto</button>
         </div>
         <div class="mode-info" id="modeInfo">
-          <strong>Mode Manual:</strong> Anda mengontrol pompa secara langsung menggunakan tombol di samping.
-        </div>
-        <div class="threshold-row">
-          <div class="threshold-chip tc-on">
-            <div class="tc-label">Pump ON</div>
-            <div class="tc-val">&lt;40%</div>
-          </div>
-          <div class="threshold-chip tc-off">
-            <div class="tc-label">Pump OFF</div>
-            <div class="tc-val">≥60%</div>
-          </div>
+          <strong>Mode Manual:</strong> Anda mengontrol pompa secara langsung menggunakan tombol di atas.
         </div>
       </div>
 
-      <!-- ── MOISTURE GAUGE ── -->
+      <!-- SOIL MOISTURE -->
       <div class="card moisture-card">
-        <div class="card-inner-glow"></div>
-        <div class="card-label"><div class="dot" style="background:var(--amber)"></div>KELEMBABAN TANAH</div>
+        <div class="card-label"><div class="dot" style="background:var(--amber)"></div>Kelembaban Tanah</div>
         <div class="gauge-wrap">
-          <svg class="gauge-svg" viewBox="0 0 160 100">
-            <!-- outer decoration ring -->
-            <path fill="none" d="M24 88 A56 56 0 0 1 136 88" stroke="rgba(74,180,89,0.05)" stroke-width="20"/>
-            <!-- track -->
-            <path class="gauge-track" d="M24 88 A56 56 0 0 1 136 88"/>
-            <!-- fill -->
+          <svg class="gauge-svg" viewBox="0 0 140 90">
+            <path class="gauge-track" d="M 20 80 A 50 50 0 0 1 120 80" stroke-linecap="round"/>
             <path class="gauge-fill" id="gaugeFill"
-              d="M24 88 A56 56 0 0 1 136 88"
+              d="M 20 80 A 50 50 0 0 1 120 80"
               stroke="#4ab459"
-              stroke-dasharray="175"
-              stroke-dashoffset="175"/>
-            <!-- center number -->
-            <text x="80" y="76" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="26" fill="#c8e8cc" font-weight="500" id="moistureSvgText">--%</text>
-            <!-- min/max labels -->
-            <text x="18" y="100" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="rgba(200,232,204,0.3)">0</text>
-            <text x="142" y="100" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="rgba(200,232,204,0.3)">100</text>
+              stroke-dasharray="157"
+              stroke-dashoffset="157"/>
+            <text x="70" y="72" text-anchor="middle"
+              font-family="DM Mono" font-size="22" fill="#d4f0d8" id="moistureSvgText">--%</text>
           </svg>
-          <div class="gauge-meta">
-            <div class="gauge-meta-item">
-              <div class="gm-label">Status</div>
-              <div class="gm-val" id="moistureStatus" style="color:var(--green);font-size:11px;margin-top:5px;">--</div>
+          <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;">
+            <div style="text-align:center;">
+              <div style="font-size:11px;color:var(--text-muted)">Status</div>
+              <div id="moistureStatus" style="font-size:13px;font-weight:600;color:var(--green);margin-top:2px;">--</div>
             </div>
-            <div class="gauge-meta-item">
-              <div class="gm-label">Threshold</div>
-              <div class="gm-val" style="color:var(--amber);font-size:14px;">40%</div>
-            </div>
-            <div class="gauge-meta-item">
-              <div class="gm-label">Raw</div>
-              <div class="gm-val" id="moistureRaw" style="color:var(--text2);font-size:14px;">--</div>
+            <div style="text-align:center;">
+              <div style="font-size:11px;color:var(--text-muted)">Threshold</div>
+              <div style="font-size:13px;font-weight:600;color:var(--amber);margin-top:2px;">40%</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ── TEMP ── -->
+      <!-- TEMPERATURE -->
       <div class="card temp-card">
-        <div class="card-inner-glow" style="background:radial-gradient(ellipse at 10% 10%, rgba(240,165,0,0.04) 0%, transparent 60%)"></div>
-        <div class="card-label"><div class="dot" style="background:var(--amber)"></div>SUHU UDARA</div>
-        <div class="metric-big" id="tempVal">--<span class="unit">°C</span></div>
-        <div class="sensor-label"><span class="sensor-dot" style="background:var(--amber)"></span>DHT11</div>
-        <div class="spark-bar" id="tempSpark">
-          <!-- filled by JS -->
-        </div>
+        <div class="card-label"><div class="dot" style="background:var(--amber)"></div>Suhu</div>
+        <div class="metric-val" id="tempVal"><span class="unit">°C</span></div>
+        <div style="font-size:12px;color:var(--text-muted);">DHT11 Sensor</div>
+        <div class="metric-bar"><div class="metric-bar-fill temp-color" id="tempBar" style="width:0%"></div></div>
       </div>
 
-      <!-- ── HUMIDITY ── -->
+      <!-- HUMIDITY AIR -->
       <div class="card hum-card">
-        <div class="card-inner-glow" style="background:radial-gradient(ellipse at 10% 10%, rgba(45,212,196,0.04) 0%, transparent 60%)"></div>
-        <div class="card-label"><div class="dot" style="background:var(--teal)"></div>HUMIDITY UDARA</div>
-        <div class="metric-big" id="humVal">--<span class="unit">%</span></div>
-        <div class="sensor-label"><span class="sensor-dot" style="background:var(--teal)"></span>DHT11</div>
-        <div class="spark-bar" id="humSpark"></div>
+        <div class="card-label"><div class="dot" style="background:var(--teal)"></div>Humidity Udara</div>
+        <div class="metric-val" id="humVal"><span class="unit">%</span></div>
+        <div style="font-size:12px;color:var(--text-muted);">DHT11 Sensor</div>
+        <div class="metric-bar"><div class="metric-bar-fill hum-color" id="humBar" style="width:0%"></div></div>
       </div>
 
-      <!-- ── CHART ── -->
+      <!-- HISTORY CHART -->
       <div class="card history-card">
-        <div class="card-inner-glow"></div>
-        <div class="chart-header">
-          <div class="card-label" style="margin-bottom:0"><div class="dot"></div>RIWAYAT KELEMBABAN</div>
-          <div class="chart-pill" id="chartPill">10 titik terakhir</div>
-        </div>
-        <div class="chart-area" style="margin-top:10px;">
+        <div class="card-label"><div class="dot"></div>Riwayat Kelembaban (10 menit terakhir)</div>
+        <div class="chart-area">
           <canvas id="historyChart"></canvas>
         </div>
       </div>
 
-      <!-- ── LOG ── -->
+      <!-- LOG -->
       <div class="card log-card">
-        <div class="card-inner-glow"></div>
-        <div class="card-label"><div class="dot" style="background:var(--teal)"></div>LOG AKTIVITAS</div>
+        <div class="card-label"><div class="dot" style="background:var(--teal)"></div>Log Aktivitas</div>
         <div class="log-list" id="logList"></div>
       </div>
 
-      <!-- ── STAT MINI CARDS ── -->
-      <div class="card stat-mini">
-        <div class="stat-mini-inner">
-          <div class="stat-icon g">💧</div>
-          <div class="stat-text">
-            <div class="stat-val" id="statPumpCount" style="color:var(--green)">0</div>
-            <div class="stat-desc">Sesi penyiraman</div>
-            <div class="stat-trend nt" id="statPumpTrend">sesi ini</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card stat-mini">
-        <div class="stat-mini-inner">
-          <div class="stat-icon t">🌡️</div>
-          <div class="stat-text">
-            <div class="stat-val" id="statTempAvg" style="color:var(--teal)">--</div>
-            <div class="stat-desc">Rata-rata suhu</div>
-            <div class="stat-trend nt">°C / session</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card stat-mini">
-        <div class="stat-mini-inner">
-          <div class="stat-icon a">☁️</div>
-          <div class="stat-text">
-            <div class="stat-val" id="statHumAvg" style="color:var(--amber)">--</div>
-            <div class="stat-desc">Rata-rata humidity</div>
-            <div class="stat-trend nt">% / session</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card stat-mini">
-        <div class="stat-mini-inner">
-          <div class="stat-icon v">📡</div>
-          <div class="stat-text">
-            <div class="stat-val" id="statRefreshCount" style="color:var(--violet)">0</div>
-            <div class="stat-desc">Data refresh</div>
-            <div class="stat-trend nt">auto / 15s</div>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /grid -->
+    </div>
   </main>
 </div>
 
 <!-- REFRESH FAB -->
 <button class="refresh-btn hidden" id="refreshBtn" onclick="fetchBlynkData()" title="Refresh data">
-  <svg id="refreshIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <svg id="refreshIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
     <path d="M3 3v5h5"/>
   </svg>
 </button>
 
 <!-- TOAST -->
-<div class="toast" id="toast">
-  <span class="toast-icon">✅</span>
-  <span id="toastMsg"></span>
-</div>
+<div class="toast" id="toast"><span class="toast-icon">✅</span><span id="toastMsg"></span></div>
 
 <!-- BLYNK MODAL -->
 <div class="modal-overlay hidden" id="blynkModal">
   <div class="modal">
     <h3>⚡ Konfigurasi Blynk</h3>
-    <p>Masukkan Auth Token dari app Blynk Anda dan sesuaikan mapping virtual pin dengan kode ESP8266.</p>
+    <p>Masukkan Auth Token dari app Blynk Anda dan mapping virtual pin yang sesuai dengan kode ESP8266.</p>
     <div class="modal-grid">
       <div class="modal-field">
         <label>Auth Token</label>
         <input type="text" id="modalToken" placeholder="YourBlynkAuthToken">
       </div>
     </div>
-    <p style="font-size:12px;color:var(--text3);margin-bottom:10px;font-family:var(--font-mono);">MAPPING VIRTUAL PIN</p>
-    <table class="pin-table">
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">Mapping Virtual Pin (sesuaikan dengan kode ESP8266 Anda):</p>
+    <table class="pin-table" style="margin-bottom:20px;">
       <tr><th>Fungsi</th><th>V-Pin</th><th>Value</th></tr>
       <tr><td>Pompa ON/OFF</td><td><code>V0</code></td><td>0 = OFF, 1 = ON</td></tr>
       <tr><td>Mode Auto/Manual</td><td><code>V1</code></td><td>0 = Manual, 1 = Auto</td></tr>
@@ -1570,57 +1026,59 @@ body::before {
   </div>
 </div>
 
-<!-- ════════════════════ SCRIPT ════════════════════ -->
 <script>
-/* ────────────────── BG CANVAS ────────────────── */
+/* ═══════════════════════════════════
+   BACKGROUND ANIMATION
+═══════════════════════════════════ */
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
-let W, H;
+let particles = [];
 
 function resize() {
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
 resize();
-window.addEventListener('resize', () => { resize(); if (chartCanvas) { const p = chartCanvas.parentElement; chartCanvas.width = p.offsetWidth; chartCanvas.height = p.offsetHeight; } updateChart(); });
+window.addEventListener('resize', resize);
 
 class Particle {
-  constructor() { this.reset(true); }
-  reset(init) {
-    this.x = Math.random() * W;
-    this.y = init ? Math.random() * H : (Math.random() < 0.5 ? -5 : H + 5);
-    this.r = Math.random() * 1.2 + 0.2;
-    this.vx = (Math.random() - 0.5) * 0.18;
-    this.vy = (Math.random() - 0.5) * 0.18;
-    this.a = Math.random() * 0.4 + 0.05;
-    this.color = Math.random() > 0.8 ? '45,212,196' : '74,180,89';
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.r = Math.random() * 1.5 + 0.3;
+    this.vx = (Math.random() - 0.5) * 0.2;
+    this.vy = (Math.random() - 0.5) * 0.2;
+    this.alpha = Math.random() * 0.5 + 0.1;
   }
   update() {
     this.x += this.vx; this.y += this.vy;
-    if (this.x < -10 || this.x > W+10 || this.y < -10 || this.y > H+10) this.reset(false);
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
   }
   draw() {
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(${this.color},${this.a})`;
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(74,180,89,${this.alpha})`;
     ctx.fill();
   }
 }
 
-const particles = Array.from({length:90}, () => new Particle());
+for (let i = 0; i < 80; i++) particles.push(new Particle());
 
 function animBg() {
-  ctx.clearRect(0,0,W,H);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   particles.forEach(p => { p.update(); p.draw(); });
-  for (let i=0; i<particles.length; i++) {
-    for (let j=i+1; j<particles.length; j++) {
-      const dx = particles[i].x-particles[j].x, dy = particles[i].y-particles[j].y;
-      const d = Math.sqrt(dx*dx+dy*dy);
-      if (d < 90) {
+  // draw connections
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i+1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 100) {
         ctx.beginPath();
         ctx.moveTo(particles[i].x, particles[i].y);
         ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = `rgba(74,180,89,${0.07*(1-d/90)})`;
+        ctx.strokeStyle = `rgba(74,180,89,${0.08 * (1 - dist/100)})`;
         ctx.lineWidth = 0.5;
         ctx.stroke();
       }
@@ -1630,472 +1088,446 @@ function animBg() {
 }
 animBg();
 
-/* ────────────────── AUTH ────────────────── */
+/* ═══════════════════════════════════
+   AUTH
+═══════════════════════════════════ */
 const DEFAULT_USERS = [
-  {username:'admin', email:'admin@hydro.id', pass:'ecodrip72829', name:'Admin Ecodrip'},
-  {username:'mirza', email:'kebunpace@gmail.com', pass:'pace123', name:'Pace Mirza'},
+  { username: 'admin', email: 'admin@hydro.id', pass: 'ecodrip72829', name: 'Admin Ecodrip' },
+  { username: 'mirza', email: 'kebunpace@gmail.com', pass: 'pace123', name: 'Pace Mirza' },
 ];
-function toggleAuth(m) {
-  document.getElementById('loginForm').classList.toggle('hidden', m!=='login');
-  document.getElementById('signupForm').classList.toggle('hidden', m!=='signup');
+
+function toggleAuth(mode) {
+  const loginF = document.getElementById('loginForm');
+  const signupF = document.getElementById('signupForm');
+  if (mode === 'signup') {
+    loginF.classList.add('hidden');
+    signupF.classList.remove('hidden');
+  } else {
+    loginF.classList.remove('hidden');
+    signupF.classList.add('hidden');
+  }
 }
+
 function getAllUsers() {
-  return [...DEFAULT_USERS, ...JSON.parse(localStorage.getItem('hs_registered_users')||'[]')];
+  const registered = JSON.parse(localStorage.getItem('hs_registered_users') || '[]');
+  return [...DEFAULT_USERS, ...registered];
 }
+
 function handleSignUp() {
-  const name=document.getElementById('signupName').value.trim();
-  const user=document.getElementById('signupUser').value.trim().toLowerCase();
-  const email=document.getElementById('signupEmail').value.trim().toLowerCase();
-  const pass=document.getElementById('signupPass').value;
-  if (!name||!user||!email||!pass){alert('Harap isi semua kolom.');return;}
-  const all=getAllUsers();
-  if (all.find(u=>u.username===user||u.email===email)){alert('Username/Email sudah terdaftar.');return;}
-  const reg=JSON.parse(localStorage.getItem('hs_registered_users')||'[]');
-  reg.push({name,username:user,email,pass});
-  localStorage.setItem('hs_registered_users',JSON.stringify(reg));
-  alert('Akun berhasil dibuat!');
+  const name = document.getElementById('signupName').value.trim();
+  const user = document.getElementById('signupUser').value.trim().toLowerCase();
+  const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('signupPass').value;
+
+  if (!name || !user || !email || !pass) {
+    alert('Harap isi semua kolom pendaftaran.');
+    return;
+  }
+
+  const allUsers = getAllUsers();
+  if (allUsers.find(u => u.username === user || u.email === email)) {
+    alert('Username atau Email sudah terdaftar.');
+    return;
+  }
+
+  const newUser = { name, username: user, email, pass };
+  const registered = JSON.parse(localStorage.getItem('hs_registered_users') || '[]');
+  registered.push(newUser);
+  localStorage.setItem('hs_registered_users', JSON.stringify(registered));
+
+  alert('Akun berhasil dibuat! Silakan login.');
   toggleAuth('login');
-  document.getElementById('loginEmail').value=user;
+  document.getElementById('loginEmail').value = user;
 }
+
 function handleLogin() {
-  const input=document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pw=document.getElementById('loginPass').value;
-  const err=document.getElementById('loginError');
-  const u=getAllUsers().find(u=>(u.username===input||u.email===input)&&u.pass===pw);
-  if (!u){err.style.display='block';return;}
-  err.style.display='none';
-  sessionStorage.setItem('hs_user',JSON.stringify(u));
+  const input = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pw = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginError');
+  
+  const allUsers = getAllUsers();
+  const u = allUsers.find(u => (u.username === input || u.email === input) && u.pass === pw);
+
+  if (!u) { err.style.display = 'block'; return; }
+  
+  err.style.display = 'none';
+  sessionStorage.setItem('hs_user', JSON.stringify(u));
   showDashboard(u);
 }
-document.addEventListener('keydown',e=>{
-  if (e.key==='Enter'&&!document.getElementById('loginPage').classList.contains('hidden')) handleLogin();
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !document.getElementById('loginPage').classList.contains('hidden')) handleLogin();
 });
+
 function handleLogout() {
   sessionStorage.removeItem('hs_user');
   document.getElementById('dashboard').classList.add('hidden');
   document.getElementById('loginPage').classList.remove('hidden');
   document.getElementById('refreshBtn').classList.add('hidden');
-  clearInterval(uptimeInterval);
 }
+
 function showDashboard(u) {
   document.getElementById('loginPage').classList.add('hidden');
   document.getElementById('dashboard').classList.remove('hidden');
   document.getElementById('refreshBtn').classList.remove('hidden');
-  document.getElementById('userName').textContent=u.name;
-  addLog('green',`Login berhasil: ${u.name}`);
+  document.getElementById('userName').textContent = u.name;
+  addLog('green', `Login berhasil: ${u.name}`);
   startClock();
-  startUptime();
   initChart();
-  initSparkBars();
-  const tok=localStorage.getItem('hs_blynk_token')||'';
+  const tok = localStorage.getItem('hs_blynk_token') || '';
   if (tok) {
-    document.getElementById('blynkTokenInput').value=tok;
-    blynkToken=tok;
+    document.getElementById('blynkTokenInput').value = tok;
+    blynkToken = tok;
     fetchBlynkData();
   } else {
     simulateData();
   }
 }
-window.addEventListener('DOMContentLoaded',()=>{
-  const s=sessionStorage.getItem('hs_user');
-  if (s) showDashboard(JSON.parse(s));
+
+/* Check existing session */
+window.addEventListener('DOMContentLoaded', () => {
+  const stored = sessionStorage.getItem('hs_user');
+  if (stored) { showDashboard(JSON.parse(stored)); }
 });
 
-/* ripple on login btn */
-document.getElementById('btnLogin').addEventListener('click',function(e){
-  const r=this.getBoundingClientRect();
-  const size=Math.max(r.width,r.height);
-  const el=document.createElement('span');
-  el.className='ripple-el';
-  el.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-r.left-size/2}px;top:${e.clientY-r.top-size/2}px;`;
-  this.appendChild(el);
-  setTimeout(()=>el.remove(),700);
-});
-
-/* ────────────────── CLOCK & UPTIME ────────────────── */
+/* ═══════════════════════════════════
+   CLOCK
+═══════════════════════════════════ */
 function startClock() {
-  const tick=()=>{
-    const now=new Date();
-    document.getElementById('currentTime').textContent=
-      now.toLocaleDateString('id-ID',{weekday:'short',day:'numeric',month:'short'})+' · '+
+  function tick() {
+    const now = new Date();
+    document.getElementById('currentTime').textContent =
+      now.toLocaleDateString('id-ID', {weekday:'short',day:'numeric',month:'short'}) + '  ' +
       now.toLocaleTimeString('id-ID');
-  };
-  tick(); setInterval(tick,1000);
-}
-let uptimeStart, uptimeInterval;
-function startUptime() {
-  uptimeStart=Date.now();
-  uptimeInterval=setInterval(()=>{
-    const s=Math.floor((Date.now()-uptimeStart)/1000);
-    const h=String(Math.floor(s/3600)).padStart(2,'0');
-    const m=String(Math.floor((s%3600)/60)).padStart(2,'0');
-    const sc=String(s%60).padStart(2,'0');
-    document.getElementById('uptimeBadge').textContent=`UPTIME: ${h}:${m}:${sc}`;
-  },1000);
+  }
+  tick(); setInterval(tick, 1000);
 }
 
-/* ────────────────── STATE ────────────────── */
-let pumpOn=false, mode='manual', blynkToken='';
-let moistureHistory=[], tempHistory=[], humHistory=[];
-let pumpCount=0, tempSum=0, humSum=0, dataCount=0, refreshCount=0;
+/* ═══════════════════════════════════
+   STATE
+═══════════════════════════════════ */
+let pumpOn = false;
+let mode = 'manual'; // 'manual' | 'auto'
+let blynkToken = '';
+let moistureHistory = [];
 
-/* ────────────────── PUMP ────────────────── */
+/* ═══════════════════════════════════
+   PUMP
+═══════════════════════════════════ */
 function togglePump() {
-  if (mode==='auto'){showToast('⚠️ Dikendalikan otomatis di mode Auto','⚠️');return;}
-  pumpOn=!pumpOn;
-  if (pumpOn) pumpCount++;
-  document.getElementById('statPumpCount').textContent=pumpCount;
+  if (mode === 'auto') { showToast('⚠️ Pompa dikendalikan otomatis di mode Auto'); return; }
+  pumpOn = !pumpOn;
   updatePumpUI();
-  if (blynkToken) blynkWrite('V0',pumpOn?1:0);
-  addLog(pumpOn?'green':'red',`Pompa ${pumpOn?'dihidupkan 💧':'dimatikan ⬛'} (Manual)`);
+  if (blynkToken) blynkWrite('V0', pumpOn ? 1 : 0);
+  addLog(pumpOn ? 'green' : 'red', `Pompa ${pumpOn ? 'dihidupkan' : 'dimatikan'} (Manual)`);
 }
+
 function updatePumpUI() {
-  const btn=document.getElementById('pumpBtn');
-  const ring=document.getElementById('pumpRingSvg');
-  const wave=document.getElementById('pumpWave');
-  btn.className='pump-btn'+(pumpOn?' on':'');
-  ring.className='pump-ring-svg'+(pumpOn?' on':' off');
-  wave.className='pump-wave'+(pumpOn?' active':'');
-  document.getElementById('pumpStatus').textContent=pumpOn?'ON':'OFF';
-  document.getElementById('pumpHint').textContent=pumpOn?'mematikan':'menghidupkan';
+  const btn = document.getElementById('pumpBtn');
+  const drops = document.getElementById('waterDrops');
+  const status = document.getElementById('pumpStatus');
+  const hint = document.getElementById('pumpHint');
+  btn.className = 'pump-btn' + (pumpOn ? ' on' : '');
+  drops.style.opacity = pumpOn ? '1' : '0';
+  status.textContent = pumpOn ? 'ON' : 'OFF';
+  hint.textContent = pumpOn ? 'mematikan' : 'menghidupkan';
 }
 
-/* ────────────────── MODE ────────────────── */
+/* ═══════════════════════════════════
+   MODE
+═══════════════════════════════════ */
 function setMode(m) {
-  mode=m;
-  document.getElementById('btnManual').className='mode-btn'+(m==='manual'?' active':'');
-  document.getElementById('btnAuto').className='mode-btn'+(m==='auto'?' active':'');
-  document.getElementById('modeInfo').innerHTML=m==='auto'
-    ?'<strong>Mode Auto:</strong> Sistem otomatis mengaktifkan pompa jika kelembaban &lt; 40%. ESP8266 mengontrol langsung.'
-    :'<strong>Mode Manual:</strong> Anda mengontrol pompa secara langsung menggunakan tombol di samping.';
-  if (blynkToken) blynkWrite('V1',m==='auto'?1:0);
-  addLog('teal',`Mode → ${m==='auto'?'Auto 🤖':'Manual 🕹️'}`);
-  showToast(`Mode ${m==='auto'?'Otomatis 🤖':'Manual 🕹️'} aktif`);
+  mode = m;
+  document.getElementById('btnManual').className = 'mode-btn' + (m==='manual'?' active':'');
+  document.getElementById('btnAuto').className = 'mode-btn' + (m==='auto'?' active':'');
+  const info = document.getElementById('modeInfo');
+  if (m === 'auto') {
+    info.innerHTML = '<strong>Mode Auto:</strong> Sistem otomatis mengaktifkan pompa jika kelembaban < 40%. ESP8266 mengontrol langsung.';
+  } else {
+    info.innerHTML = '<strong>Mode Manual:</strong> Anda mengontrol pompa secara langsung menggunakan tombol di atas.';
+  }
+  if (blynkToken) blynkWrite('V1', m==='auto' ? 1 : 0);
+  addLog('teal', `Mode diganti ke: ${m === 'auto' ? 'Auto 🤖' : 'Manual 🕹️'}`);
+  showToast(`Mode ${m === 'auto' ? 'Otomatis' : 'Manual'} aktif`);
 }
 
-/* ────────────────── GAUGE ────────────────── */
+/* ═══════════════════════════════════
+   GAUGE
+═══════════════════════════════════ */
 function setMoisture(val) {
-  val=Math.max(0,Math.min(100,Math.round(val)));
-  const arc=175, offset=arc-(arc*val/100);
-  const fill=document.getElementById('gaugeFill');
-  fill.style.strokeDashoffset=offset;
-  let color='#4ab459';
-  if (val<30) color='#e05454';
-  else if (val<50) color='#f0a500';
-  else if (val>75) color='#2dd4c4';
-  fill.style.stroke=color;
-  document.getElementById('moistureSvgText').textContent=val+'%';
-  document.getElementById('moistureSvgText').setAttribute('fill', color);
-  document.getElementById('moistureRaw').textContent=val+'%';
-  const st=document.getElementById('moistureStatus');
-  if (val<30){st.textContent='Sangat Kering';st.style.color='#e08080';}
-  else if (val<50){st.textContent='Perlu Siram';st.style.color='#f0a500';}
-  else if (val<75){st.textContent='Cukup Lembab';st.style.color='#4ab459';}
-  else{st.textContent='Sangat Lembab';st.style.color='#2dd4c4';}
+  val = Math.max(0, Math.min(100, val));
+  const arc = 157;
+  const offset = arc - (arc * val / 100);
+  const fill = document.getElementById('gaugeFill');
+  fill.style.strokeDashoffset = offset;
+
+  let color = '#4ab459';
+  if (val < 30) color = '#e05454';
+  else if (val < 50) color = '#f0a500';
+  fill.style.stroke = color;
+
+  document.getElementById('moistureSvgText').textContent = val + '%';
+  const statusEl = document.getElementById('moistureStatus');
+  if (val < 30) { statusEl.textContent = 'Sangat Kering'; statusEl.style.color = '#e08080'; }
+  else if (val < 50) { statusEl.textContent = 'Perlu Siram'; statusEl.style.color = '#f0a500'; }
+  else if (val < 75) { statusEl.textContent = 'Cukup Lembab'; statusEl.style.color = '#4ab459'; }
+  else { statusEl.textContent = 'Sangat Lembab'; statusEl.style.color = '#2dd4c4'; }
+
+  // push to history
   moistureHistory.push(val);
-  if (moistureHistory.length>10) moistureHistory.shift();
+  if (moistureHistory.length > 10) moistureHistory.shift();
   updateChart();
-  document.getElementById('chartPill').textContent=`${moistureHistory.length} titik terakhir`;
 }
 
 function setTemp(val) {
-  val=parseFloat(val)||0;
-  document.getElementById('tempVal').innerHTML=`${val.toFixed(1)}<span class="unit">°C</span>`;
-  tempHistory.push(val);
-  if (tempHistory.length>8) tempHistory.shift();
-  updateSparkBar('tempSpark', tempHistory, 15, 45, '#f0a500');
-  tempSum+=val; dataCount++;
-  document.getElementById('statTempAvg').textContent=(tempSum/dataCount).toFixed(1)+'°';
+  val = parseFloat(val) || 0;
+  const el = document.getElementById('tempVal');
+  el.innerHTML = `${val.toFixed(1)}<span class="unit">°C</span>`;
+  document.getElementById('tempBar').style.width = Math.min(val / 50 * 100, 100) + '%';
 }
 
 function setHumidity(val) {
-  val=parseFloat(val)||0;
-  document.getElementById('humVal').innerHTML=`${val.toFixed(0)}<span class="unit">%</span>`;
-  humHistory.push(val);
-  if (humHistory.length>8) humHistory.shift();
-  updateSparkBar('humSpark', humHistory, 0, 100, '#2dd4c4');
-  humSum+=val;
-  document.getElementById('statHumAvg').textContent=(humSum/dataCount||1).toFixed(0)+'%';
+  val = parseFloat(val) || 0;
+  const el = document.getElementById('humVal');
+  el.innerHTML = `${val.toFixed(0)}<span class="unit">%</span>`;
+  document.getElementById('humBar').style.width = val + '%';
 }
 
-/* ────────────────── SPARK BARS ────────────────── */
-function initSparkBars() {
-  ['tempSpark','humSpark'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.innerHTML='';
-    for (let i=0;i<8;i++){
-      const d=document.createElement('div');
-      d.className='spark-segment';
-      d.style.height='4px';
-      el.appendChild(d);
-    }
-  });
-}
-function updateSparkBar(id, history, min, max, color) {
-  const segs=document.getElementById(id)?.children;
-  if (!segs) return;
-  const n=segs.length;
-  for (let i=0;i<n;i++) {
-    const v=history[history.length-n+i];
-    if (v==null) { segs[i].style.height='4px'; segs[i].style.background='var(--surface3)'; continue; }
-    const pct=Math.max(0,Math.min(1,(v-min)/(max-min)));
-    segs[i].style.height=Math.max(4, pct*36)+'px';
-    segs[i].style.background=color;
-    segs[i].style.opacity=0.4+pct*0.6;
-  }
-}
-
-/* ────────────────── CHART ────────────────── */
+/* ═══════════════════════════════════
+   CHART (vanilla canvas)
+═══════════════════════════════════ */
 let chartCanvas, chartCtx;
 function initChart() {
-  chartCanvas=document.getElementById('historyChart');
-  chartCtx=chartCanvas.getContext('2d');
-  const p=chartCanvas.parentElement;
-  chartCanvas.width=p.offsetWidth;
-  chartCanvas.height=p.offsetHeight;
+  chartCanvas = document.getElementById('historyChart');
+  chartCtx = chartCanvas.getContext('2d');
+  // set actual pixel size
+  const parent = chartCanvas.parentElement;
+  chartCanvas.width = parent.offsetWidth;
+  chartCanvas.height = parent.offsetHeight;
 }
-function updateChart() {
-  if (!chartCtx||moistureHistory.length<2) return;
-  const W=chartCanvas.width, H=chartCanvas.height;
-  chartCtx.clearRect(0,0,W,H);
-  const pad={t:10,r:14,b:26,l:36};
-  const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
 
-  // grid
-  [0,25,50,75,100].forEach(v=>{
-    const y=pad.t+cH-(v/100*cH);
+function updateChart() {
+  if (!chartCtx || moistureHistory.length < 2) return;
+  const W = chartCanvas.width, H = chartCanvas.height;
+  chartCtx.clearRect(0, 0, W, H);
+
+  const pad = { t: 10, r: 10, b: 24, l: 32 };
+  const cW = W - pad.l - pad.r;
+  const cH = H - pad.t - pad.b;
+
+  // grid lines
+  [0, 25, 50, 75, 100].forEach(v => {
+    const y = pad.t + cH - (v / 100 * cH);
     chartCtx.beginPath();
-    chartCtx.setLineDash([4,6]);
-    chartCtx.moveTo(pad.l,y); chartCtx.lineTo(pad.l+cW,y);
-    chartCtx.strokeStyle=`rgba(74,180,89,0.07)`;
-    chartCtx.lineWidth=1; chartCtx.stroke();
-    chartCtx.setLineDash([]);
-    chartCtx.fillStyle='rgba(200,232,204,0.25)';
-    chartCtx.font='10px JetBrains Mono,monospace';
-    chartCtx.fillText(v+'%',2,y+4);
+    chartCtx.moveTo(pad.l, y); chartCtx.lineTo(pad.l + cW, y);
+    chartCtx.strokeStyle = 'rgba(74,180,89,0.08)';
+    chartCtx.lineWidth = 1; chartCtx.stroke();
+    chartCtx.fillStyle = 'rgba(212,240,216,0.3)';
+    chartCtx.font = '10px DM Mono,monospace';
+    chartCtx.fillText(v + '%', 0, y + 4);
   });
 
-  const pts=moistureHistory.map((v,i)=>({
-    x:pad.l+(i/(moistureHistory.length-1))*cW,
-    y:pad.t+cH-(v/100*cH)
+  // gradient area
+  const grad = chartCtx.createLinearGradient(0, pad.t, 0, pad.t + cH);
+  grad.addColorStop(0, 'rgba(74,180,89,0.3)');
+  grad.addColorStop(1, 'rgba(74,180,89,0)');
+
+  const pts = moistureHistory.map((v, i) => ({
+    x: pad.l + (i / (moistureHistory.length - 1)) * cW,
+    y: pad.t + cH - (v / 100 * cH)
   }));
 
-  // color based on last value
-  const last=moistureHistory[moistureHistory.length-1];
-  const lineColor=last<30?'#e05454':last<50?'#f0a500':last>75?'#2dd4c4':'#4ab459';
-
-  // gradient area
-  const grad=chartCtx.createLinearGradient(0,pad.t,0,pad.t+cH);
-  grad.addColorStop(0,lineColor.replace('#','rgba(')+'60'.replace(/rgba\(/,'').replace(')60','')+'rgba('+hexToRgb(lineColor)+',0.25)');
-  grad.addColorStop(0, `rgba(${hexToRgb(lineColor)},0.25)`);
-  grad.addColorStop(1, `rgba(${hexToRgb(lineColor)},0)`);
-
   chartCtx.beginPath();
-  chartCtx.moveTo(pts[0].x,pts[0].y);
-  for (let i=1;i<pts.length;i++) {
-    const cpx=(pts[i-1].x+pts[i].x)/2;
-    chartCtx.bezierCurveTo(cpx,pts[i-1].y,cpx,pts[i].y,pts[i].x,pts[i].y);
+  chartCtx.moveTo(pts[0].x, pts[0].y);
+  for (let i = 1; i < pts.length; i++) {
+    const cp1x = (pts[i-1].x + pts[i].x) / 2;
+    chartCtx.bezierCurveTo(cp1x, pts[i-1].y, cp1x, pts[i].y, pts[i].x, pts[i].y);
   }
-  chartCtx.lineTo(pts[pts.length-1].x,pad.t+cH);
-  chartCtx.lineTo(pts[0].x,pad.t+cH);
+  chartCtx.lineTo(pts[pts.length-1].x, pad.t + cH);
+  chartCtx.lineTo(pts[0].x, pad.t + cH);
   chartCtx.closePath();
-  chartCtx.fillStyle=grad;
+  chartCtx.fillStyle = grad;
   chartCtx.fill();
 
   // line
   chartCtx.beginPath();
-  chartCtx.moveTo(pts[0].x,pts[0].y);
-  for (let i=1;i<pts.length;i++) {
-    const cpx=(pts[i-1].x+pts[i].x)/2;
-    chartCtx.bezierCurveTo(cpx,pts[i-1].y,cpx,pts[i].y,pts[i].x,pts[i].y);
+  chartCtx.moveTo(pts[0].x, pts[0].y);
+  for (let i = 1; i < pts.length; i++) {
+    const cp1x = (pts[i-1].x + pts[i].x) / 2;
+    chartCtx.bezierCurveTo(cp1x, pts[i-1].y, cp1x, pts[i].y, pts[i].x, pts[i].y);
   }
-  chartCtx.strokeStyle=lineColor;
-  chartCtx.lineWidth=2.5;
-  chartCtx.shadowColor=lineColor;
-  chartCtx.shadowBlur=8;
+  chartCtx.strokeStyle = '#4ab459';
+  chartCtx.lineWidth = 2.5;
   chartCtx.stroke();
-  chartCtx.shadowBlur=0;
 
   // dots
-  pts.forEach((p,i)=>{
-    const isLast=i===pts.length-1;
+  pts.forEach(p => {
     chartCtx.beginPath();
-    chartCtx.arc(p.x,p.y,isLast?5:3.5,0,Math.PI*2);
-    chartCtx.fillStyle=lineColor;
+    chartCtx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
+    chartCtx.fillStyle = '#4ab459';
     chartCtx.fill();
     chartCtx.beginPath();
-    chartCtx.arc(p.x,p.y,isLast?2.5:1.5,0,Math.PI*2);
-    chartCtx.fillStyle='#060f08';
+    chartCtx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+    chartCtx.fillStyle = '#0a1a0e';
     chartCtx.fill();
-    // value label on last point
-    if (isLast) {
-      chartCtx.fillStyle=lineColor;
-      chartCtx.font='bold 11px JetBrains Mono,monospace';
-      chartCtx.fillText(moistureHistory[i]+'%', p.x+8, p.y+4);
-    }
   });
 }
-function hexToRgb(hex) {
-  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
-  return `${r},${g},${b}`;
-}
 
-/* ────────────────── LOG ────────────────── */
+/* ═══════════════════════════════════
+   LOG
+═══════════════════════════════════ */
+const LOG_COLORS = { green:'green', teal:'teal', amber:'amber', red:'red' };
 function addLog(color, text) {
-  const list=document.getElementById('logList');
-  const time=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  const item=document.createElement('div');
-  item.className='log-item';
-  item.innerHTML=`<span class="log-time">${time}</span><div class="log-dot ${color}"></div><span class="log-text">${text}</span>`;
+  const list = document.getElementById('logList');
+  const time = new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const item = document.createElement('div');
+  item.className = 'log-item';
+  item.innerHTML = `
+    <span class="log-time">${time}</span>
+    <div class="log-dot ${LOG_COLORS[color] || 'green'}"></div>
+    <span class="log-text">${text}</span>`;
   list.prepend(item);
-  while(list.children.length>20) list.removeChild(list.lastChild);
+  while (list.children.length > 20) list.removeChild(list.lastChild);
 }
 
-/* ────────────────── TOAST ────────────────── */
+/* ═══════════════════════════════════
+   TOAST
+═══════════════════════════════════ */
 let toastTimer;
-function showToast(msg, icon='✅') {
-  const t=document.getElementById('toast');
-  document.getElementById('toastMsg').textContent=msg;
-  t.querySelector('.toast-icon').textContent=icon;
+function showToast(msg, icon = '✅') {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.querySelector('.toast-icon').textContent = icon;
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),3200);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-/* ────────────────── BLYNK ────────────────── */
+/* ═══════════════════════════════════
+   BLYNK API
+═══════════════════════════════════ */
 function saveBlynkToken() {
-  const tok=document.getElementById('blynkTokenInput').value.trim();
-  if (!tok){showToast('Masukkan token terlebih dahulu','⚠️');return;}
-  blynkToken=tok; localStorage.setItem('hs_blynk_token',tok); fetchBlynkData();
+  const tok = document.getElementById('blynkTokenInput').value.trim();
+  if (!tok) { showToast('Masukkan token terlebih dahulu', '⚠️'); return; }
+  blynkToken = tok;
+  localStorage.setItem('hs_blynk_token', tok);
+  fetchBlynkData();
 }
+
 function saveBlynkFromModal() {
-  const tok=document.getElementById('modalToken').value.trim();
-  if (!tok){showToast('Token tidak boleh kosong','⚠️');return;}
-  blynkToken=tok; document.getElementById('blynkTokenInput').value=tok;
-  localStorage.setItem('hs_blynk_token',tok); closeBlynkModal(); fetchBlynkData();
+  const tok = document.getElementById('modalToken').value.trim();
+  if (!tok) { showToast('Token tidak boleh kosong', '⚠️'); return; }
+  blynkToken = tok;
+  document.getElementById('blynkTokenInput').value = tok;
+  localStorage.setItem('hs_blynk_token', tok);
+  closeBlynkModal();
+  fetchBlynkData();
 }
+
 function openBlynkModal() {
-  document.getElementById('modalToken').value=blynkToken;
+  document.getElementById('modalToken').value = blynkToken;
   document.getElementById('blynkModal').classList.remove('hidden');
 }
-function closeBlynkModal() { document.getElementById('blynkModal').classList.add('hidden'); }
-document.getElementById('blynkModal').addEventListener('click',function(e){ if(e.target===this) closeBlynkModal(); });
+function closeBlynkModal() {
+  document.getElementById('blynkModal').classList.add('hidden');
+}
+document.getElementById('blynkModal').addEventListener('click', function(e) {
+  if (e.target === this) closeBlynkModal();
+});
 
 async function blynkGet(pin) {
-  const r=await fetch(`https://blynk.cloud/external/api/get?token=${blynkToken}&${pin}`);
-  if (!r.ok) throw new Error('HTTP '+r.status);
-  return r.text();
+  const url = `https://blynk.cloud/external/api/get?token=${blynkToken}&${pin}`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return await r.text();
 }
-async function blynkWrite(pin,val) {
-  try { await fetch(`https://blynk.cloud/external/api/update?token=${blynkToken}&${pin}=${val}`); } catch(e){}
+
+async function blynkWrite(pin, val) {
+  const url = `https://blynk.cloud/external/api/update?token=${blynkToken}&${pin}=${val}`;
+  try { await fetch(url); } catch(e) { console.warn('Blynk write failed', e); }
 }
 
 async function fetchBlynkData() {
-  if (!blynkToken){simulateData();return;}
-  const btn=document.getElementById('refreshBtn');
+  if (!blynkToken) { simulateData(); return; }
+  const btn = document.getElementById('refreshBtn');
   btn.classList.add('spinning');
-  const badge=document.getElementById('blynkStatusBadge');
-  badge.className='blynk-status-text';
-  badge.innerHTML='<span class="blynk-loading"></span>';
+  const badge = document.getElementById('blynkStatusBadge');
+  badge.className = 'blynk-status-text';
+  badge.innerHTML = '<span class="blynk-loading"></span>';
 
-  // Validasi token dulu dengan satu request — jika V0 gagal, baru anggap token invalid
-  let tokenValid = false;
   try {
-    const testResp = await blynkGet('V0');
-    tokenValid = true;
-    pumpOn = parseInt(testResp) === 1;
+    const [pump, mod, moist, temp, hum] = await Promise.all([
+      blynkGet('V0'), blynkGet('V1'), blynkGet('V2'), blynkGet('V3'), blynkGet('V4')
+    ]);
+
+    const rawMoist = parseFloat(moist);
+    const correctedMoist = 100 - rawMoist; // Balikkan nilai: 0% di sensor (Basah) -> 100% di UI
+
+    pumpOn = parseInt(pump) === 1;
     updatePumpUI();
-  } catch(e) {
-    badge.className='blynk-status-text err'; badge.textContent='✗ Token Salah';
-    document.getElementById('connStatusText').textContent='Offline';
-    addLog('red','Token Blynk tidak valid atau server tidak dapat dijangkau.');
-    showToast('Token tidak valid — cek kembali','❌');
-    btn.classList.remove('spinning');
-    return;
-  }
-
-  // Token valid → ambil semua pin, tiap pin pakai .catch() sendiri
-  // sehingga sensor yang belum kirim data tidak merusak status koneksi
-  const [mod, moist, temp, hum] = await Promise.all([
-    blynkGet('V1').catch(() => null),
-    blynkGet('V2').catch(() => null),
-    blynkGet('V3').catch(() => null),
-    blynkGet('V4').catch(() => null),
-  ]);
-
-  // Mode
-  if (mod !== null) {
     const newMode = parseInt(mod) === 1 ? 'auto' : 'manual';
     if (newMode !== mode) setMode(newMode);
+    setMoisture(correctedMoist);
+    setTemp(parseFloat(temp));
+    setHumidity(parseFloat(hum));
+
+    badge.className = 'blynk-status-text ok';
+    badge.textContent = '✓ Terhubung';
+    document.getElementById('connStatusText').textContent = 'Terhubung';
+    addLog('green', `Data diperbarui dari Blynk — Kelembaban: ${correctedMoist.toFixed(0)}%, Suhu: ${parseFloat(temp).toFixed(1)}°C`);
+    showToast('Data berhasil diperbarui dari Blynk');
+  } catch(e) {
+    badge.className = 'blynk-status-text err';
+    badge.textContent = '✗ Gagal terhubung';
+    document.getElementById('connStatusText').textContent = 'Offline';
+    addLog('red', 'Gagal mengambil data dari Blynk. Cek token & koneksi.');
+    showToast('Gagal terhubung ke Blynk', '❌');
+    simulateData();
+  } finally {
+    btn.classList.remove('spinning');
   }
-
-  // Kelembaban
-  const moistVal = moist !== null ? parseFloat(moist) : null;
-  if (moistVal !== null && !isNaN(moistVal)) {
-    setMoisture(moistVal);
-  }
-
-  // Suhu & Humidity — tampilkan '?' jika sensor belum kirim data
-  const tempVal = temp !== null ? parseFloat(temp) : null;
-  const humVal  = hum  !== null ? parseFloat(hum)  : null;
-  if (tempVal !== null && !isNaN(tempVal)) setTemp(tempVal);
-  if (humVal  !== null && !isNaN(humVal))  setHumidity(humVal);
-
-  // Hitung berapa sensor yang aktif
-  const activeSensors = [moistVal, tempVal, humVal].filter(v => v !== null && !isNaN(v)).length;
-
-  if (activeSensors === 3) {
-    badge.className='blynk-status-text ok'; badge.textContent='✓ Terhubung';
-    document.getElementById('connStatusText').textContent='Online';
-  } else if (activeSensors > 0) {
-    badge.className='blynk-status-text ok';
-    badge.textContent=`✓ ${activeSensors}/3 sensor`;
-    document.getElementById('connStatusText').textContent='Parsial';
-  } else {
-    badge.className='blynk-status-text ok';
-    badge.textContent='✓ Token OK · sensor pending';
-    document.getElementById('connStatusText').textContent='Menunggu sensor';
-  }
-
-  refreshCount++;
-  document.getElementById('statRefreshCount').textContent=refreshCount;
-
-  const logParts = [
-    `💧Pompa:${pumpOn?'ON':'OFF'}`,
-    moistVal !== null ? `🌱${moistVal.toFixed(0)}%` : '🌱--',
-    tempVal  !== null ? `🌡️${tempVal.toFixed(1)}°C` : '🌡️--',
-    humVal   !== null ? `💨${humVal.toFixed(0)}%`   : '💨--',
-  ].join(' ');
-  addLog('green', `Blynk — ${logParts}`);
-  showToast(activeSensors===3 ? 'Semua data diperbarui ✓' : `Terhubung · ${activeSensors}/3 sensor aktif`);
-
-  btn.classList.remove('spinning');
 }
 
-/* ────────────────── SIMULATE ────────────────── */
+/* ═══════════════════════════════════
+   DEMO SIMULATION (no Blynk)
+═══════════════════════════════════ */
 function simulateData() {
-  const moisture=Math.round(30+Math.random()*55);
-  const temp=24+Math.random()*12;
-  const hum=48+Math.random()*38;
-  setMoisture(moisture); setTemp(temp); setHumidity(hum);
-  refreshCount++;
-  document.getElementById('statRefreshCount').textContent=refreshCount;
-  if (mode==='auto'&&moisture<40&&!pumpOn){
-    pumpOn=true; pumpCount++; updatePumpUI();
-    document.getElementById('statPumpCount').textContent=pumpCount;
-    addLog('green','Auto: Pompa ON — kelembaban < 40% 💧');
-  } else if (mode==='auto'&&moisture>=60&&pumpOn){
-    pumpOn=false; updatePumpUI();
-    addLog('amber','Auto: Pompa OFF — kelembaban ≥ 60% ✓');
+  const moisture = Math.round(30 + Math.random() * 55);
+  const temp = 25 + Math.random() * 10;
+  const hum = 50 + Math.random() * 35;
+  setMoisture(moisture);
+  setTemp(temp);
+  setHumidity(hum);
+  if (mode === 'auto' && moisture < 40 && !pumpOn) {
+    pumpOn = true; updatePumpUI();
+    addLog('green', 'Mode Auto: Pompa dihidupkan (kelembaban < 40%)');
+  } else if (mode === 'auto' && moisture >= 60 && pumpOn) {
+    pumpOn = false; updatePumpUI();
+    addLog('amber', 'Mode Auto: Pompa dimatikan (kelembaban >= 60%)');
   }
-  addLog('teal',`[Sim] 🌱${moisture}% 🌡️${temp.toFixed(1)}°C 💧${hum.toFixed(0)}%`);
+  addLog('teal', `[Simulasi] Tanah: ${moisture}%, Suhu: ${temp.toFixed(1)}°C, Hum: ${hum.toFixed(0)}%`);
 }
 
-setInterval(()=>{
-  if (!document.getElementById('dashboard').classList.contains('hidden')) {
-    if (blynkToken) fetchBlynkData(); else simulateData();
+/* Auto-refresh every 15s when token set */
+setInterval(() => {
+  if (document.getElementById('dashboard') && !document.getElementById('dashboard').classList.contains('hidden')) {
+    if (blynkToken) fetchBlynkData();
+    else simulateData();
   }
-},15000);
+}, 15000);
+
+/* Ripple on login btn */
+document.getElementById('btnLogin').addEventListener('click', function(e) {
+  const rect = this.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  const x = e.clientX - rect.left - size / 2;
+  const y = e.clientY - rect.top - size / 2;
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple-el';
+  ripple.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;
+  this.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 700);
+});
 </script>
 </body>
 </html>
