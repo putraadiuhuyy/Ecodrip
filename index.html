@@ -1998,35 +1998,78 @@ async function fetchBlynkData() {
   badge.className='blynk-status-text';
   badge.innerHTML='<span class="blynk-loading"></span>';
 
+  // Validasi token dulu dengan satu request — jika V0 gagal, baru anggap token invalid
+  let tokenValid = false;
   try {
-    // Gunakan individual catch agar jika salah satu sensor (misal DHT11) belum aktif, status tetap "Terhubung"
-    const [pump, mod, moist, temp, hum] = await Promise.all([
-      blynkGet('V0').catch(() => '0'),
-      blynkGet('V1').catch(() => '0'),
-      blynkGet('V2'), // Moisture wajib ada respon
-      blynkGet('V3').catch(() => '0'),
-      blynkGet('V4').catch(() => '0')
-    ]);
+    const testResp = await blynkGet('V0');
+    tokenValid = true;
+    pumpOn = parseInt(testResp) === 1;
+    updatePumpUI();
+  } catch(e) {
+    badge.className='blynk-status-text err'; badge.textContent='✗ Token Salah';
+    document.getElementById('connStatusText').textContent='Offline';
+    addLog('red','Token Blynk tidak valid atau server tidak dapat dijangkau.');
+    showToast('Token tidak valid — cek kembali','❌');
+    btn.classList.remove('spinning');
+    return;
+  }
 
-    // ✅ Perbaikan: Hapus inversi 100- agar pembacaan web sama dengan Blynk (80% = basah)
-    const moistVal = parseFloat(moist);
-    pumpOn=parseInt(pump)===1; updatePumpUI();
-    const newMode=parseInt(mod)===1?'auto':'manual';
-    if (newMode!==mode) setMode(newMode);
-    setMoisture(moistVal); setTemp(parseFloat(temp)); setHumidity(parseFloat(hum));
+  // Token valid → ambil semua pin, tiap pin pakai .catch() sendiri
+  // sehingga sensor yang belum kirim data tidak merusak status koneksi
+  const [mod, moist, temp, hum] = await Promise.all([
+    blynkGet('V1').catch(() => null),
+    blynkGet('V2').catch(() => null),
+    blynkGet('V3').catch(() => null),
+    blynkGet('V4').catch(() => null),
+  ]);
+
+  // Mode
+  if (mod !== null) {
+    const newMode = parseInt(mod) === 1 ? 'auto' : 'manual';
+    if (newMode !== mode) setMode(newMode);
+  }
+
+  // Kelembaban
+  const moistVal = moist !== null ? parseFloat(moist) : null;
+  if (moistVal !== null && !isNaN(moistVal)) {
+    setMoisture(moistVal);
+  }
+
+  // Suhu & Humidity — tampilkan '?' jika sensor belum kirim data
+  const tempVal = temp !== null ? parseFloat(temp) : null;
+  const humVal  = hum  !== null ? parseFloat(hum)  : null;
+  if (tempVal !== null && !isNaN(tempVal)) setTemp(tempVal);
+  if (humVal  !== null && !isNaN(humVal))  setHumidity(humVal);
+
+  // Hitung berapa sensor yang aktif
+  const activeSensors = [moistVal, tempVal, humVal].filter(v => v !== null && !isNaN(v)).length;
+
+  if (activeSensors === 3) {
     badge.className='blynk-status-text ok'; badge.textContent='✓ Terhubung';
     document.getElementById('connStatusText').textContent='Online';
-    refreshCount++;
-    document.getElementById('statRefreshCount').textContent=refreshCount;
-    addLog('green',`Data Blynk — 🌱${moistVal.toFixed(0)}% 🌡️${parseFloat(temp).toFixed(1)}°C 💧${parseFloat(hum).toFixed(0)}%`);
-    showToast('Data diperbarui dari Blynk ✓');
-  } catch(e) {
-    badge.className='blynk-status-text err'; badge.textContent='✗ Gagal';
-    document.getElementById('connStatusText').textContent='Offline';
-    addLog('red','Koneksi terputus atau Token salah. Menjalankan simulasi...');
-    showToast('Gagal terhubung ke Blynk','❌');
-    simulateData();
-  } finally { btn.classList.remove('spinning'); }
+  } else if (activeSensors > 0) {
+    badge.className='blynk-status-text ok';
+    badge.textContent=`✓ ${activeSensors}/3 sensor`;
+    document.getElementById('connStatusText').textContent='Parsial';
+  } else {
+    badge.className='blynk-status-text ok';
+    badge.textContent='✓ Token OK · sensor pending';
+    document.getElementById('connStatusText').textContent='Menunggu sensor';
+  }
+
+  refreshCount++;
+  document.getElementById('statRefreshCount').textContent=refreshCount;
+
+  const logParts = [
+    `💧Pompa:${pumpOn?'ON':'OFF'}`,
+    moistVal !== null ? `🌱${moistVal.toFixed(0)}%` : '🌱--',
+    tempVal  !== null ? `🌡️${tempVal.toFixed(1)}°C` : '🌡️--',
+    humVal   !== null ? `💨${humVal.toFixed(0)}%`   : '💨--',
+  ].join(' ');
+  addLog('green', `Blynk — ${logParts}`);
+  showToast(activeSensors===3 ? 'Semua data diperbarui ✓' : `Terhubung · ${activeSensors}/3 sensor aktif`);
+
+  btn.classList.remove('spinning');
 }
 
 /* ────────────────── SIMULATE ────────────────── */
