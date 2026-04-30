@@ -1999,24 +1999,31 @@ async function fetchBlynkData() {
   badge.innerHTML='<span class="blynk-loading"></span>';
 
   try {
-    const [pump,mod,moist,temp,hum]=await Promise.all([
-      blynkGet('V0'),blynkGet('V1'),blynkGet('V2'),blynkGet('V3'),blynkGet('V4')
+    // Gunakan individual catch agar jika salah satu sensor (misal DHT11) belum aktif, status tetap "Terhubung"
+    const [pump, mod, moist, temp, hum] = await Promise.all([
+      blynkGet('V0').catch(() => '0'),
+      blynkGet('V1').catch(() => '0'),
+      blynkGet('V2'), // Moisture wajib ada respon
+      blynkGet('V3').catch(() => '0'),
+      blynkGet('V4').catch(() => '0')
     ]);
-    const correctedMoist=100-parseFloat(moist);
+
+    // ✅ Perbaikan: Hapus inversi 100- agar pembacaan web sama dengan Blynk (80% = basah)
+    const moistVal = parseFloat(moist);
     pumpOn=parseInt(pump)===1; updatePumpUI();
     const newMode=parseInt(mod)===1?'auto':'manual';
     if (newMode!==mode) setMode(newMode);
-    setMoisture(correctedMoist); setTemp(parseFloat(temp)); setHumidity(parseFloat(hum));
+    setMoisture(moistVal); setTemp(parseFloat(temp)); setHumidity(parseFloat(hum));
     badge.className='blynk-status-text ok'; badge.textContent='✓ Terhubung';
     document.getElementById('connStatusText').textContent='Online';
     refreshCount++;
     document.getElementById('statRefreshCount').textContent=refreshCount;
-    addLog('green',`Data Blynk — 🌱${correctedMoist.toFixed(0)}% 🌡️${parseFloat(temp).toFixed(1)}°C 💧${parseFloat(hum).toFixed(0)}%`);
+    addLog('green',`Data Blynk — 🌱${moistVal.toFixed(0)}% 🌡️${parseFloat(temp).toFixed(1)}°C 💧${parseFloat(hum).toFixed(0)}%`);
     showToast('Data diperbarui dari Blynk ✓');
   } catch(e) {
     badge.className='blynk-status-text err'; badge.textContent='✗ Gagal';
     document.getElementById('connStatusText').textContent='Offline';
-    addLog('red','Gagal mengambil data dari Blynk. Cek token & koneksi.');
+    addLog('red','Koneksi terputus atau Token salah. Menjalankan simulasi...');
     showToast('Gagal terhubung ke Blynk','❌');
     simulateData();
   } finally { btn.classList.remove('spinning'); }
