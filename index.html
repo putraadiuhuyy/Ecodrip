@@ -1411,10 +1411,21 @@ function simulateData() {
   setMoisture(moisture); setTemp(temp); setHumidity(hum);
   refreshCount++;
   document.getElementById('statRefreshCount').textContent=refreshCount;
-  if (mode==='auto'&&moisture<40&&!pumpOn){
-    pumpOn=true; pumpCount++; updatePumpUI();
-    document.getElementById('statPumpCount').textContent=pumpCount;
-    addLog('green','Auto: Pompa ON — kelembaban < 40% 💧');
+  if (mode === 'auto' && (moisture < 40 || temp >= 40) && !pumpOn) {
+    pumpOn = true; 
+    pumpCount++; 
+    updatePumpUI();
+    document.getElementById('statPumpCount').textContent = pumpCount;
+    
+    let reason = moisture < 40 ? 'kelembaban < 40%' : 'suhu >= 40°C';
+    addLog('green', `Auto: Pompa ON (${reason}) 💧`);
+
+    // Timer: Pompa menyala selama 3 detik
+    setTimeout(() => {
+      pumpOn = false;
+      updatePumpUI();
+      addLog('amber', 'Auto: Pompa OFF (Timer 3 dtk) ⏱️');
+    }, 3000);
   } else if (mode==='auto'&&moisture>=60&&pumpOn){
     pumpOn=false; updatePumpUI();
     addLog('amber','Auto: Pompa OFF — kelembaban ≥ 60% ✓');
