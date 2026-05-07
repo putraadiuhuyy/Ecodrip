@@ -67,14 +67,7 @@ body::before {
   background-size: 128px 128px;
 }
 
-.orb {
-  position: fixed;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-  filter: blur(80px);
-  opacity: 0.12;
-}
+.orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(80px); opacity: 0.12; }
 .orb1 { width: 500px; height: 500px; background: radial-gradient(circle, #4ab459, transparent); top: -150px; left: -100px; animation: orbFloat1 20s ease-in-out infinite; }
 .orb2 { width: 350px; height: 350px; background: radial-gradient(circle, #2dd4c4, transparent); bottom: 100px; right: -80px; animation: orbFloat2 25s ease-in-out infinite; opacity: 0.08; }
 .orb3 { width: 280px; height: 280px; background: radial-gradient(circle, #8b7cf8, transparent); top: 40%; left: 50%; animation: orbFloat3 18s ease-in-out infinite; opacity: 0.06; }
@@ -84,7 +77,6 @@ body::before {
 @keyframes orbFloat3 { 0%,100%{transform:translate(-50%,-50%) scale(1);} 50%{transform:translate(-50%,-50%) scale(1.15);} }
 
 #bgCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.35; }
-
 .hidden { display: none !important; }
 
 @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
@@ -98,236 +90,82 @@ body::before {
 @keyframes breathe { 0%,100%{box-shadow:0 0 20px rgba(74,180,89,0.2);} 50%{box-shadow:0 0 40px rgba(74,180,89,0.45);} }
 @keyframes slideRight { from{transform:translateX(-100%);} to{transform:translateX(0);} }
 @keyframes cardEntrance { from{opacity:0;transform:translateY(30px) scale(0.97);} to{opacity:1;transform:translateY(0) scale(1);} }
+@keyframes sliderGlow { 0%,100%{box-shadow:0 0 0 0 rgba(74,180,89,0.3);} 50%{box-shadow:0 0 0 6px rgba(74,180,89,0);} }
 
 /* ════ LOGIN ════ */
-#loginPage {
-  position: fixed; inset: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px; background: var(--bg);
-}
-.login-card {
-  position: relative; width: 100%; max-width: 430px;
-  background: var(--surface); border: 1px solid var(--border2);
-  border-radius: 28px; padding: 48px 40px;
-  box-shadow: var(--shadow), var(--glow);
-  overflow: hidden; animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
-}
-.login-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, transparent 0%, var(--green) 30%, var(--teal) 70%, transparent 100%);
-}
-.login-card::after {
-  content: ''; position: absolute; top: -100px; right: -100px;
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(74,180,89,0.06) 0%, transparent 70%);
-  pointer-events: none;
-}
+#loginPage { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; background: var(--bg); }
+.login-card { position: relative; width: 100%; max-width: 430px; background: var(--surface); border: 1px solid var(--border2); border-radius: 28px; padding: 48px 40px; box-shadow: var(--shadow), var(--glow); overflow: hidden; animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) forwards; }
+.login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent 0%, var(--green) 30%, var(--teal) 70%, transparent 100%); }
+.login-card::after { content: ''; position: absolute; top: -100px; right: -100px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(74,180,89,0.06) 0%, transparent 70%); pointer-events: none; }
 .login-logo { text-align: center; margin-bottom: 36px; }
-.logo-svg-wrap {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 72px; height: 72px;
-  background: linear-gradient(145deg, #1a4020, #2d6e35);
-  border-radius: 22px; margin-bottom: 16px; position: relative;
-  box-shadow: 0 12px 30px rgba(74,180,89,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-  animation: breathe 4s ease-in-out infinite;
-}
+.logo-svg-wrap { display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; background: linear-gradient(145deg, #1a4020, #2d6e35); border-radius: 22px; margin-bottom: 16px; position: relative; box-shadow: 0 12px 30px rgba(74,180,89,0.4), inset 0 1px 0 rgba(255,255,255,0.1); animation: breathe 4s ease-in-out infinite; }
 .logo-svg-wrap svg { width: 40px; height: 40px; }
-.login-logo h1 {
-  font-family: var(--font-display); font-size: 30px; font-weight: 800;
-  background: linear-gradient(135deg, var(--text) 0%, var(--green-bright) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  letter-spacing: -0.5px;
-}
+.login-logo h1 { font-family: var(--font-display); font-size: 30px; font-weight: 800; background: linear-gradient(135deg, var(--text) 0%, var(--green-bright) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.5px; }
 .login-logo p { font-size: 13px; color: var(--text3); margin-top: 4px; font-weight: 400; letter-spacing: 0.02em; }
-.version-tag {
-  display: inline-block; font-family: var(--font-mono); font-size: 9px;
-  background: var(--green-dim); border: 1px solid var(--border);
-  color: var(--green); border-radius: 4px; padding: 2px 6px; margin-top: 6px; letter-spacing: 0.05em;
-}
+.version-tag { display: inline-block; font-family: var(--font-mono); font-size: 9px; background: var(--green-dim); border: 1px solid var(--border); color: var(--green); border-radius: 4px; padding: 2px 6px; margin-top: 6px; letter-spacing: 0.05em; }
 .form-group { margin-bottom: 16px; }
-.form-group label {
-  display: block; font-size: 11px; font-weight: 600;
-  color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px;
-}
+.form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; }
 .input-wrap { position: relative; display: flex; align-items: center; }
 .input-icon { position: absolute; left: 14px; font-size: 14px; pointer-events: none; opacity: 0.5; }
-.form-group input {
-  width: 100%; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 13px 16px 13px 40px;
-  color: var(--text); font-family: var(--font); font-size: 14px; outline: none;
-  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
-}
+.form-group input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 13px 16px 13px 40px; color: var(--text); font-family: var(--font); font-size: 14px; outline: none; transition: border-color 0.25s, box-shadow 0.25s, background 0.25s; }
 .form-group input:focus { border-color: var(--green); background: rgba(74,180,89,0.04); box-shadow: 0 0 0 3px rgba(74,180,89,0.1); }
 .form-group input::placeholder { color: var(--text3); }
-.btn-login {
-  width: 100%; padding: 15px;
-  background: linear-gradient(135deg, #1f5c26 0%, #3da34f 50%, #4ab459 100%);
-  border: none; border-radius: var(--radius-sm); color: #fff;
-  font-family: var(--font-display); font-size: 15px; font-weight: 700;
-  cursor: pointer; position: relative; overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s; margin-top: 10px;
-  letter-spacing: 0.03em; box-shadow: 0 6px 24px rgba(74,180,89,0.3);
-}
-.btn-login::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
-  background-size: 200% 100%; animation: shimmer 2.5s ease infinite;
-}
+.btn-login { width: 100%; padding: 15px; background: linear-gradient(135deg, #1f5c26 0%, #3da34f 50%, #4ab459 100%); border: none; border-radius: var(--radius-sm); color: #fff; font-family: var(--font-display); font-size: 15px; font-weight: 700; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; margin-top: 10px; letter-spacing: 0.03em; box-shadow: 0 6px 24px rgba(74,180,89,0.3); }
+.btn-login::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%); background-size: 200% 100%; animation: shimmer 2.5s ease infinite; }
 .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(74,180,89,0.45); }
 .btn-login:active { transform: scale(0.99); }
-.btn-login .ripple-el {
-  position: absolute; border-radius: 50%; background: rgba(255,255,255,0.25);
-  animation: ripple 0.6s ease-out forwards; pointer-events: none;
-}
-.login-hint {
-  text-align: center; margin-top: 18px; font-size: 12px; color: var(--text3);
-  padding: 12px; background: var(--green-dim); border-radius: 8px;
-  border: 1px solid var(--border); font-family: var(--font-mono); line-height: 1.8;
-}
+.btn-login .ripple-el { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.25); animation: ripple 0.6s ease-out forwards; pointer-events: none; }
+.login-hint { text-align: center; margin-top: 18px; font-size: 12px; color: var(--text3); padding: 12px; background: var(--green-dim); border-radius: 8px; border: 1px solid var(--border); font-family: var(--font-mono); line-height: 1.8; }
 .login-hint strong { color: var(--green); }
-.login-error {
-  background: rgba(224,84,84,0.08); border: 1px solid rgba(224,84,84,0.25);
-  color: #e08080; border-radius: 8px; padding: 10px 14px;
-  font-size: 13px; margin-bottom: 14px; display: none; animation: fadeUp 0.3s ease;
-}
+.login-error { background: rgba(224,84,84,0.08); border: 1px solid rgba(224,84,84,0.25); color: #e08080; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 14px; display: none; animation: fadeUp 0.3s ease; }
 .auth-switch { text-align: center; margin-top: 18px; font-size: 13px; color: var(--text2); }
-.auth-switch a {
-  color: var(--green); text-decoration: none; font-weight: 600;
-  border-bottom: 1px solid transparent; transition: border-color 0.2s;
-}
+.auth-switch a { color: var(--green); text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
 .auth-switch a:hover { border-bottom-color: var(--green); }
 
 /* ════ DASHBOARD ════ */
 #dashboard { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
-
-.header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 28px; height: 68px;
-  background: rgba(6,15,8,0.75); backdrop-filter: blur(20px) saturate(1.5);
-  border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50;
-}
-.header::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent 0%, var(--green) 30%, var(--teal) 60%, transparent 100%);
-  background-size: 200% 100%; animation: shimmer 4s linear infinite; opacity: 0.6;
-}
+.header { display: flex; align-items: center; justify-content: space-between; padding: 0 28px; height: 68px; background: rgba(6,15,8,0.75); backdrop-filter: blur(20px) saturate(1.5); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+.header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent 0%, var(--green) 30%, var(--teal) 60%, transparent 100%); background-size: 200% 100%; animation: shimmer 4s linear infinite; opacity: 0.6; }
 .header-brand { display: flex; align-items: center; gap: 12px; }
-.header-icon {
-  width: 42px; height: 42px; background: linear-gradient(145deg, #1a4020, #3da34f);
-  border-radius: 13px; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 16px rgba(74,180,89,0.3); flex-shrink: 0;
-}
+.header-icon { width: 42px; height: 42px; background: linear-gradient(145deg, #1a4020, #3da34f); border-radius: 13px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(74,180,89,0.3); flex-shrink: 0; }
 .header-icon svg { width: 22px; height: 22px; }
-.header-brand h2 {
-  font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -0.3px;
-  background: linear-gradient(135deg, var(--text) 0%, var(--green-bright) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.header-brand span {
-  display: block; font-size: 10.5px; color: var(--text3); font-weight: 400;
-  -webkit-text-fill-color: var(--text3); letter-spacing: 0.03em;
-}
+.header-brand h2 { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -0.3px; background: linear-gradient(135deg, var(--text) 0%, var(--green-bright) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.header-brand span { display: block; font-size: 10.5px; color: var(--text3); font-weight: 400; -webkit-text-fill-color: var(--text3); letter-spacing: 0.03em; }
 .header-right { display: flex; align-items: center; gap: 10px; }
-.status-pill {
-  display: flex; align-items: center; gap: 7px;
-  background: var(--teal-dim); border: 1px solid rgba(45,212,196,0.22);
-  border-radius: 20px; padding: 7px 14px; font-size: 12px; font-weight: 600;
-  color: var(--teal); font-family: var(--font-mono); letter-spacing: 0.02em;
-}
-.status-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--teal); box-shadow: 0 0 8px var(--teal); animation: pulse 2s ease-in-out infinite;
-}
-.btn-logout {
-  background: rgba(224,84,84,0.08); border: 1px solid rgba(224,84,84,0.2);
-  color: #d07070; border-radius: var(--radius-xs); padding: 7px 14px;
-  font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s;
-}
+.status-pill { display: flex; align-items: center; gap: 7px; background: var(--teal-dim); border: 1px solid rgba(45,212,196,0.22); border-radius: 20px; padding: 7px 14px; font-size: 12px; font-weight: 600; color: var(--teal); font-family: var(--font-mono); letter-spacing: 0.02em; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 8px var(--teal); animation: pulse 2s ease-in-out infinite; }
+.btn-logout { background: rgba(224,84,84,0.08); border: 1px solid rgba(224,84,84,0.2); color: #d07070; border-radius: var(--radius-xs); padding: 7px 14px; font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
 .btn-logout:hover { background: rgba(224,84,84,0.15); color: #e08080; }
-.btn-blynk {
-  background: var(--green-dim); border: 1px solid var(--border); color: var(--green);
-  border-radius: var(--radius-xs); padding: 7px 14px; font-family: var(--font-mono);
-  font-size: 11px; cursor: pointer; transition: all 0.2s;
-  display: flex; align-items: center; gap: 6px; letter-spacing: 0.02em;
-}
+.btn-blynk { background: var(--green-dim); border: 1px solid var(--border); color: var(--green); border-radius: var(--radius-xs); padding: 7px 14px; font-family: var(--font-mono); font-size: 11px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; letter-spacing: 0.02em; }
 .btn-blynk:hover { background: rgba(74,180,89,0.14); border-color: var(--border2); }
+.btn-calib { background: rgba(240,165,0,0.08); border: 1px solid rgba(240,165,0,0.2); color: var(--amber); border-radius: var(--radius-xs); padding: 7px 14px; font-family: var(--font-mono); font-size: 11px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; letter-spacing: 0.02em; }
+.btn-calib:hover { background: rgba(240,165,0,0.14); border-color: rgba(240,165,0,0.35); }
 
 .main { flex: 1; padding: 28px 28px 60px; max-width: 1320px; margin: 0 auto; width: 100%; }
-
-.welcome-bar {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  margin-bottom: 24px; flex-wrap: wrap; gap: 12px; animation: fadeUp 0.5s ease both;
-}
+.welcome-bar { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; animation: fadeUp 0.5s ease both; }
 .welcome-bar h3 { font-family: var(--font-display); font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
 .welcome-bar p { font-size: 13px; color: var(--text3); margin-top: 3px; font-weight: 300; }
 .time-block { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-#currentTime {
-  font-family: var(--font-mono); font-size: 13px; color: var(--green);
-  background: var(--green-dim); border: 1px solid var(--border);
-  border-radius: 8px; padding: 8px 14px; letter-spacing: 0.05em;
-}
-.uptime-badge {
-  font-family: var(--font-mono); font-size: 10px; color: var(--text3);
-  padding: 3px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 5px;
-}
+#currentTime { font-family: var(--font-mono); font-size: 13px; color: var(--green); background: var(--green-dim); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; letter-spacing: 0.05em; }
+.uptime-badge { font-family: var(--font-mono); font-size: 10px; color: var(--text3); padding: 3px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; }
 
-.blynk-banner {
-  background: linear-gradient(135deg, rgba(74,180,89,0.06), rgba(45,212,196,0.04));
-  border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 16px 20px; margin-bottom: 24px;
-  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-  animation: fadeUp 0.5s 0.1s ease both; position: relative; overflow: hidden;
-}
-.blynk-banner::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  background: linear-gradient(to bottom, var(--green), var(--teal)); border-radius: 0 2px 2px 0;
-}
-.blynk-label {
-  font-size: 11px; color: var(--text3); font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.8px; white-space: nowrap; font-family: var(--font-mono);
-}
-.blynk-banner input {
-  flex: 1; min-width: 180px; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 8px; padding: 9px 14px; color: var(--text);
-  font-family: var(--font-mono); font-size: 12px; outline: none; transition: border-color 0.2s;
-}
+.blynk-banner { background: linear-gradient(135deg, rgba(74,180,89,0.06), rgba(45,212,196,0.04)); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; animation: fadeUp 0.5s 0.1s ease both; position: relative; overflow: hidden; }
+.blynk-banner::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--green), var(--teal)); border-radius: 0 2px 2px 0; }
+.blynk-label { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; white-space: nowrap; font-family: var(--font-mono); }
+.blynk-banner input { flex: 1; min-width: 180px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 9px 14px; color: var(--text); font-family: var(--font-mono); font-size: 12px; outline: none; transition: border-color 0.2s; }
 .blynk-banner input:focus { border-color: var(--green); }
-.blynk-banner button {
-  background: linear-gradient(135deg, var(--green2), var(--green));
-  border: none; border-radius: 8px; color: #fff; padding: 9px 18px;
-  font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer;
-  white-space: nowrap; transition: opacity 0.2s, transform 0.2s;
-  box-shadow: 0 4px 12px rgba(74,180,89,0.25);
-}
+.blynk-banner button { background: linear-gradient(135deg, var(--green2), var(--green)); border: none; border-radius: 8px; color: #fff; padding: 9px 18px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity 0.2s, transform 0.2s; box-shadow: 0 4px 12px rgba(74,180,89,0.25); }
 .blynk-banner button:hover { opacity: 0.88; transform: translateY(-1px); }
-.blynk-status-text {
-  font-size: 11px; font-family: var(--font-mono); padding: 5px 10px;
-  border-radius: 6px; font-weight: 500; white-space: nowrap;
-}
+.blynk-status-text { font-size: 11px; font-family: var(--font-mono); padding: 5px 10px; border-radius: 6px; font-weight: 500; white-space: nowrap; }
 .blynk-status-text.ok { background: rgba(74,180,89,0.12); color: var(--green); border: 1px solid rgba(74,180,89,0.2); }
 .blynk-status-text.err { background: rgba(224,84,84,0.1); color: #e08080; border: 1px solid rgba(224,84,84,0.2); }
 
 /* ════ GRID ════ */
 .grid { display: grid; gap: 18px; grid-template-columns: repeat(12, 1fr); }
-
-.card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 22px; position: relative; overflow: hidden;
-  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-}
-.card:hover {
-  border-color: var(--border2); transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 30px rgba(74,180,89,0.07);
-}
-.card-inner-glow {
-  position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(ellipse at 10% 10%, rgba(74,180,89,0.04) 0%, transparent 60%);
-}
-.card-label {
-  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px;
-  color: var(--text3); margin-bottom: 18px; display: flex; align-items: center;
-  gap: 8px; font-family: var(--font-mono);
-}
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; position: relative; overflow: hidden; transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s; }
+.card:hover { border-color: var(--border2); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 30px rgba(74,180,89,0.07); }
+.card-inner-glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 10% 10%, rgba(74,180,89,0.04) 0%, transparent 60%); }
+.card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text3); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); }
 .card-label .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 .card:nth-child(1) { animation: cardEntrance 0.5s 0.15s ease both; }
 .card:nth-child(2) { animation: cardEntrance 0.5s 0.22s ease both; }
@@ -336,67 +174,33 @@ body::before {
 .card:nth-child(5) { animation: cardEntrance 0.5s 0.43s ease both; }
 .card:nth-child(6) { animation: cardEntrance 0.5s 0.50s ease both; }
 .card:nth-child(7) { animation: cardEntrance 0.5s 0.57s ease both; }
+.card:nth-child(8) { animation: cardEntrance 0.5s 0.64s ease both; }
 
 /* pump */
-.pump-card {
-  grid-column: span 4;
-  background: linear-gradient(145deg, #0d1f10, #111f14);
-  border-color: rgba(74,180,89,0.18);
-}
-.pump-card::before {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--green), transparent);
-  border-radius: 0 0 var(--radius) var(--radius);
-}
+.pump-card { grid-column: span 4; background: linear-gradient(145deg, #0d1f10, #111f14); border-color: rgba(74,180,89,0.18); }
+.pump-card::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--green), transparent); border-radius: 0 0 var(--radius) var(--radius); }
 @media(max-width:900px) { .pump-card { grid-column: span 6; } }
 @media(max-width:600px) { .pump-card { grid-column: span 12; } }
 
 .pump-toggle-wrapper { display: flex; flex-direction: column; align-items: center; gap: 22px; padding: 6px 0; }
 .pump-outer-ring { position: relative; width: 132px; height: 132px; }
-.pump-ring-svg {
-  position: absolute; inset: -10px;
-  width: calc(100% + 20px); height: calc(100% + 20px);
-  animation: spin 12s linear infinite;
-}
+.pump-ring-svg { position: absolute; inset: -10px; width: calc(100% + 20px); height: calc(100% + 20px); animation: spin 12s linear infinite; }
 .pump-ring-svg circle { fill: none; stroke: rgba(74,180,89,0.15); stroke-width: 1; stroke-dasharray: 4 10; }
 .pump-ring-svg.off { opacity: 0; transition: opacity 0.5s; }
 .pump-ring-svg.on  { opacity: 1; transition: opacity 0.5s; }
-.pump-btn {
-  width: 132px; height: 132px; border-radius: 50%;
-  border: 2px solid rgba(74,180,89,0.2); background: var(--surface2);
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  flex-direction: column; gap: 4px;
-  transition: all 0.35s cubic-bezier(0.22,1,0.36,1); position: relative; font-family: var(--font);
-}
-.pump-btn::before {
-  content: ''; position: absolute; inset: -10px; border-radius: 50%;
-  border: 2px solid transparent; transition: all 0.5s;
-}
-.pump-btn.on {
-  background: rgba(74,180,89,0.12); border-color: var(--green);
-  box-shadow: 0 0 0 0 rgba(74,180,89,0.3), 0 0 50px rgba(74,180,89,0.25), inset 0 0 30px rgba(74,180,89,0.08);
-  animation: breathe 2.5s ease-in-out infinite;
-}
+.pump-btn { width: 132px; height: 132px; border-radius: 50%; border: 2px solid rgba(74,180,89,0.2); background: var(--surface2); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px; transition: all 0.35s cubic-bezier(0.22,1,0.36,1); position: relative; font-family: var(--font); }
+.pump-btn::before { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 2px solid transparent; transition: all 0.5s; }
+.pump-btn.on { background: rgba(74,180,89,0.12); border-color: var(--green); box-shadow: 0 0 0 0 rgba(74,180,89,0.3), 0 0 50px rgba(74,180,89,0.25), inset 0 0 30px rgba(74,180,89,0.08); animation: breathe 2.5s ease-in-out infinite; }
 .pump-btn.on::before { border-color: rgba(74,180,89,0.15); animation: pumpPulse 2.5s ease-in-out infinite; }
 .pump-icon-svg { width: 36px; height: 36px; }
 .pump-icon-svg path { transition: fill 0.3s, stroke 0.3s; }
-.pump-status-label {
-  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); transition: color 0.3s;
-}
+.pump-status-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); transition: color 0.3s; }
 .pump-btn.on .pump-status-label { color: var(--green); }
 .pump-wave { width: 80px; height: 20px; position: relative; overflow: hidden; opacity: 0; transition: opacity 0.5s; }
 .pump-wave.active { opacity: 1; }
 .pump-wave svg { position: absolute; top: 0; left: -100%; width: 300%; animation: slideRight 2s linear infinite; }
-.water-drops {
-  position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%);
-  display: flex; gap: 8px; pointer-events: none;
-}
-.drop {
-  width: 5px; height: 10px;
-  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-  background: var(--teal); opacity: 0; animation: dropFall 1.4s ease-in-out infinite;
-}
+.water-drops { position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; pointer-events: none; }
+.drop { width: 5px; height: 10px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; background: var(--teal); opacity: 0; animation: dropFall 1.4s ease-in-out infinite; }
 .pump-btn.on ~ .water-drops .drop { opacity: 1; }
 .drop:nth-child(2) { animation-delay: 0.47s; }
 .drop:nth-child(3) { animation-delay: 0.94s; }
@@ -406,31 +210,21 @@ body::before {
 .mode-card { grid-column: span 4; }
 @media(max-width:900px) { .mode-card { grid-column: span 6; } }
 @media(max-width:600px) { .mode-card { grid-column: span 12; } }
-.mode-toggle {
-  display: flex; background: var(--surface2); border-radius: 12px;
-  border: 1px solid var(--border); padding: 4px; gap: 4px;
-}
-.mode-btn {
-  flex: 1; padding: 13px 10px; border: none; border-radius: 9px;
-  font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer;
-  transition: all 0.25s; color: var(--text3); background: transparent;
-  display: flex; align-items: center; justify-content: center; gap: 7px; letter-spacing: 0.01em;
-}
+.mode-toggle { display: flex; background: var(--surface2); border-radius: 12px; border: 1px solid var(--border); padding: 4px; gap: 4px; }
+.mode-btn { flex: 1; padding: 13px 10px; border: none; border-radius: 9px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.25s; color: var(--text3); background: transparent; display: flex; align-items: center; justify-content: center; gap: 7px; letter-spacing: 0.01em; }
 .mode-btn.active { background: linear-gradient(135deg, #1f5c26, #3da34f); color: #fff; box-shadow: 0 4px 18px rgba(74,180,89,0.3); }
-.mode-info {
-  margin-top: 16px; padding: 14px; background: var(--green-dim);
-  border: 1px solid var(--border); border-radius: 10px;
-  font-size: 12.5px; color: var(--text2); line-height: 1.7;
-}
+.mode-info { margin-top: 16px; padding: 14px; background: var(--green-dim); border: 1px solid var(--border); border-radius: 10px; font-size: 12.5px; color: var(--text2); line-height: 1.7; }
 .mode-info strong { color: var(--green); font-weight: 700; }
 .threshold-row { display: flex; gap: 10px; margin-top: 12px; }
-.threshold-chip { flex: 1; padding: 10px 8px; border-radius: 8px; text-align: center; }
+.threshold-chip { flex: 1; padding: 10px 8px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s; }
+.threshold-chip:hover { transform: translateY(-1px); }
 .threshold-chip .tc-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); font-family: var(--font-mono); }
 .threshold-chip .tc-val { font-family: var(--font-mono); font-size: 20px; font-weight: 500; margin-top: 4px; }
 .tc-on { background: rgba(224,84,84,0.08); border: 1px solid rgba(224,84,84,0.2); }
 .tc-on .tc-val { color: var(--red); }
 .tc-off { background: rgba(45,212,196,0.08); border: 1px solid rgba(45,212,196,0.2); }
 .tc-off .tc-val { color: var(--teal); }
+.tc-edit-hint { font-size: 9px; color: var(--text3); margin-top: 3px; font-family: var(--font-mono); opacity: 0.6; }
 
 /* moisture */
 .moisture-card { grid-column: span 4; }
@@ -451,17 +245,9 @@ body::before {
 @media(max-width:1024px) { .temp-card,.hum-card { grid-column: span 6; } }
 @media(max-width:600px)  { .temp-card,.hum-card { grid-column: span 6; } }
 @media(max-width:400px)  { .temp-card,.hum-card { grid-column: span 12; } }
-.metric-big {
-  font-family: var(--font-mono); font-size: 52px; font-weight: 500;
-  line-height: 1; margin: 14px 0 6px; display: flex; align-items: baseline; gap: 4px;
-}
+.metric-big { font-family: var(--font-mono); font-size: 52px; font-weight: 500; line-height: 1; margin: 14px 0 6px; display: flex; align-items: baseline; gap: 4px; }
 .metric-big .unit { font-size: 18px; color: var(--text3); font-weight: 400; }
-.sensor-label {
-  display: inline-flex; align-items: center; gap: 5px; font-size: 10px;
-  font-family: var(--font-mono); color: var(--text3); background: var(--surface2);
-  border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px;
-  letter-spacing: 0.05em; margin-bottom: 12px;
-}
+.sensor-label { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-family: var(--font-mono); color: var(--text3); background: var(--surface2); border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px; letter-spacing: 0.05em; margin-bottom: 12px; }
 .sensor-dot { width: 5px; height: 5px; border-radius: 50%; }
 .spark-bar { display: flex; gap: 3px; align-items: flex-end; height: 36px; margin-top: 14px; }
 .spark-segment { flex: 1; border-radius: 2px 2px 0 0; background: var(--surface3); transition: height 0.6s ease, background 0.4s; min-height: 4px; }
@@ -470,11 +256,7 @@ body::before {
 .history-card { grid-column: span 6; }
 @media(max-width:768px) { .history-card { grid-column: span 12; } }
 .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.chart-pill {
-  font-size: 10px; font-family: var(--font-mono); color: var(--green);
-  background: var(--green-dim); border: 1px solid var(--border);
-  border-radius: 5px; padding: 3px 8px; letter-spacing: 0.04em;
-}
+.chart-pill { font-size: 10px; font-family: var(--font-mono); color: var(--green); background: var(--green-dim); border: 1px solid var(--border); border-radius: 5px; padding: 3px 8px; letter-spacing: 0.04em; }
 .chart-area { height: 140px; position: relative; }
 .chart-area canvas { width: 100% !important; height: 100% !important; }
 
@@ -484,10 +266,7 @@ body::before {
 .log-list { max-height: 152px; overflow-y: auto; padding-right: 4px; }
 .log-list::-webkit-scrollbar { width: 3px; }
 .log-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-.log-item {
-  display: flex; align-items: flex-start; gap: 10px; padding: 8px 0;
-  border-bottom: 1px solid rgba(74,180,89,0.05); font-size: 11.5px; animation: fadeUp 0.25s ease;
-}
+.log-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(74,180,89,0.05); font-size: 11.5px; animation: fadeUp 0.25s ease; }
 .log-item:last-child { border-bottom: none; }
 .log-time { color: var(--text3); font-family: var(--font-mono); white-space: nowrap; font-size: 10.5px; flex-shrink: 0; }
 .log-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 3px; flex-shrink: 0; }
@@ -515,89 +294,155 @@ body::before {
 .stat-trend.dn { color: var(--red); background: var(--red-dim); }
 .stat-trend.nt { color: var(--text3); background: var(--surface2); }
 
-/* refresh fab */
-.refresh-btn {
-  position: fixed; bottom: 24px; right: 24px;
-  width: 54px; height: 54px; border-radius: 50%;
-  background: linear-gradient(135deg, #1f5c26, #4ab459);
-  border: none; color: #fff; cursor: pointer;
-  box-shadow: 0 8px 28px rgba(74,180,89,0.5);
-  transition: transform 0.2s, box-shadow 0.2s; z-index: 200;
-  display: flex; align-items: center; justify-content: center;
+/* ════ CALIBRATION CARD ════ */
+.calib-card {
+  grid-column: span 12;
+  background: linear-gradient(145deg, #0e1c14, #111f14);
+  border-color: rgba(240,165,0,0.18);
+  position: relative;
 }
+.calib-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--amber), var(--green), transparent);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.calib-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media(max-width:1024px) { .calib-grid { grid-template-columns: 1fr 1fr; } }
+@media(max-width:600px)  { .calib-grid { grid-template-columns: 1fr; } }
+
+.calib-section { display: flex; flex-direction: column; gap: 12px; }
+.calib-section-title {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  font-family: var(--font-mono); color: var(--text3); display: flex; align-items: center; gap: 6px;
+}
+.calib-slider-wrap { display: flex; flex-direction: column; gap: 8px; }
+.calib-slider-header { display: flex; justify-content: space-between; align-items: center; }
+.calib-slider-label { font-size: 12px; color: var(--text2); font-weight: 500; }
+.calib-slider-val {
+  font-family: var(--font-mono); font-size: 18px; font-weight: 500;
+  padding: 3px 10px; border-radius: 7px; min-width: 58px; text-align: center;
+  transition: all 0.25s;
+}
+.calib-slider-val.dry  { color: var(--red);   background: rgba(224,84,84,0.1);  border: 1px solid rgba(224,84,84,0.2); }
+.calib-slider-val.wet  { color: var(--teal);  background: rgba(45,212,196,0.1); border: 1px solid rgba(45,212,196,0.2); }
+.calib-slider-val.warn { color: var(--amber); background: rgba(240,165,0,0.1); border: 1px solid rgba(240,165,0,0.25); }
+.calib-slider-val.hum-lo { color: var(--amber); background: rgba(240,165,0,0.1); border: 1px solid rgba(240,165,0,0.2); }
+.calib-slider-val.hum-hi { color: var(--teal); background: rgba(45,212,196,0.1); border: 1px solid rgba(45,212,196,0.2); }
+.calib-slider-val.temp-lo { color: var(--green); background: rgba(74,180,89,0.1); border: 1px solid rgba(74,180,89,0.2); }
+.calib-slider-val.temp-hi { color: var(--red); background: rgba(224,84,84,0.1); border: 1px solid rgba(224,84,84,0.2); }
+
+/* range input style */
+input[type=range].calib-range {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 6px; border-radius: 3px; outline: none; cursor: pointer;
+  background: var(--surface3);
+  transition: background 0.3s;
+}
+input[type=range].calib-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--green);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 0 rgba(74,180,89,0.3);
+  cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+}
+input[type=range].calib-range::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5), 0 0 0 5px rgba(74,180,89,0.18);
+}
+input[type=range].calib-range:active::-webkit-slider-thumb { transform: scale(1.28); }
+input[type=range].calib-range.dry-range::-webkit-slider-thumb { border-color: var(--red); box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 6px rgba(224,84,84,0.3); }
+input[type=range].calib-range.dry-range::-webkit-slider-thumb:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.5), 0 0 0 5px rgba(224,84,84,0.18); }
+input[type=range].calib-range.wet-range::-webkit-slider-thumb { border-color: var(--teal); box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 6px rgba(45,212,196,0.3); }
+input[type=range].calib-range.wet-range::-webkit-slider-thumb:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.5), 0 0 0 5px rgba(45,212,196,0.18); }
+
+.calib-warn-msg {
+  font-size: 11px; font-family: var(--font-mono);
+  color: var(--amber); background: rgba(240,165,0,0.08);
+  border: 1px solid rgba(240,165,0,0.2); border-radius: 7px;
+  padding: 7px 11px; display: none; animation: fadeUp 0.2s ease;
+}
+.calib-warn-msg.show { display: block; }
+
+/* moisture visual bar */
+.calib-preview { display: flex; flex-direction: column; gap: 10px; }
+.calib-bar-wrap { position: relative; height: 28px; background: var(--surface3); border-radius: 8px; overflow: hidden; }
+.calib-bar-fill { height: 100%; border-radius: 8px; transition: width 0.7s cubic-bezier(0.22,1,0.36,1), background 0.4s; }
+.calib-bar-marker {
+  position: absolute; top: 0; bottom: 0; width: 2px;
+  background: currentColor; transition: left 0.3s ease;
+}
+.calib-bar-marker::after {
+  content: attr(data-label);
+  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: 9px; white-space: nowrap;
+  background: var(--surface2); border: 1px solid var(--border);
+  padding: 1px 5px; border-radius: 3px;
+}
+.calib-bar-marker.dry-m  { color: var(--red); }
+.calib-bar-marker.wet-m  { color: var(--teal); }
+.calib-bar-marker.moist-m { color: var(--green); }
+.calib-zone-labels { display: flex; justify-content: space-between; font-size: 9px; font-family: var(--font-mono); color: var(--text3); padding: 0 2px; }
+
+.calib-status-block {
+  padding: 12px 14px; border-radius: 10px;
+  display: flex; flex-direction: column; gap: 4px;
+  transition: all 0.3s;
+}
+.calib-status-title { font-size: 10px; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.8px; opacity: 0.6; }
+.calib-status-text  { font-size: 13px; font-weight: 600; }
+
+.calib-reset-btn {
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text3); border-radius: 8px; padding: 9px 16px;
+  font-family: var(--font-mono); font-size: 11px; cursor: pointer;
+  transition: all 0.2s; letter-spacing: 0.04em; align-self: flex-start;
+}
+.calib-reset-btn:hover { border-color: var(--amber); color: var(--amber); background: rgba(240,165,0,0.06); }
+
+.calib-saved-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10px; font-family: var(--font-mono);
+  color: var(--green); background: var(--green-dim);
+  border: 1px solid var(--border); border-radius: 5px;
+  padding: 3px 8px; opacity: 0; transition: opacity 0.4s;
+}
+.calib-saved-tag.show { opacity: 1; }
+
+/* refresh fab */
+.refresh-btn { position: fixed; bottom: 24px; right: 24px; width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(135deg, #1f5c26, #4ab459); border: none; color: #fff; cursor: pointer; box-shadow: 0 8px 28px rgba(74,180,89,0.5); transition: transform 0.2s, box-shadow 0.2s; z-index: 200; display: flex; align-items: center; justify-content: center; }
 .refresh-btn:hover { transform: scale(1.1) rotate(15deg); box-shadow: 0 14px 36px rgba(74,180,89,0.6); }
 .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
 
 /* toast */
-.toast {
-  position: fixed; bottom: 90px; right: 24px;
-  background: var(--surface2); border: 1px solid var(--border2);
-  border-radius: 13px; padding: 13px 18px; font-size: 13px; color: var(--text);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(74,180,89,0.08);
-  z-index: 300; transform: translateX(120%);
-  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  max-width: 270px; display: flex; align-items: center; gap: 8px;
-}
+.toast { position: fixed; bottom: 90px; right: 24px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 13px; padding: 13px 18px; font-size: 13px; color: var(--text); box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 20px rgba(74,180,89,0.08); z-index: 300; transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); max-width: 270px; display: flex; align-items: center; gap: 8px; }
 .toast.show { transform: translateX(0); }
 .toast-icon { font-size: 16px; }
 
 /* modal */
-.modal-overlay {
-  position: fixed; inset: 0; z-index: 500;
-  background: rgba(0,0,0,0.75); backdrop-filter: blur(10px);
-  display: flex; align-items: center; justify-content: center; padding: 20px;
-}
-.modal {
-  background: var(--surface); border: 1px solid var(--border2);
-  border-radius: 22px; padding: 32px; max-width: 500px; width: 100%;
-  box-shadow: var(--shadow), var(--glow); animation: fadeUp 0.3s ease; position: relative;
-}
-.modal::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--green), var(--teal));
-  border-radius: var(--radius) var(--radius) 0 0;
-}
+.modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.75); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 22px; padding: 32px; max-width: 500px; width: 100%; box-shadow: var(--shadow), var(--glow); animation: fadeUp 0.3s ease; position: relative; }
+.modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--green), var(--teal)); border-radius: var(--radius) var(--radius) 0 0; }
 .modal h3 { font-family: var(--font-display); font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.3px; }
 .modal p { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 20px; }
 .modal-grid { display: grid; gap: 12px; margin-bottom: 18px; }
-.modal-field label {
-  display: block; font-size: 10px; font-weight: 600; text-transform: uppercase;
-  letter-spacing: 1px; color: var(--text3); margin-bottom: 6px; font-family: var(--font-mono);
-}
-.modal-field input {
-  width: 100%; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 8px; padding: 11px 14px; color: var(--text);
-  font-family: var(--font-mono); font-size: 13px; outline: none; transition: border-color 0.2s;
-}
+.modal-field label { display: block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 6px; font-family: var(--font-mono); }
+.modal-field input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 11px 14px; color: var(--text); font-family: var(--font-mono); font-size: 13px; outline: none; transition: border-color 0.2s; }
 .modal-field input:focus { border-color: var(--green); }
 .modal-actions { display: flex; gap: 10px; }
-.modal-actions .btn-save {
-  flex: 1; padding: 13px;
-  background: linear-gradient(135deg, #1f5c26, #4ab459);
-  border: none; border-radius: 10px; color: #fff;
-  font-family: var(--font); font-size: 14px; font-weight: 700; cursor: pointer;
-  transition: opacity 0.2s; box-shadow: 0 4px 16px rgba(74,180,89,0.25);
-}
+.modal-actions .btn-save { flex: 1; padding: 13px; background: linear-gradient(135deg, #1f5c26, #4ab459); border: none; border-radius: 10px; color: #fff; font-family: var(--font); font-size: 14px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; box-shadow: 0 4px 16px rgba(74,180,89,0.25); }
 .modal-actions .btn-save:hover { opacity: 0.88; }
-.modal-actions .btn-cancel {
-  padding: 13px 20px; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 10px; color: var(--text2); font-family: var(--font); font-size: 14px;
-  cursor: pointer; transition: all 0.2s;
-}
+.modal-actions .btn-cancel { padding: 13px 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; color: var(--text2); font-family: var(--font); font-size: 14px; cursor: pointer; transition: all 0.2s; }
 .modal-actions .btn-cancel:hover { border-color: var(--border2); }
 .pin-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; }
-.pin-table th {
-  text-align: left; padding: 7px 10px; color: var(--text3); font-weight: 600;
-  border-bottom: 1px solid var(--border); font-family: var(--font-mono);
-  font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px;
-}
+.pin-table th { text-align: left; padding: 7px 10px; color: var(--text3); font-weight: 600; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; }
 .pin-table td { padding: 9px 10px; color: var(--text2); border-bottom: 1px solid rgba(74,180,89,0.04); font-size: 12px; }
 .pin-table code { font-family: var(--font-mono); color: var(--green); background: var(--green-dim); padding: 2px 7px; border-radius: 4px; font-size: 11px; }
-.blynk-loading {
-  display: inline-block; width: 12px; height: 12px;
-  border: 2px solid rgba(74,180,89,0.2); border-top-color: var(--green);
-  border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle;
-}
+.blynk-loading { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(74,180,89,0.2); border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; }
 </style>
 </head>
 <body>
@@ -628,7 +473,7 @@ body::before {
       </div>
       <h1>Ecodrip</h1>
       <p>Smart Watering Management System</p>
-      <div class="version-tag">v2.0.0 · ESP8266 + Blynk</div>
+      <div class="version-tag">v2.1.0 · ESP8266 + Blynk</div>
     </div>
 
     <div id="loginForm">
@@ -699,6 +544,7 @@ body::before {
         <div class="status-dot"></div>
         <span id="connStatusText">Online</span>
       </div>
+      <button class="btn-calib" onclick="document.getElementById('calibCard').scrollIntoView({behavior:'smooth'})">⚙️ Kalibrasi</button>
       <button class="btn-blynk" onclick="openBlynkModal()">⚡ Blynk</button>
       <button class="btn-logout" onclick="handleLogout()">↩ Keluar</button>
     </div>
@@ -769,9 +615,17 @@ body::before {
         <div class="mode-info" id="modeInfo">
           <strong>Mode Manual:</strong> Anda mengontrol pompa secara langsung menggunakan tombol di samping.
         </div>
-        <div class="threshold-row">
-          <div class="threshold-chip tc-on"><div class="tc-label">Pump ON</div><div class="tc-val">&lt;40%</div></div>
-          <div class="threshold-chip tc-off"><div class="tc-label">Pump OFF</div><div class="tc-val">≥60%</div></div>
+        <div class="threshold-row" onclick="document.getElementById('calibCard').scrollIntoView({behavior:'smooth'})" title="Klik untuk kalibrasi">
+          <div class="threshold-chip tc-on">
+            <div class="tc-label">Pump ON (kering)</div>
+            <div class="tc-val" id="tcOnVal">&lt;40%</div>
+            <div class="tc-edit-hint">✏️ klik kalibrasi</div>
+          </div>
+          <div class="threshold-chip tc-off">
+            <div class="tc-label">Pump OFF (lembab)</div>
+            <div class="tc-val" id="tcOffVal">≥60%</div>
+            <div class="tc-edit-hint">✏️ klik kalibrasi</div>
+          </div>
         </div>
       </div>
 
@@ -795,7 +649,7 @@ body::before {
             </div>
             <div class="gauge-meta-item">
               <div class="gm-label">Threshold</div>
-              <div class="gm-val" style="color:var(--amber);font-size:14px;">40%</div>
+              <div class="gm-val" id="gaugeThresholdLabel" style="color:var(--amber);font-size:14px;">40%</div>
             </div>
             <div class="gauge-meta-item">
               <div class="gm-label">Raw</div>
@@ -884,7 +738,191 @@ body::before {
         </div>
       </div>
 
-    </div>
+      <!-- ══ CALIBRATION CARD ══ -->
+      <div class="card calib-card" id="calibCard">
+        <div class="card-inner-glow" style="background:radial-gradient(ellipse at 5% 5%, rgba(240,165,0,0.05) 0%, transparent 60%)"></div>
+        <div class="card-label" style="margin-bottom:20px;">
+          <div class="dot" style="background:var(--amber);box-shadow:0 0 6px rgba(240,165,0,0.5)"></div>
+          KALIBRASI SENSOR TANAH
+          <span style="margin-left:auto;font-family:var(--font-mono);font-size:9px;padding:3px 8px;background:rgba(240,165,0,0.08);border:1px solid rgba(240,165,0,0.2);border-radius:5px;color:var(--amber);">REAL-TIME</span>
+          <span class="calib-saved-tag" id="calibSavedTag">✓ Tersimpan</span>
+        </div>
+
+        <div class="calib-grid">
+
+          <!-- SOIL MOISTURE THRESHOLDS -->
+          <div class="calib-section">
+            <div class="calib-section-title">
+              🌱 Ambang Kelembaban Tanah
+            </div>
+
+            <!-- DRY threshold (Pump ON) -->
+            <div class="calib-slider-wrap">
+              <div class="calib-slider-header">
+                <span class="calib-slider-label">💧 Batas Kering (Pompa ON)</span>
+                <span class="calib-slider-val dry" id="dryValDisplay">40%</span>
+              </div>
+              <input type="range" class="calib-range dry-range" id="drySlider"
+                min="5" max="70" value="40" step="1"
+                oninput="onDrySlider(this.value)"
+                onchange="saveCalibration()">
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:var(--font-mono);padding:0 2px;">
+                <span>5%</span><span>Sangat Kering ←→ Agak Kering</span><span>70%</span>
+              </div>
+            </div>
+
+            <!-- WET threshold (Pump OFF) -->
+            <div class="calib-slider-wrap">
+              <div class="calib-slider-header">
+                <span class="calib-slider-label">💦 Batas Lembab (Pompa OFF)</span>
+                <span class="calib-slider-val wet" id="wetValDisplay">60%</span>
+              </div>
+              <input type="range" class="calib-range wet-range" id="wetSlider"
+                min="20" max="95" value="60" step="1"
+                oninput="onWetSlider(this.value)"
+                onchange="saveCalibration()">
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:var(--font-mono);padding:0 2px;">
+                <span>20%</span><span>Cukup ←→ Sangat Lembab</span><span>95%</span>
+              </div>
+            </div>
+
+            <div class="calib-warn-msg" id="calibWarnMsg">
+              ⚠️ Batas kering harus lebih kecil dari batas lembab (min. selisih 10%)
+            </div>
+
+            <button class="calib-reset-btn" onclick="resetCalibration()">↺ Reset ke Default (40% / 60%)</button>
+          </div>
+
+          <!-- TEMPERATURE THRESHOLDS -->
+          <div class="calib-section">
+            <div class="calib-section-title">
+              🌡️ Ambang Suhu Udara
+            </div>
+
+            <div class="calib-slider-wrap">
+              <div class="calib-slider-header">
+                <span class="calib-slider-label">❄️ Suhu Rendah (Peringatan)</span>
+                <span class="calib-slider-val temp-lo" id="tempLoDisplay">15°C</span>
+              </div>
+              <input type="range" class="calib-range" id="tempLoSlider"
+                min="0" max="30" value="15" step="1"
+                oninput="onTempLoSlider(this.value)"
+                onchange="saveCalibration()"
+                style="accent-color:var(--green)">
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:var(--font-mono);padding:0 2px;">
+                <span>0°C</span><span>Dingin ←→ Normal</span><span>30°C</span>
+              </div>
+            </div>
+
+            <div class="calib-slider-wrap">
+              <div class="calib-slider-header">
+                <span class="calib-slider-label">🔥 Suhu Tinggi (Paksa Siram)</span>
+                <span class="calib-slider-val temp-hi" id="tempHiDisplay">40°C</span>
+              </div>
+              <input type="range" class="calib-range" id="tempHiSlider"
+                min="25" max="60" value="40" step="1"
+                oninput="onTempHiSlider(this.value)"
+                onchange="saveCalibration()"
+                style="accent-color:var(--red)">
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:var(--font-mono);padding:0 2px;">
+                <span>25°C</span><span>Hangat ←→ Panas Ekstrem</span><span>60°C</span>
+              </div>
+            </div>
+
+            <div style="background:rgba(240,165,0,0.05);border:1px solid rgba(240,165,0,0.15);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--text3);line-height:1.6;">
+              Jika suhu udara ≥ <strong style="color:var(--red)" id="tempHiHint">40°C</strong>, pompa akan dipaksa menyala (mode Auto). Jika suhu ≤ <strong style="color:var(--green)" id="tempLoHint">15°C</strong> akan muncul peringatan dingin.
+            </div>
+          </div>
+
+          <!-- HUMIDITY THRESHOLDS -->
+          <div class="calib-section">
+            <div class="calib-section-title">
+              💨 Ambang Humidity Udara
+            </div>
+
+            <div class="calib-slider-wrap">
+              <div class="calib-slider-header">
+                <span class="calib-slider-label">🌵 Kelembaban Udara Rendah</span>
+                <span class="calib-slider-val hum-lo" id="humLoDisplay">30%</span>
+              </div>
+              <input type="range" class="calib-range" id="humLoSlider"
+                min="5" max="60" value="30" step="1"
+                oninput="onHumLoSlider(this.value)"
+                onchange="saveCalibration()"
+                style="accent-color:var(--amber)">
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:var(--font-mono);padding:0 2px;">
+                <span>5%</span><span>Sangat Kering ←→ Normal</span><span>60%</span>
+              </div>
+            </div>
+
+            <div class="calib-slider-wrap">
+              <div class="calib-slider-header">
+                <span class="calib-slider-label">🌧️ Kelembaban Udara Tinggi</span>
+                <span class="calib-slider-val hum-hi" id="humHiDisplay">85%</span>
+              </div>
+              <input type="range" class="calib-range" id="humHiSlider"
+                min="50" max="100" value="85" step="1"
+                oninput="onHumHiSlider(this.value)"
+                onchange="saveCalibration()"
+                style="accent-color:var(--teal)">
+              <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:var(--font-mono);padding:0 2px;">
+                <span>50%</span><span>Normal ←→ Sangat Lembab</span><span>100%</span>
+              </div>
+            </div>
+
+            <div style="background:rgba(45,212,196,0.04);border:1px solid rgba(45,212,196,0.12);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--text3);line-height:1.6;">
+              Peringatan ditampilkan di Log jika humidity udara di luar rentang <strong style="color:var(--amber)" id="humLoHint">30%</strong> – <strong style="color:var(--teal)" id="humHiHint">85%</strong>.
+            </div>
+          </div>
+
+          <!-- LIVE PREVIEW -->
+          <div class="calib-section">
+            <div class="calib-section-title">
+              📊 Preview Real-Time
+            </div>
+
+            <div class="calib-preview">
+              <div style="font-size:11px;color:var(--text3);font-family:var(--font-mono);">Kelembaban Tanah Saat Ini</div>
+              <div class="calib-bar-wrap" id="calibBarWrap">
+                <div class="calib-bar-fill" id="calibBarFill" style="width:0%;background:var(--surface3);"></div>
+                <div class="calib-bar-marker dry-m" id="calibDryMarker" style="left:40%;color:var(--red)" data-label="Kering &lt;40%"></div>
+                <div class="calib-bar-marker wet-m" id="calibWetMarker" style="left:60%;color:var(--teal)" data-label="Lembab ≥60%"></div>
+              </div>
+              <div class="calib-zone-labels">
+                <span style="color:var(--red)">Kering</span>
+                <span style="color:var(--amber)">Transisi</span>
+                <span style="color:var(--teal)">Lembab</span>
+              </div>
+            </div>
+
+            <div class="calib-status-block" id="calibStatusBlock" style="background:var(--surface2);border:1px solid var(--border);">
+              <div class="calib-status-title">Status Pompa Otomatis</div>
+              <div class="calib-status-text" id="calibStatusText" style="color:var(--text3)">Menunggu data sensor...</div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;">
+                <span style="color:var(--text3);font-family:var(--font-mono);">Profil Tanaman:</span>
+                <select id="plantPreset" onchange="applyPlantPreset(this.value)"
+                  style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:11px;cursor:pointer;outline:none;">
+                  <option value="custom">✏️ Custom</option>
+                  <option value="cactus">🌵 Kaktus / Sukulen</option>
+                  <option value="vegetable">🥬 Sayuran / Herbal</option>
+                  <option value="flower">🌸 Bunga / Ornamental</option>
+                  <option value="tropical">🌴 Tropis / Pakis</option>
+                  <option value="lawn">🌾 Rumput / Lawn</option>
+                </select>
+              </div>
+              <div style="font-size:10px;color:var(--text3);font-family:var(--font-mono);padding:6px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;" id="presetDesc">
+                Atur threshold secara manual sesuai kebutuhan tanaman Anda.
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /calib-grid -->
+      </div><!-- /calib-card -->
+
+    </div><!-- /grid -->
   </main>
 </div>
 
@@ -927,7 +965,7 @@ body::before {
 </div>
 
 <script>
-/* ── BG CANVAS ── */
+/* ══ BG CANVAS ══ */
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 let W, H;
@@ -942,22 +980,12 @@ window.addEventListener('resize', () => {
 class Particle {
   constructor() { this.reset(true); }
   reset(init) {
-    this.x = Math.random() * W;
-    this.y = init ? Math.random() * H : (Math.random() < 0.5 ? -5 : H + 5);
-    this.r = Math.random() * 1.2 + 0.2;
-    this.vx = (Math.random() - 0.5) * 0.18;
-    this.vy = (Math.random() - 0.5) * 0.18;
-    this.a = Math.random() * 0.4 + 0.05;
-    this.color = Math.random() > 0.8 ? '45,212,196' : '74,180,89';
+    this.x = Math.random() * W; this.y = init ? Math.random() * H : (Math.random() < 0.5 ? -5 : H + 5);
+    this.r = Math.random() * 1.2 + 0.2; this.vx = (Math.random() - 0.5) * 0.18; this.vy = (Math.random() - 0.5) * 0.18;
+    this.a = Math.random() * 0.4 + 0.05; this.color = Math.random() > 0.8 ? '45,212,196' : '74,180,89';
   }
-  update() {
-    this.x += this.vx; this.y += this.vy;
-    if (this.x < -10 || this.x > W+10 || this.y < -10 || this.y > H+10) this.reset(false);
-  }
-  draw() {
-    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(${this.color},${this.a})`; ctx.fill();
-  }
+  update() { this.x += this.vx; this.y += this.vy; if (this.x < -10 || this.x > W+10 || this.y < -10 || this.y > H+10) this.reset(false); }
+  draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI*2); ctx.fillStyle = `rgba(${this.color},${this.a})`; ctx.fill(); }
 }
 const particles = Array.from({length:90}, () => new Particle());
 function animBg() {
@@ -968,11 +996,9 @@ function animBg() {
       const dx = particles[i].x-particles[j].x, dy = particles[i].y-particles[j].y;
       const d = Math.sqrt(dx*dx+dy*dy);
       if (d < 90) {
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = `rgba(74,180,89,${0.07*(1-d/90)})`;
-        ctx.lineWidth = 0.5; ctx.stroke();
+        ctx.beginPath(); ctx.setLineDash([4,6]);
+        ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(74,180,89,${0.07*(1-d/90)})`; ctx.lineWidth = 0.5; ctx.stroke(); ctx.setLineDash([]);
       }
     }
   }
@@ -980,7 +1006,7 @@ function animBg() {
 }
 animBg();
 
-/* ── AUTH ── */
+/* ══ AUTH ══ */
 const DEFAULT_USERS = [
   {username:'admin', email:'admin@hydro.id', pass:'ecodrip72829', name:'Admin Ecodrip'},
   {username:'mirza', email:'kebunpace@gmail.com', pass:'pace123', name:'Pace Mirza'},
@@ -1033,15 +1059,11 @@ function showDashboard(u) {
   document.getElementById('refreshBtn').classList.remove('hidden');
   document.getElementById('userName').textContent=u.name;
   addLog('green',`Login berhasil: ${u.name}`);
+  loadCalibration();
   startClock(); startUptime(); initChart(); initSparkBars();
   const tok=localStorage.getItem('hs_blynk_token')||'';
-  if (tok) {
-    document.getElementById('blynkTokenInput').value=tok;
-    blynkToken=tok;
-    fetchBlynkData();
-  } else {
-    simulateData();
-  }
+  if (tok) { document.getElementById('blynkTokenInput').value=tok; blynkToken=tok; fetchBlynkData(); }
+  else { simulateData(); }
 }
 window.addEventListener('DOMContentLoaded',()=>{
   const s=sessionStorage.getItem('hs_user');
@@ -1057,7 +1079,7 @@ document.getElementById('btnLogin').addEventListener('click',function(e){
   setTimeout(()=>el.remove(),700);
 });
 
-/* ── CLOCK & UPTIME ── */
+/* ══ CLOCK & UPTIME ══ */
 function startClock() {
   const tick=()=>{
     const now=new Date();
@@ -1079,12 +1101,228 @@ function startUptime() {
   },1000);
 }
 
-/* ── STATE ── */
+/* ══════════════════════════════════
+   CALIBRATION ENGINE
+══════════════════════════════════ */
+let threshDry  = 40;   // pompa ON bila kelembaban < threshDry
+let threshWet  = 60;   // pompa OFF bila kelembaban >= threshWet
+let threshTempLo = 15; // peringatan suhu rendah
+let threshTempHi = 40; // paksa siram bila suhu >= ini
+let threshHumLo  = 30; // peringatan humidity rendah
+let threshHumHi  = 85; // peringatan humidity tinggi
+
+const CALIB_KEY = 'hs_calib_v2';
+
+function loadCalibration() {
+  const saved = JSON.parse(localStorage.getItem(CALIB_KEY) || 'null');
+  if (saved) {
+    threshDry    = saved.dry    ?? 40;
+    threshWet    = saved.wet    ?? 60;
+    threshTempLo = saved.tempLo ?? 15;
+    threshTempHi = saved.tempHi ?? 40;
+    threshHumLo  = saved.humLo  ?? 30;
+    threshHumHi  = saved.humHi  ?? 85;
+  }
+  // sync sliders
+  document.getElementById('drySlider').value    = threshDry;
+  document.getElementById('wetSlider').value    = threshWet;
+  document.getElementById('tempLoSlider').value = threshTempLo;
+  document.getElementById('tempHiSlider').value = threshTempHi;
+  document.getElementById('humLoSlider').value  = threshHumLo;
+  document.getElementById('humHiSlider').value  = threshHumHi;
+  refreshCalibUI();
+}
+
+function saveCalibration() {
+  if (!validateThresholds()) return;
+  localStorage.setItem(CALIB_KEY, JSON.stringify({
+    dry: threshDry, wet: threshWet,
+    tempLo: threshTempLo, tempHi: threshTempHi,
+    humLo: threshHumLo, humHi: threshHumHi
+  }));
+  // flash saved tag
+  const tag = document.getElementById('calibSavedTag');
+  tag.classList.add('show');
+  setTimeout(() => tag.classList.remove('show'), 2000);
+  addLog('amber', `Kalibrasi disimpan — Kering:<${threshDry}% Lembab:≥${threshWet}% Suhu:${threshTempLo}-${threshTempHi}°C Hum:${threshHumLo}-${threshHumHi}%`);
+}
+
+function validateThresholds() {
+  const warn = document.getElementById('calibWarnMsg');
+  if (threshDry >= threshWet - 5) {
+    warn.classList.add('show');
+    // auto-correct
+    if (threshDry >= threshWet - 5) {
+      threshWet = Math.min(95, threshDry + 10);
+      document.getElementById('wetSlider').value = threshWet;
+      document.getElementById('wetValDisplay').textContent = threshWet + '%';
+    }
+    setTimeout(() => warn.classList.remove('show'), 3000);
+    return false;
+  }
+  warn.classList.remove('show');
+  return true;
+}
+
+function refreshCalibUI() {
+  // display values
+  document.getElementById('dryValDisplay').textContent  = threshDry  + '%';
+  document.getElementById('wetValDisplay').textContent  = threshWet  + '%';
+  document.getElementById('tempLoDisplay').textContent  = threshTempLo + '°C';
+  document.getElementById('tempHiDisplay').textContent  = threshTempHi + '°C';
+  document.getElementById('humLoDisplay').textContent   = threshHumLo  + '%';
+  document.getElementById('humHiDisplay').textContent   = threshHumHi  + '%';
+
+  // hints
+  document.getElementById('tempHiHint').textContent = threshTempHi + '°C';
+  document.getElementById('tempLoHint').textContent = threshTempLo + '°C';
+  document.getElementById('humLoHint').textContent  = threshHumLo  + '%';
+  document.getElementById('humHiHint').textContent  = threshHumHi  + '%';
+
+  // mode card threshold chips
+  document.getElementById('tcOnVal').textContent  = '<' + threshDry + '%';
+  document.getElementById('tcOffVal').textContent = '≥' + threshWet + '%';
+
+  // gauge threshold label
+  document.getElementById('gaugeThresholdLabel').textContent = threshDry + '%';
+
+  // mode info text (if auto)
+  if (mode === 'auto') {
+    document.getElementById('modeInfo').innerHTML =
+      `<strong>Mode Auto:</strong> Pompa ON bila kelembaban &lt;${threshDry}% atau suhu ≥${threshTempHi}°C. Pompa OFF bila kelembaban ≥${threshWet}%.`;
+  }
+
+  // update range track fill colors
+  updateSliderFill('drySlider',  threshDry,  5,  70,  '#e05454');
+  updateSliderFill('wetSlider',  threshWet,  20, 95,  '#2dd4c4');
+  updateSliderFill('tempLoSlider', threshTempLo, 0, 30, '#4ab459');
+  updateSliderFill('tempHiSlider', threshTempHi, 25, 60, '#e05454');
+  updateSliderFill('humLoSlider',  threshHumLo,  5, 60, '#f0a500');
+  updateSliderFill('humHiSlider',  threshHumHi,  50, 100, '#2dd4c4');
+
+  // live preview bar markers
+  const dryPct  = ((threshDry  - 0) / 100 * 100).toFixed(1);
+  const wetPct  = ((threshWet  - 0) / 100 * 100).toFixed(1);
+  document.getElementById('calibDryMarker').style.left = dryPct + '%';
+  document.getElementById('calibDryMarker').setAttribute('data-label', `Kering <${threshDry}%`);
+  document.getElementById('calibWetMarker').style.left = wetPct + '%';
+  document.getElementById('calibWetMarker').setAttribute('data-label', `Lembab ≥${threshWet}%`);
+
+  updateCalibPreview();
+}
+
+function updateSliderFill(id, val, min, max, color) {
+  const pct = ((val - min) / (max - min) * 100).toFixed(1);
+  document.getElementById(id).style.background =
+    `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, var(--surface3) ${pct}%, var(--surface3) 100%)`;
+}
+
+function updateCalibPreview() {
+  const currentMoisture = moistureHistory.length ? moistureHistory[moistureHistory.length - 1] : null;
+  const fill = document.getElementById('calibBarFill');
+  const statusBlock = document.getElementById('calibStatusBlock');
+  const statusText  = document.getElementById('calibStatusText');
+
+  if (currentMoisture === null) {
+    fill.style.width = '0%';
+    fill.style.background = 'var(--surface3)';
+    statusText.textContent = 'Menunggu data sensor...';
+    statusBlock.style.background = 'var(--surface2)';
+    statusBlock.style.borderColor = 'var(--border)';
+    statusText.style.color = 'var(--text3)';
+    return;
+  }
+
+  fill.style.width = currentMoisture + '%';
+
+  let barColor, statusMsg, bgColor, borderColor, txtColor;
+
+  if (currentMoisture < threshDry) {
+    barColor   = '#e05454';
+    statusMsg  = `🔴 Tanah KERING (${currentMoisture}% < ${threshDry}%) → Pompa harus menyala`;
+    bgColor    = 'rgba(224,84,84,0.08)';
+    borderColor = 'rgba(224,84,84,0.25)';
+    txtColor   = '#e08080';
+  } else if (currentMoisture >= threshWet) {
+    barColor   = '#2dd4c4';
+    statusMsg  = `🟢 Tanah LEMBAB (${currentMoisture}% ≥ ${threshWet}%) → Pompa bisa dimatikan`;
+    bgColor    = 'rgba(45,212,196,0.06)';
+    borderColor = 'rgba(45,212,196,0.2)';
+    txtColor   = '#2dd4c4';
+  } else {
+    barColor   = '#f0a500';
+    statusMsg  = `🟡 TRANSISI (${currentMoisture}%) → antara ${threshDry}% dan ${threshWet}%`;
+    bgColor    = 'rgba(240,165,0,0.06)';
+    borderColor = 'rgba(240,165,0,0.2)';
+    txtColor   = '#f0a500';
+  }
+
+  fill.style.background = barColor;
+  statusBlock.style.background   = bgColor;
+  statusBlock.style.borderColor  = borderColor;
+  statusText.textContent = statusMsg;
+  statusText.style.color = txtColor;
+}
+
+/* slider event handlers */
+function onDrySlider(v)    { threshDry    = parseInt(v); refreshCalibUI(); }
+function onWetSlider(v)    { threshWet    = parseInt(v); refreshCalibUI(); }
+function onTempLoSlider(v) { threshTempLo = parseInt(v); refreshCalibUI(); }
+function onTempHiSlider(v) { threshTempHi = parseInt(v); refreshCalibUI(); }
+function onHumLoSlider(v)  { threshHumLo  = parseInt(v); refreshCalibUI(); }
+function onHumHiSlider(v)  { threshHumHi  = parseInt(v); refreshCalibUI(); }
+
+function resetCalibration() {
+  threshDry=40; threshWet=60; threshTempLo=15; threshTempHi=40; threshHumLo=30; threshHumHi=85;
+  document.getElementById('drySlider').value=40;
+  document.getElementById('wetSlider').value=60;
+  document.getElementById('tempLoSlider').value=15;
+  document.getElementById('tempHiSlider').value=40;
+  document.getElementById('humLoSlider').value=30;
+  document.getElementById('humHiSlider').value=85;
+  document.getElementById('plantPreset').value='custom';
+  document.getElementById('presetDesc').textContent='Atur threshold secara manual sesuai kebutuhan tanaman Anda.';
+  refreshCalibUI();
+  saveCalibration();
+  showToast('Reset ke nilai default berhasil ✓');
+}
+
+/* plant presets */
+const PLANT_PRESETS = {
+  cactus:    { dry:15, wet:30, tLo:10, tHi:50, hLo:10, hHi:70, desc:'Kaktus & sukulen: sangat toleran kering, perlu air jarang.' },
+  vegetable: { dry:45, wet:70, tLo:10, tHi:35, hLo:40, hHi:80, desc:'Sayuran & herbal: perlu kelembaban konsisten, sensitif panas.' },
+  flower:    { dry:40, wet:65, tLo:12, tHi:38, hLo:35, hHi:85, desc:'Bunga ornamental: kelembaban sedang, suhu hangat ideal.' },
+  tropical:  { dry:55, wet:80, tLo:18, tHi:40, hLo:60, hHi:95, desc:'Tanaman tropis & pakis: butuh banyak air dan kelembaban tinggi.' },
+  lawn:      { dry:35, wet:60, tLo:5,  tHi:42, hLo:25, hHi:90, desc:'Rumput & lawn: siram sering, toleran suhu luas.' },
+};
+
+function applyPlantPreset(preset) {
+  if (preset === 'custom') {
+    document.getElementById('presetDesc').textContent = 'Atur threshold secara manual sesuai kebutuhan tanaman Anda.';
+    return;
+  }
+  const p = PLANT_PRESETS[preset];
+  if (!p) return;
+  threshDry=p.dry; threshWet=p.wet; threshTempLo=p.tLo; threshTempHi=p.tHi; threshHumLo=p.hLo; threshHumHi=p.hHi;
+  document.getElementById('drySlider').value    = p.dry;
+  document.getElementById('wetSlider').value    = p.wet;
+  document.getElementById('tempLoSlider').value = p.tLo;
+  document.getElementById('tempHiSlider').value = p.tHi;
+  document.getElementById('humLoSlider').value  = p.hLo;
+  document.getElementById('humHiSlider').value  = p.hHi;
+  document.getElementById('presetDesc').textContent = p.desc;
+  refreshCalibUI();
+  saveCalibration();
+  showToast(`Preset "${document.getElementById('plantPreset').options[document.getElementById('plantPreset').selectedIndex].text}" diterapkan ✓`);
+  addLog('amber', `Preset tanaman: ${document.getElementById('plantPreset').options[document.getElementById('plantPreset').selectedIndex].text}`);
+}
+
+/* ══ STATE ══ */
 let pumpOn=false, mode='manual', blynkToken='';
 let moistureHistory=[], tempHistory=[], humHistory=[];
 let pumpCount=0, tempSum=0, humSum=0, dataCount=0, refreshCount=0;
 
-/* ── PUMP ── */
+/* ══ PUMP ══ */
 function togglePump() {
   if (mode==='auto'){showToast('⚠️ Dikendalikan otomatis di mode Auto','⚠️');return;}
   pumpOn=!pumpOn;
@@ -1105,46 +1343,54 @@ function updatePumpUI() {
   document.getElementById('pumpHint').textContent=pumpOn?'mematikan':'menghidupkan';
 }
 
-/* ── MODE ── */
+/* ══ MODE ══ */
 function setMode(m) {
   mode=m;
   document.getElementById('btnManual').className='mode-btn'+(m==='manual'?' active':'');
   document.getElementById('btnAuto').className='mode-btn'+(m==='auto'?' active':'');
-  document.getElementById('modeInfo').innerHTML=m==='auto'
-    ?'<strong>Mode Auto:</strong> Sistem otomatis mengaktifkan pompa jika kelembaban &lt; 40%. ESP8266 mengontrol langsung.'
-    :'<strong>Mode Manual:</strong> Anda mengontrol pompa secara langsung menggunakan tombol di samping.';
+  document.getElementById('modeInfo').innerHTML = m==='auto'
+    ? `<strong>Mode Auto:</strong> Pompa ON bila kelembaban &lt;${threshDry}% atau suhu ≥${threshTempHi}°C. Pompa OFF bila kelembaban ≥${threshWet}%.`
+    : '<strong>Mode Manual:</strong> Anda mengontrol pompa secara langsung menggunakan tombol di samping.';
   if (blynkToken) blynkWrite('V1',m==='auto'?1:0);
   addLog('teal',`Mode → ${m==='auto'?'Auto 🤖':'Manual 🕹️'}`);
   showToast(`Mode ${m==='auto'?'Otomatis 🤖':'Manual 🕹️'} aktif`);
 }
 
-/* ── GAUGE ── */
+/* ══ GAUGE ══ */
 function setMoisture(val) {
   val=Math.max(0,Math.min(100,Math.round(val)));
   const arc=175, offset=arc-(arc*val/100);
   const fill=document.getElementById('gaugeFill');
   fill.style.strokeDashoffset=offset;
   let color='#4ab459';
-  if (val<30) color='#e05454';
-  else if (val<50) color='#f0a500';
-  else if (val>75) color='#2dd4c4';
+  if      (val < threshDry)  color='#e05454';
+  else if (val < threshWet)  color='#f0a500';
+  else if (val >= threshWet) color='#2dd4c4';
   fill.style.stroke=color;
   document.getElementById('moistureSvgText').textContent=val+'%';
   document.getElementById('moistureSvgText').setAttribute('fill', color);
   document.getElementById('moistureRaw').textContent=val+'%';
   const st=document.getElementById('moistureStatus');
-  if (val<30){st.textContent='Sangat Kering';st.style.color='#e08080';}
-  else if (val<50){st.textContent='Perlu Siram';st.style.color='#f0a500';}
-  else if (val<75){st.textContent='Cukup Lembab';st.style.color='#4ab459';}
-  else{st.textContent='Sangat Lembab';st.style.color='#2dd4c4';}
+  if      (val < threshDry)             { st.textContent='Sangat Kering'; st.style.color='#e08080'; }
+  else if (val < Math.round((threshDry+threshWet)/2)) { st.textContent='Perlu Siram';  st.style.color='#f0a500'; }
+  else if (val < threshWet)             { st.textContent='Cukup Lembab';  st.style.color='#4ab459'; }
+  else                                  { st.textContent='Sangat Lembab'; st.style.color='#2dd4c4'; }
   moistureHistory.push(val);
   if (moistureHistory.length>10) moistureHistory.shift();
   updateChart();
+  updateCalibPreview();
   document.getElementById('chartPill').textContent=`${moistureHistory.length} titik terakhir`;
 }
 function setTemp(val) {
   val=parseFloat(val)||0;
   document.getElementById('tempVal').innerHTML=`${val.toFixed(1)}<span class="unit">°C</span>`;
+  // color based on calibrated thresholds
+  const tempEl = document.getElementById('tempVal');
+  if      (val <= threshTempLo) tempEl.style.color = '#2dd4c4';
+  else if (val >= threshTempHi) tempEl.style.color = '#e05454';
+  else                          tempEl.style.color = '';
+  // warn log
+  if (val <= threshTempLo) addLog('teal', `⚠️ Suhu rendah: ${val.toFixed(1)}°C (threshold: ${threshTempLo}°C)`);
   tempHistory.push(val);
   if (tempHistory.length>8) tempHistory.shift();
   updateSparkBar('tempSpark', tempHistory, 15, 45, '#f0a500');
@@ -1159,9 +1405,12 @@ function setHumidity(val) {
   updateSparkBar('humSpark', humHistory, 0, 100, '#2dd4c4');
   humSum+=val;
   document.getElementById('statHumAvg').textContent=(humSum/dataCount||1).toFixed(0)+'%';
+  // warn log
+  if (val < threshHumLo) addLog('amber', `⚠️ Humidity udara rendah: ${val.toFixed(0)}% (< ${threshHumLo}%)`);
+  else if (val > threshHumHi) addLog('teal', `💦 Humidity udara sangat tinggi: ${val.toFixed(0)}% (> ${threshHumHi}%)`);
 }
 
-/* ── SPARK BARS ── */
+/* ══ SPARK BARS ══ */
 function initSparkBars() {
   ['tempSpark','humSpark'].forEach(id=>{
     const el=document.getElementById(id); el.innerHTML='';
@@ -1185,7 +1434,7 @@ function updateSparkBar(id, history, min, max, color) {
   }
 }
 
-/* ── CHART ── */
+/* ══ CHART ══ */
 let chartCanvas, chartCtx;
 function initChart() {
   chartCanvas=document.getElementById('historyChart');
@@ -1195,26 +1444,35 @@ function initChart() {
 }
 function updateChart() {
   if (!chartCtx||moistureHistory.length<2) return;
-  const W=chartCanvas.width, H=chartCanvas.height;
-  chartCtx.clearRect(0,0,W,H);
+  const CW=chartCanvas.width, CH=chartCanvas.height;
+  chartCtx.clearRect(0,0,CW,CH);
   const pad={t:10,r:14,b:26,l:36};
-  const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
+  const cW=CW-pad.l-pad.r, cH=CH-pad.t-pad.b;
   [0,25,50,75,100].forEach(v=>{
     const y=pad.t+cH-(v/100*cH);
     chartCtx.beginPath(); chartCtx.setLineDash([4,6]);
     chartCtx.moveTo(pad.l,y); chartCtx.lineTo(pad.l+cW,y);
-    chartCtx.strokeStyle=`rgba(74,180,89,0.07)`; chartCtx.lineWidth=1; chartCtx.stroke();
-    chartCtx.setLineDash([]);
-    chartCtx.fillStyle='rgba(200,232,204,0.25)';
-    chartCtx.font='10px JetBrains Mono,monospace';
-    chartCtx.fillText(v+'%',2,y+4);
+    chartCtx.strokeStyle=`rgba(74,180,89,0.07)`; chartCtx.lineWidth=1; chartCtx.stroke(); chartCtx.setLineDash([]);
+    chartCtx.fillStyle='rgba(200,232,204,0.25)'; chartCtx.font='10px JetBrains Mono,monospace'; chartCtx.fillText(v+'%',2,y+4);
   });
+  // draw calibration threshold lines
+  const drawThreshLine = (val, color, label) => {
+    const y = pad.t + cH - (val/100*cH);
+    chartCtx.beginPath(); chartCtx.setLineDash([6,4]);
+    chartCtx.moveTo(pad.l, y); chartCtx.lineTo(pad.l+cW, y);
+    chartCtx.strokeStyle = color; chartCtx.lineWidth = 1.2; chartCtx.stroke(); chartCtx.setLineDash([]);
+    chartCtx.fillStyle = color; chartCtx.font = 'bold 9px JetBrains Mono,monospace';
+    chartCtx.fillText(label, pad.l+cW-30, y-3);
+  };
+  drawThreshLine(threshDry, 'rgba(224,84,84,0.5)', 'DRY');
+  drawThreshLine(threshWet, 'rgba(45,212,196,0.5)', 'WET');
+
   const pts=moistureHistory.map((v,i)=>({
     x:pad.l+(i/(moistureHistory.length-1))*cW,
     y:pad.t+cH-(v/100*cH)
   }));
   const last=moistureHistory[moistureHistory.length-1];
-  const lineColor=last<30?'#e05454':last<50?'#f0a500':last>75?'#2dd4c4':'#4ab459';
+  const lineColor=last<threshDry?'#e05454':last<threshWet?'#f0a500':last>=threshWet?'#2dd4c4':'#4ab459';
   const grad=chartCtx.createLinearGradient(0,pad.t,0,pad.t+cH);
   grad.addColorStop(0,`rgba(${hexToRgb(lineColor)},0.25)`);
   grad.addColorStop(1,`rgba(${hexToRgb(lineColor)},0)`);
@@ -1242,8 +1500,7 @@ function updateChart() {
     chartCtx.beginPath(); chartCtx.arc(p.x,p.y,isLast?2.5:1.5,0,Math.PI*2);
     chartCtx.fillStyle='#060f08'; chartCtx.fill();
     if (isLast){
-      chartCtx.fillStyle=lineColor;
-      chartCtx.font='bold 11px JetBrains Mono,monospace';
+      chartCtx.fillStyle=lineColor; chartCtx.font='bold 11px JetBrains Mono,monospace';
       chartCtx.fillText(moistureHistory[i]+'%',p.x+8,p.y+4);
     }
   });
@@ -1253,7 +1510,7 @@ function hexToRgb(hex) {
   return `${r},${g},${b}`;
 }
 
-/* ── LOG ── */
+/* ══ LOG ══ */
 function addLog(color, text) {
   const list=document.getElementById('logList');
   const time=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
@@ -1261,10 +1518,10 @@ function addLog(color, text) {
   item.className='log-item';
   item.innerHTML=`<span class="log-time">${time}</span><div class="log-dot ${color}"></div><span class="log-text">${text}</span>`;
   list.prepend(item);
-  while(list.children.length>20) list.removeChild(list.lastChild);
+  while(list.children.length>25) list.removeChild(list.lastChild);
 }
 
-/* ── TOAST ── */
+/* ══ TOAST ══ */
 let toastTimer;
 function showToast(msg, icon='✅') {
   const t=document.getElementById('toast');
@@ -1275,11 +1532,8 @@ function showToast(msg, icon='✅') {
   toastTimer=setTimeout(()=>t.classList.remove('show'),3200);
 }
 
-/* ══════════════════════════════════════════
-   BLYNK — FIXED: timeout + concurrent guard
-══════════════════════════════════════════ */
+/* ══ BLYNK ══ */
 let isFetching = false;
-
 function saveBlynkToken() {
   const tok=document.getElementById('blynkTokenInput').value.trim();
   if (!tok){showToast('Masukkan token terlebih dahulu','⚠️');return;}
@@ -1298,39 +1552,29 @@ function openBlynkModal() {
 function closeBlynkModal() { document.getElementById('blynkModal').classList.add('hidden'); }
 document.getElementById('blynkModal').addEventListener('click',function(e){ if(e.target===this) closeBlynkModal(); });
 
-/* fetch dengan timeout 8 detik via AbortController */
 async function blynkGet(pin, timeoutMs = 8000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const r = await fetch(
-      `https://blynk.cloud/external/api/get?token=${blynkToken}&${pin}`,
-      { signal: controller.signal }
-    );
+    const r = await fetch(`https://blynk.cloud/external/api/get?token=${blynkToken}&${pin}`, { signal: controller.signal });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.text();
-  } finally {
-    clearTimeout(timer);
-  }
+  } finally { clearTimeout(timer); }
 }
-
 async function blynkWrite(pin, val) {
   try { await fetch(`https://blynk.cloud/external/api/update?token=${blynkToken}&${pin}=${val}`); } catch(e){}
 }
 
 async function fetchBlynkData() {
   if (!blynkToken) { simulateData(); return; }
-  if (isFetching) return; /* cegah double-fetch saat tombol dipencet berkali-kali */
+  if (isFetching) return;
   isFetching = true;
-
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('spinning');
   const badge = document.getElementById('blynkStatusBadge');
   badge.className = 'blynk-status-text';
   badge.innerHTML = '<span class="blynk-loading"></span>';
-
   try {
-    /* Validasi token dulu via V0 */
     let testResp;
     try {
       testResp = await blynkGet('V0');
@@ -1341,96 +1585,62 @@ async function fetchBlynkData() {
       badge.className = 'blynk-status-text err';
       badge.textContent = isTimeout ? '✗ Timeout' : '✗ Token Salah';
       document.getElementById('connStatusText').textContent = 'Offline';
-      addLog('red', isTimeout
-        ? 'Koneksi timeout — cek jaringan atau server Blynk.'
-        : 'Token Blynk tidak valid atau server tidak dapat dijangkau.');
-      showToast(isTimeout ? 'Timeout — cek koneksi internet' : 'Token tidak valid — cek kembali', '❌');
-      return; /* keluar dari try, blok finally tetap jalan */
+      addLog('red', isTimeout ? 'Koneksi timeout — cek jaringan.' : 'Token Blynk tidak valid.');
+      showToast(isTimeout ? 'Timeout — cek koneksi internet' : 'Token tidak valid', '❌');
+      return;
     }
-
-    /* Token valid → ambil semua pin, tiap pin punya timeout sendiri */
     const [mod, moist, temp, hum] = await Promise.all([
       blynkGet('V1').catch(() => null),
       blynkGet('V2').catch(() => null),
       blynkGet('V3').catch(() => null),
       blynkGet('V4').catch(() => null),
     ]);
-
-    if (mod !== null) {
-      const newMode = parseInt(mod) === 1 ? 'auto' : 'manual';
-      if (newMode !== mode) setMode(newMode);
-    }
-
-    const moistVal = moist !== null ? parseFloat(moist) : null;
-    const tempVal  = temp  !== null ? parseFloat(temp)  : null;
-    const humVal   = hum   !== null ? parseFloat(hum)   : null;
-
-    if (moistVal !== null && !isNaN(moistVal)) setMoisture(moistVal);
-    if (tempVal  !== null && !isNaN(tempVal))  setTemp(tempVal);
-    if (humVal   !== null && !isNaN(humVal))   setHumidity(humVal);
-
-    const activeSensors = [moistVal, tempVal, humVal].filter(v => v !== null && !isNaN(v)).length;
-
-    if (activeSensors === 3) {
-      badge.className = 'blynk-status-text ok'; badge.textContent = '✓ Terhubung';
-      document.getElementById('connStatusText').textContent = 'Online';
-    } else if (activeSensors > 0) {
-      badge.className = 'blynk-status-text ok';
-      badge.textContent = `✓ ${activeSensors}/3 sensor`;
-      document.getElementById('connStatusText').textContent = 'Parsial';
-    } else {
-      badge.className = 'blynk-status-text ok';
-      badge.textContent = '✓ Token OK · sensor pending';
-      document.getElementById('connStatusText').textContent = 'Menunggu sensor';
-    }
-
+    if (mod !== null) { const nm = parseInt(mod)===1?'auto':'manual'; if (nm!==mode) setMode(nm); }
+    const moistVal = moist!==null ? parseFloat(moist) : null;
+    const tempValN = temp !==null ? parseFloat(temp)  : null;
+    const humVal   = hum  !==null ? parseFloat(hum)   : null;
+    if (moistVal!==null && !isNaN(moistVal)) setMoisture(moistVal);
+    if (tempValN!==null && !isNaN(tempValN)) setTemp(tempValN);
+    if (humVal  !==null && !isNaN(humVal))   setHumidity(humVal);
+    const active = [moistVal,tempValN,humVal].filter(v=>v!==null&&!isNaN(v)).length;
+    badge.className='blynk-status-text ok';
+    badge.textContent = active===3 ? '✓ Terhubung' : `✓ ${active}/3 sensor`;
+    document.getElementById('connStatusText').textContent = active===3 ? 'Online' : 'Parsial';
     refreshCount++;
-    document.getElementById('statRefreshCount').textContent = refreshCount;
-
-    const logParts = [
-      `💧Pompa:${pumpOn?'ON':'OFF'}`,
-      moistVal !== null ? `🌱${moistVal.toFixed(0)}%` : '🌱--',
-      tempVal  !== null ? `🌡️${tempVal.toFixed(1)}°C`  : '🌡️--',
-      humVal   !== null ? `💨${humVal.toFixed(0)}%`    : '💨--',
-    ].join(' ');
-    addLog('green', `Blynk — ${logParts}`);
-    showToast(activeSensors === 3 ? 'Semua data diperbarui ✓' : `Terhubung · ${activeSensors}/3 sensor aktif`);
-
-  } finally {
-    /* SELALU dijalankan — spinner pasti berhenti & flag direset */
-    btn.classList.remove('spinning');
-    isFetching = false;
-  }
+    document.getElementById('statRefreshCount').textContent=refreshCount;
+    addLog('green',`Blynk — 💧Pompa:${pumpOn?'ON':'OFF'} 🌱${moistVal?.toFixed(0)??'--'}% 🌡️${tempValN?.toFixed(1)??'--'}°C 💨${humVal?.toFixed(0)??'--'}%`);
+    showToast(active===3?'Semua data diperbarui ✓':`Terhubung · ${active}/3 sensor aktif`);
+  } finally { btn.classList.remove('spinning'); isFetching=false; }
 }
 
-/* ── SIMULATE ── */
+/* ══ SIMULATE (uses calibrated thresholds) ══ */
 function simulateData() {
-  const moisture=Math.round(30+Math.random()*55);
-  const temp=24+Math.random()*12;
-  const hum=48+Math.random()*38;
+  const moisture = Math.round(20 + Math.random() * 65);
+  const temp     = 20 + Math.random() * 20;
+  const hum      = 40 + Math.random() * 50;
   setMoisture(moisture); setTemp(temp); setHumidity(hum);
   refreshCount++;
-  document.getElementById('statRefreshCount').textContent=refreshCount;
-  if (mode === 'auto' && (moisture < 40 || temp >= 40) && !pumpOn) {
-    pumpOn = true; 
-    pumpCount++; 
-    updatePumpUI();
-    document.getElementById('statPumpCount').textContent = pumpCount;
-    
-    let reason = moisture < 40 ? 'kelembaban < 40%' : 'suhu >= 40°C';
-    addLog('green', `Auto: Pompa ON (${reason}) 💧`);
+  document.getElementById('statRefreshCount').textContent = refreshCount;
 
-    // Timer: Pompa menyala selama 3 detik
-    setTimeout(() => {
-      pumpOn = false;
+  if (mode === 'auto') {
+    const needsWater = moisture < threshDry;
+    const tooHot     = temp >= threshTempHi;
+    if ((needsWater || tooHot) && !pumpOn) {
+      pumpOn = true; pumpCount++;
       updatePumpUI();
-      addLog('amber', 'Auto: Pompa OFF (Timer 3 dtk) ⏱️');
-    }, 3000);
-  } else if (mode==='auto'&&moisture>=60&&pumpOn){
-    pumpOn=false; updatePumpUI();
-    addLog('amber','Auto: Pompa OFF — kelembaban ≥ 60% ✓');
+      document.getElementById('statPumpCount').textContent = pumpCount;
+      const reason = needsWater ? `kelembaban < ${threshDry}%` : `suhu ≥ ${threshTempHi}°C`;
+      addLog('green', `Auto: Pompa ON (${reason}) 💧`);
+      setTimeout(() => {
+        pumpOn = false; updatePumpUI();
+        addLog('amber', 'Auto: Pompa OFF (Timer 3 dtk) ⏱️');
+      }, 3000);
+    } else if (moisture >= threshWet && pumpOn) {
+      pumpOn = false; updatePumpUI();
+      addLog('amber', `Auto: Pompa OFF — kelembaban ≥ ${threshWet}% ✓`);
+    }
   }
-  addLog('teal',`[Sim] 🌱${moisture}% 🌡️${temp.toFixed(1)}°C 💧${hum.toFixed(0)}%`);
+  addLog('teal', `[Sim] 🌱${moisture}% 🌡️${temp.toFixed(1)}°C 💨${hum.toFixed(0)}%`);
 }
 
 setInterval(()=>{
