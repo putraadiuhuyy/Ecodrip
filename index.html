@@ -315,7 +315,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
 <div class="orb orb3"></div>
 <canvas id="bgCanvas"></canvas>
 
-<!-- ══════════ LOGIN ══════════ -->
 <div id="loginPage">
   <div class="login-card">
     <div class="login-logo">
@@ -358,7 +357,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
   </div>
 </div>
 
-<!-- ══════════ DASHBOARD ══════════ -->
 <div id="dashboard" class="hidden">
   <header class="header">
     <div class="header-brand">
@@ -396,7 +394,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
 
     <div class="grid">
 
-      <!-- PUMP -->
       <div class="card pump-card">
         <div class="card-inner-glow"></div>
         <div class="card-label"><div class="dot" style="background:var(--green);box-shadow:0 0 6px var(--green)"></div>KONTROL POMPA <span style="font-family:var(--font-mono);font-size:9px;background:var(--green-dim);border:1px solid var(--border);color:var(--green);border-radius:3px;padding:1px 5px;margin-left:auto">V0</span></div>
@@ -425,7 +422,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
         </div>
       </div>
 
-      <!-- MODE -->
       <div class="card mode-card">
         <div class="card-inner-glow"></div>
         <div class="card-label"><div class="dot" style="background:var(--teal)"></div>MODE OPERASI <span style="font-family:var(--font-mono);font-size:9px;background:rgba(45,212,196,.08);border:1px solid rgba(45,212,196,.2);color:var(--teal);border-radius:3px;padding:1px 5px;margin-left:auto">V1</span></div>
@@ -442,7 +438,7 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
           </div>
           <div class="threshold-chip tc-off">
             <div class="tc-label">Pompa OFF (V8)</div>
-            <div class="tc-val" id="tcOffVal">≥60%</div>
+            <div class="tc-val" id="tcOffVal">≥70%</div>
             <div class="tc-edit-hint">✏️ klik kalibrasi</div>
           </div>
           <div class="threshold-chip tc-temp">
@@ -453,7 +449,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
         </div>
       </div>
 
-      <!-- MOISTURE -->
       <div class="card moisture-card">
         <div class="card-inner-glow"></div>
         <div class="card-label"><div class="dot" style="background:var(--amber)"></div>KELEMBABAN TANAH <span style="font-family:var(--font-mono);font-size:9px;background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.2);color:var(--amber);border-radius:3px;padding:1px 5px;margin-left:auto">V2</span></div>
@@ -483,7 +478,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
         </div>
       </div>
 
-      <!-- TEMP -->
       <div class="card temp-card">
         <div class="card-inner-glow" style="background:radial-gradient(ellipse at 10% 10%,rgba(240,165,0,.04) 0%,transparent 60%)"></div>
         <div class="card-label"><div class="dot" style="background:var(--amber)"></div>SUHU UDARA <span style="font-family:var(--font-mono);font-size:9px;background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.2);color:var(--amber);border-radius:3px;padding:1px 5px;margin-left:auto">V3</span></div>
@@ -492,7 +486,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
         <div class="spark-bar" id="tempSpark"></div>
       </div>
 
-      <!-- HUM -->
       <div class="card hum-card">
         <div class="card-inner-glow" style="background:radial-gradient(ellipse at 10% 10%,rgba(45,212,196,.04) 0%,transparent 60%)"></div>
         <div class="card-label"><div class="dot" style="background:var(--teal)"></div>HUMIDITY UDARA <span style="font-family:var(--font-mono);font-size:9px;background:rgba(45,212,196,.08);border:1px solid rgba(45,212,196,.2);color:var(--teal);border-radius:3px;padding:1px 5px;margin-left:auto">V4</span></div>
@@ -501,7 +494,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
         <div class="spark-bar" id="humSpark"></div>
       </div>
 
-      <!-- CHART -->
       <div class="card history-card">
         <div class="card-inner-glow"></div>
         <div class="chart-header">
@@ -511,14 +503,12 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
         <div class="chart-area" style="margin-top:10px;"><canvas id="historyChart"></canvas></div>
       </div>
 
-      <!-- LOG -->
       <div class="card log-card">
         <div class="card-inner-glow"></div>
         <div class="card-label"><div class="dot" style="background:var(--teal)"></div>LOG AKTIVITAS</div>
         <div class="log-list" id="logList"></div>
       </div>
 
-      <!-- STATS -->
       <div class="card stat-mini">
         <div class="stat-mini-inner">
           <div class="stat-icon g">💧</div>
@@ -544,7 +534,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
         </div>
       </div>
 
-      <!-- ══ CALIBRATION CARD (SIMPLIFIED: V7, V8, V9 only) ══ -->
       <div class="card calib-card" id="calibCard">
         <div class="card-inner-glow" style="background:radial-gradient(ellipse at 5% 5%,rgba(240,165,0,.05) 0%,transparent 60%)"></div>
         <div class="card-label" style="margin-bottom:20px;">
@@ -557,7 +546,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
 
         <div class="calib-grid">
 
-          <!-- ── BATAS KERING V7 ── -->
           <div class="calib-section">
             <div class="calib-section-title">
               🌱 Batas Kelembaban Tanah
@@ -581,10 +569,10 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
             <div class="calib-slider-wrap">
               <div class="calib-slider-header">
                 <span class="calib-slider-label">💦 Batas Basah — V8 (Pompa OFF)</span>
-                <span class="calib-slider-val wet" id="wetValDisplay">60%</span>
+                <span class="calib-slider-val wet" id="wetValDisplay">70%</span>
               </div>
               <input type="range" class="calib-range wet-range" id="wetSlider"
-                min="20" max="95" value="60" step="1"
+                min="20" max="95" value="70" step="1"
                 oninput="onWetSlider(this.value)"
                 onchange="saveCalibration()">
               <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:var(--font-mono);padding:0 2px;">
@@ -598,10 +586,9 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
               ⚡ V7 &amp; V8 <strong style="color:var(--teal)">otomatis tersinkronisasi</strong> ke/dari Blynk setiap kali data diambil atau disimpan.
             </div>
 
-            <button class="calib-reset-btn" onclick="resetCalibration()">↺ Reset ke Default (40% / 60%)</button>
+            <button class="calib-reset-btn" onclick="resetCalibration()">↺ Reset ke Default (40% / 70%)</button>
           </div>
 
-          <!-- ── BATAS SUHU V9 ── -->
           <div class="calib-section">
             <div class="calib-section-title">
               🔥 Batas Suhu Paksa Siram
@@ -628,7 +615,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
               <br><br>⚡ V9 otomatis <strong style="color:var(--amber)">tersinkronisasi</strong> ke/dari Blynk.
             </div>
 
-            <!-- Temp visual indicator -->
             <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px;">
               <div style="font-size:32px;line-height:1;">🌡️</div>
               <div>
@@ -644,7 +630,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
             <button class="calib-reset-btn" onclick="resetTempCalib()" style="border-color:rgba(240,165,0,.2);color:var(--amber);">↺ Reset ke Default (40°C)</button>
           </div>
 
-          <!-- ── PREVIEW REAL-TIME ── -->
           <div class="calib-section">
             <div class="calib-section-title">📊 Preview Real-Time</div>
 
@@ -653,7 +638,7 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
               <div class="calib-bar-wrap" id="calibBarWrap">
                 <div class="calib-bar-fill" id="calibBarFill" style="width:0%;background:var(--surface3);"></div>
                 <div class="calib-bar-marker dry-m" id="calibDryMarker" style="left:40%;color:var(--red)" data-label="Kering <40%"></div>
-                <div class="calib-bar-marker wet-m" id="calibWetMarker" style="left:60%;color:var(--teal)" data-label="Lembab ≥60%"></div>
+                <div class="calib-bar-marker wet-m" id="calibWetMarker" style="left:70%;color:var(--teal)" data-label="Lembab ≥70%"></div>
               </div>
               <div class="calib-zone-labels">
                 <span style="color:var(--red)">Kering</span>
@@ -667,7 +652,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
               <div class="calib-status-text" id="calibStatusText" style="color:var(--text3)">Menunggu data sensor...</div>
             </div>
 
-            <!-- Summary chips -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
               <div style="padding:10px 8px;background:rgba(224,84,84,.08);border:1px solid rgba(224,84,84,.2);border-radius:8px;text-align:center;">
                 <div style="font-size:9px;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;">V7 Kering</div>
@@ -675,7 +659,7 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
               </div>
               <div style="padding:10px 8px;background:rgba(45,212,196,.08);border:1px solid rgba(45,212,196,.2);border-radius:8px;text-align:center;">
                 <div style="font-size:9px;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;">V8 Basah</div>
-                <div style="font-family:var(--font-mono);font-size:16px;color:var(--teal);margin-top:4px;" id="previewWet">≥60%</div>
+                <div style="font-family:var(--font-mono);font-size:16px;color:var(--teal);margin-top:4px;" id="previewWet">≥70%</div>
               </div>
               <div style="padding:10px 8px;background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.2);border-radius:8px;text-align:center;">
                 <div style="font-size:9px;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;">V9 Suhu</div>
@@ -684,11 +668,7 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
             </div>
           </div>
 
-        </div><!-- /calib-grid -->
-      </div><!-- /calib-card -->
-
-    </div><!-- /grid -->
-  </main>
+        </div></div></div></main>
 </div>
 
 <button class="refresh-btn hidden" id="refreshBtn" onclick="fetchBlynkData()" title="Refresh data">
@@ -699,7 +679,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
 
 <div class="toast" id="toast"><span class="toast-icon">✅</span><span id="toastMsg"></span></div>
 
-<!-- BLYNK MODAL -->
 <div class="modal-overlay hidden" id="blynkModal">
   <div class="modal">
     <h3>⚡ Konfigurasi Blynk</h3>
@@ -718,8 +697,6 @@ input[type=range].calib-range.temp-range::-webkit-slider-thumb:hover { box-shado
       <tr><td>Soil Sensor (%)</td><td><code>V2</code></td><td>Integer</td><td>0–100% (sudah dikonversi)</td></tr>
       <tr><td>Temperature</td><td><code>V3</code></td><td>Double</td><td>°C (0–50)</td></tr>
       <tr><td>Humidity Udara</td><td><code>V4</code></td><td>Double</td><td>0–100%</td></tr>
-      <tr><td>Soil Min (ADC)</td><td><code>V5</code></td><td>Integer</td><td>ADC saat kering (ESP8266)</td></tr>
-      <tr><td>Soil Max (ADC)</td><td><code>V6</code></td><td>Integer</td><td>ADC saat basah (ESP8266)</td></tr>
       <tr class="sync-row"><td>Batas Kering</td><td><code>V7</code></td><td>Integer</td><td>% pompa ON (sync dua arah ⚡)</td></tr>
       <tr class="sync-row"><td>Batas Basah</td><td><code>V8</code></td><td>Integer</td><td>% pompa OFF (sync dua arah ⚡)</td></tr>
       <tr class="sync-row"><td>Batas Suhu</td><td><code>V9</code></td><td>Integer</td><td>°C paksa siram (sync dua arah ⚡)</td></tr>
@@ -768,7 +745,7 @@ function startUptime(){uptimeStart=Date.now();uptimeInterval=setInterval(()=>{co
 /* ══════════════════════════════════
    CALIBRATION ENGINE — V7, V8, V9
 ══════════════════════════════════ */
-let threshDry=40, threshWet=60, threshTempHi=40;
+let threshDry=40, threshWet=70, threshTempHi=40;
 
 const CALIB_KEY='hs_calib_v4';
 
@@ -777,10 +754,10 @@ function loadCalibration(){
   // Also try migrating from old key
   if(!saved){
     const old=JSON.parse(localStorage.getItem('hs_calib_v3')||'null');
-    if(old){threshDry=old.dry??40;threshWet=old.wet??60;threshTempHi=old.tempHi??40;}
+    if(old){threshDry=old.dry??40;threshWet=old.wet??70;threshTempHi=old.tempHi??40;}
   } else {
     threshDry   = saved.dry    ?? 40;
-    threshWet   = saved.wet    ?? 60;
+    threshWet   = saved.wet    ?? 70;
     threshTempHi= saved.tempHi ?? 40;
   }
   syncSlidersFromVars();
@@ -909,9 +886,9 @@ function onWetSlider(v)    { threshWet   =parseInt(v); refreshCalibUI(); }
 function onTempHiSlider(v) { threshTempHi=parseInt(v); refreshCalibUI(); }
 
 function resetCalibration(){
-  threshDry=40; threshWet=60;
+  threshDry=40; threshWet=70;
   document.getElementById('drySlider').value=40;
-  document.getElementById('wetSlider').value=60;
+  document.getElementById('wetSlider').value=70;
   refreshCalibUI(); saveCalibration();
   showToast('Reset batas kelembaban ke default ✓');
 }
